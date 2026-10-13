@@ -45,7 +45,7 @@ export const REGISTER_TYPES = [
 export const CITIES = ["Lucknow", "Kanpur", "Ayodhya", "Gorakhpur", "Vindhyachal", "Prayagraj", "Sitapur", "Sultanpur"];
 
 export const ANNOUNCEMENTS = [
-  "📞 09648249999 · 09648259999  ·  Serving Lucknow / Kanpur / Ayodhya / Gorakhpur / Vindhyachal / Prayagraj / Sitapur / Sultanpur",
+  "Serving Lucknow / Kanpur / Ayodhya / Gorakhpur / Vindhyachal / Prayagraj / Sitapur / Sultanpur",
   "Free site visit + written quote in 48 hours  ·  No consultation fee  ·  Call 09648249999",
   "260+ homes handed over since 2017  ·  37 sites live this week  ·  25-year structural warranty",
 ];

@@ -46,7 +46,7 @@ export const TrustBar = () => (
 export const WhyChoose = () => (
   <section id="why" className="section-gb bg-wash-yellow relative grain" data-testid="why-choose-section">
     <Container className="relative">
-      <SectionHeader label="12 REASONS · NO SUPERLATIVES" title="Why homeowners call us the best construction company in Lucknow" supporting="Each reason below comes with the proof. If we cannot show it, we do not list it." />
+      <SectionHeader label="12 REASONS · NO SUPERLATIVES" title="Why homeowners call us the best construction company in Uttar Pradesh" supporting="Each reason below comes with the proof. If we cannot show it, we do not list it." />
       <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {WHY.map((w, i) => {
           const Icon = Icons[w.icon] || Icons.Check;
