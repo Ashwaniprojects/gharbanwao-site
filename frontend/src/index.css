@@ -149,6 +149,30 @@
     color: #000;
     border-color: var(--secondary-brand);
   }
+  /* Solid green: the primary action colour, filled by default rather than
+     outlined, so it reads as the main call to action. */
+  .btn-animated--green {
+    background-color: var(--primary-brand);
+    color: #ffffff;
+    border-color: var(--primary-brand);
+    box-shadow: 0 0 0 3px var(--primary-brand);
+  }
+  .btn-animated--green .circle-fill {
+    background-color: #ffffff;
+  }
+  .btn-animated--green:hover {
+    color: var(--primary-brand);
+    border-color: var(--primary-brand);
+  }
+  .btn-animated--green:hover .circle-fill {
+    opacity: 1;
+  }
+  .btn-animated--green:hover svg {
+    color: var(--primary-brand);
+  }
+  .pill-green {
+    @apply pill bg-green text-white hover:bg-green-600;
+  }
   .pill-yellow {
     @apply pill bg-yellow text-ink hover:brightness-95;
   }

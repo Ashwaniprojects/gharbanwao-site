@@ -63,7 +63,7 @@ export default function PackagesPage() {
                       </div>
                     ))}
                   </dl>
-                  <button onClick={() => scrollToId("contact")} className={`btn-animated mt-8 ${p.featured ? "" : "btn-animated--yellow"}`} data-testid={`packages-cta-${p.name.toLowerCase()}`}>{p.cta} <ArrowRight className="arr-icon h-[18px] w-[18px]" strokeWidth={2.5} /></button>
+                  <button onClick={() => scrollToId("contact")} className={`btn-animated mt-8 ${p.featured ? "" : "btn-animated--green"}`} data-testid={`packages-cta-${p.name.toLowerCase()}`}>{p.cta} <ArrowRight className="arr-icon h-[18px] w-[18px]" strokeWidth={2.5} /></button>
                 </Reveal>
               ))}
             </div>
