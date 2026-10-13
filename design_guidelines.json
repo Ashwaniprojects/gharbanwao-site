@@ -1,0 +1,105 @@
+{
+  "app_name": "GharBanwao",
+  "theme": "light",
+  "typography": {
+    "primary_font": "Manrope",
+    "secondary_font": "IBM Plex Mono",
+    "usage": {
+      "display": "Manrope ExtraBold (800) 56px - 88px",
+      "h1_h2": "Manrope Bold (700)",
+      "h3": "Manrope SemiBold (600)",
+      "body": "Manrope Regular/Medium (400-500) 17px - 18px",
+      "cta": "Manrope Bold (700)",
+      "technical_labels": "IBM Plex Mono Medium (500) 12px - 14px uppercase, tracking-[0.04em]"
+    },
+    "instructions_to_main_agent": "Ensure tight tracking (tracking-tight) on headings above 32px. Technical labels MUST use IBM Plex Mono for components like 'GB-229', '30x50 FT', 'STAGE 04'."
+  },
+  "colors": {
+    "ink_black": "#000000",
+    "paper_white": "#FFFFFF",
+    "signal_green": "#93C526",
+    "highlight_yellow": "#FFFF00",
+    "soft_yellow_wash": "#FFFCE6",
+    "soft_green_wash": "#F4FADF",
+    "divider_grey": "#E9E9E6",
+    "rules": [
+      "Highlight Yellow (#FFFF00) NEVER used as a page background, and NEVER carries body text.",
+      "Signal Green (#93C526) used for ALL primary CTAs, pins, and specific accents.",
+      "Ink Black (#000000) is for TEXT ONLY. NEVER use black button fills.",
+      "NEVER put green text on yellow or yellow on green."
+    ]
+  },
+  "grids_and_spacing": {
+    "container": "max-w-[1280px] mx-auto px-6",
+    "columns": 12,
+    "gutter": "gap-6 (24px)",
+    "section_padding": {
+      "desktop": "py-24 (96px)",
+      "mobile": "py-14 (56px)"
+    },
+    "card_padding": "p-6 md:p-8",
+    "radii": {
+      "cards": "rounded-2xl (16px)",
+      "pill_buttons": "rounded-full (9999px)",
+      "inputs": "rounded-lg (8px)"
+    },
+    "borders": "1px solid #E9E9E6 (Divider Grey) on cards",
+    "shadows": "No heavy shadows. Apply soft ambient shadow on hover ONLY (hover:shadow-lg hover:shadow-black/5)."
+  },
+  "motion": {
+    "section_reveal": "Fade + 12px rise (translate-y-3), 400ms ease-out on scroll using framer-motion.",
+    "cta_interaction": "Scale down to 0.98 on press (active:scale-[0.98]).",
+    "marquee": "Testimonials use 60s loop, opposite directions for two rows, pause on hover (use react-fast-marquee).",
+    "accessibility": "Respect prefers-reduced-motion for all animations."
+  },
+  "layouts": {
+    "hero_section": "60/40 Split. Left (60%): Soft Yellow Wash (#FFFCE6) panel with mono label ('GB · 2026 · LUCKNOW'), display headline 'Your home. Built once. Built right.', supporting line, Signal Green pill CTA 'Start Your Project \u2192', ghost CTA 'Try the Cost Calculator', micro-trust line. Right (40%): Compact live cost calculator card (City dropdown, Plot Area input, unit toggle \u2192 live cost output).",
+    "why_choose": "12-pillar grid. Clean minimal cards with hairline Divider Grey borders.",
+    "mobile_sticky_bar": "Fixed bottom bar on mobile (z-50) split 50/50: 'Call Now' (Signal Green bg, White/Black text) + 'WhatsApp' (Highlight Yellow bg, Ink Black text).",
+    "pricing_tiers": "3 tiers. Middle tier visually raised with a Signal Green border."
+  },
+  "sections_architecture": [
+    "00 Announcement strip",
+    "01 Nav + universal search overlay",
+    "02 Hero (calculator)",
+    "03 Trust bar (4 numbers)",
+    "04 Why Choose (12-pillar grid)",
+    "05 Live Projects Map (fallback: filterable project card grid)",
+    "06 Services (4 cards)",
+    "07 Full 3-step Cost Calculator (inputs \u2192 donut + timeline bar chart \u2192 resource table with Basic/Medium/Premium quality radios \u2192 Print/Share/Book actions)",
+    "08 Process (6-stage timeline)",
+    "09 Material brand wall",
+    "10 Testimonials (two-row opposite-direction marquee, 30 cards)",
+    "11 Video testimonials (3x2 grid)",
+    "12 Google reviews wall",
+    "13 Pricing (3 tiers, middle raised with green border)",
+    "14 Comparison table",
+    "15 Team strip",
+    "16 Awards/registrations band",
+    "17 FAQ accordion",
+    "18 Final CTA + consultation form on soft yellow",
+    "19 Footer (3 cols)"
+  ],
+  "components": {
+    "nav": "Sticky top nav. MUST use solid white or glassmorphism (backdrop-blur-xl bg-white/90) background. NO fully transparent headers.",
+    "buttons": "Pill-shaped (rounded-full) for primary/secondary actions. Green bg for primary. Ghost/outline for secondary.",
+    "cards": "16px radius, 1px Divider Grey border, no default shadow, soft hover shadow.",
+    "inputs": "8px radius, Divider Grey borders.",
+    "cost_calculator_ui": "Inputs (Shadcn Select for City, Input for area) \u2192 Visuals (Recharts Donut for category split, Timeline bar chart) \u2192 Table (Shadcn Table for resources) \u2192 Quality Tiers (Shadcn RadioGroup for Basic/Medium/Premium)."
+  },
+  "media_and_charts": {
+    "images": "NO STOCK PHOTOS. Use neutral grey placeholder blocks (bg-[#E9E9E6]) with centered IBM Plex Mono text labeled 'IMG-01', 'IMG-02', etc.",
+    "charts": "Use Recharts. Color scale for charts MUST be a gradient/palette ranging from Signal Green to Highlight Yellow. Avoid Ink Black in chart fills to maintain readability."
+  },
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "Strictly adhere to the LOCKED color palette and typography rules. The combination of Ink Black, Signal Green, and Highlight Yellow is distinctive; use white/wash spaces generously to prevent it from feeling garish.",
+    "Voice constraint: Use clear Hindi+English, short sentences, specific numbers, and NO superlatives. Keep the tagline: 'Kyu ki ghar banata hai ek baar.'",
+    "DO NOT use generic centered layouts. Prioritize left-alignment for dense content, forms, and technical metrics.",
+    "Create depth using the 1px #E9E9E6 border and subtle hover shadows, NOT heavy default shadows.",
+    "Implement `data-testid` on ALL interactive and key informational elements (e.g., `data-testid='hero-calculator-city-dropdown'`).",
+    "Write JavaScript (.jsx) files for React, NOT TypeScript (.tsx). Use Shadcn UI primitive components heavily customized to match the 8px/16px radii constraints.",
+    "Always define both hover and active states (active:scale-[0.98] on buttons).",
+    "No completely transparent backgrounds on overlays, sticky navs, or headers.",
+    "All imagery must be constructed with structural `div` blocks acting as placeholders labeled via the IMG-NN code system."
+  ]
+}

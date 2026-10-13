@@ -1,0 +1,102 @@
+import { AnnouncementStrip } from "@/components/site/AnnouncementStrip";
+import { Navbar } from "@/components/site/Navbar";
+import { Footer, MobileBar } from "@/components/site/FaqCtaFooter";
+import { Container, Reveal, SectionHeader } from "@/components/site/shared";
+import { ArrowRight, Phone, MessageCircle, MapPin, Mail, Clock } from "lucide-react";
+
+export default function ContactPage() {
+  return (
+    <div className="min-h-screen bg-paper text-ink" data-testid="contact-page">
+      <AnnouncementStrip />
+      <Navbar />
+      <main>
+        <section className="section-gb" data-testid="contact-hero">
+          <Container className="max-w-4xl">
+            <Reveal>
+              <SectionHeader
+                label="CONTACT US"
+                title="Talk to someone who answers."
+                supporting="One number. One WhatsApp. One person accountable. We respond within 2 hours on business days."
+                align="center"
+              />
+            </Reveal>
+          </Container>
+        </section>
+
+        <section className="section-gb bg-wash-yellow" data-testid="contact-cards">
+          <Container>
+            <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {[
+                { icon: Phone, label: "Call us", value: "09648249999", href: "tel:09648249999" },
+                { icon: MessageCircle, label: "WhatsApp", value: "09198059992", href: "https://wa.aisensy.com/+919198059992" },
+                { icon: Mail, label: "Email", value: "hello@gharbanwao.com", href: "mailto:hello@gharbanwao.com" },
+                { icon: MapPin, label: "Visit us", value: "Indira Nagar, Lucknow", href: "https://maps.google.com" },
+              ].map((c, i) => (
+                <Reveal key={c.label} delay={i * 0.06}>
+                  <a href={c.href} target="_blank" rel="noreferrer" className="card-gb p-6 bg-paper block group" data-testid={`contact-card-${i + 1}`}>
+                    <c.icon className="h-6 w-6 text-green-700 mb-3" />
+                    <p className="mono-label text-ink/60">{c.label}</p>
+                    <p className="mt-1 font-bold text-[15px] group-hover:text-green-700 transition-colors">{c.value}</p>
+                  </a>
+                </Reveal>
+              ))}
+            </div>
+          </Container>
+        </section>
+
+        <section className="section-gb" data-testid="contact-hours">
+          <Container className="max-w-4xl">
+            <Reveal>
+              <div className="card-gb p-8 bg-paper">
+                <div className="flex items-start gap-4">
+                  <Clock className="h-6 w-6 text-green-700 shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-bold text-[17px]">Working hours</h3>
+                    <p className="mt-2 text-[15px] text-ink/70">Monday – Saturday: 9:00 AM – 6:00 PM</p>
+                    <p className="text-[15px] text-ink/70">Sunday: Closed</p>
+                    <p className="mt-3 text-[14px] text-ink/60">Site visits are also available on request outside these hours. Call us to arrange.</p>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+            <Reveal className="mt-6">
+              <div className="card-gb p-8 bg-paper">
+                <div className="flex items-start gap-4">
+                  <MapPin className="h-6 w-6 text-green-700 shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-bold text-[17px]">Office address</h3>
+                    <p className="mt-2 text-[15px] text-ink/70">16/284, near Munshipulia, next to Ashirwad Bakery</p>
+                    <p className="text-[15px] text-ink/70">Indira Nagar, Lucknow, Uttar Pradesh 226016</p>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </Container>
+        </section>
+
+        <section className="section-gb bg-wash-yellow" data-testid="contact-cta">
+          <Container className="max-w-3xl text-center">
+            <Reveal>
+              <SectionHeader
+                label="PREFER A CALL?"
+                title="We call you within 2 hours."
+                supporting="Fill in your number below and our team will call you on a business day."
+                align="center"
+              />
+            </Reveal>
+            <Reveal className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <a href="https://wa.aisensy.com/+919198059992" target="_blank" rel="noreferrer" className="pill-yellow px-8" data-testid="contact-whatsapp-btn">
+                Chat on WhatsApp
+              </a>
+              <a href="tel:09648249999" className="btn-animated" data-testid="contact-call-btn">
+                Call 09648249999 <ArrowRight className="arr-icon h-[18px] w-[18px]" strokeWidth={2.5} />
+              </a>
+            </Reveal>
+          </Container>
+        </section>
+      </main>
+      <Footer />
+      <MobileBar />
+    </div>
+  );
+}
