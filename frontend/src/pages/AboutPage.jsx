@@ -135,8 +135,21 @@ export default function AboutPage() {
                 <p className="text-[16px] leading-relaxed text-ink/80">
                   We are building Ghar Banwao with a vision that goes beyond individual homes to shape the future of India's construction industry.
                 </p>
-                <p className="mt-6 font-bold text-[15px]">Er. Virendra Kumar Nishad</p>
-                <p className="text-[13px] text-ink/60">Chairman and Managing Director</p>
+                <div className="mt-6 flex items-center gap-4">
+                  <img
+                    src="/images/team/virendra-nishad.jpg"
+                    alt="Er. Virendra Kumar Nishad, Chairman and Managing Director, Ghar Banwao"
+                    width={88}
+                    height={88}
+                    loading="lazy"
+                    className="h-[88px] w-[88px] shrink-0 rounded-full object-cover object-top border border-divider"
+                    data-testid="cmd-portrait"
+                  />
+                  <div>
+                    <p className="font-bold text-[15px]">Er. Virendra Kumar Nishad</p>
+                    <p className="text-[13px] text-ink/60">Chairman and Managing Director</p>
+                  </div>
+                </div>
               </div>
             </Reveal>
           </Container>
@@ -169,8 +182,21 @@ export default function AboutPage() {
                 <p className="text-[16px] leading-relaxed text-ink/80">
                   Our ambition is to make Ghar Banwao India's most trusted, customer-centric home construction services platform — where every dream matters and every customer comes first.
                 </p>
-                <p className="mt-6 font-bold text-[15px]">Sujata</p>
-                <p className="text-[13px] text-ink/60">Chief Executive Officer (CEO), Interior Designer</p>
+                <div className="mt-6 flex items-center gap-4">
+                  <img
+                    src="/images/team/sujata.jpg"
+                    alt="Sujata, Chief Executive Officer and Interior Designer, Ghar Banwao"
+                    width={88}
+                    height={88}
+                    loading="lazy"
+                    className="h-[88px] w-[88px] shrink-0 rounded-full object-cover object-top border border-divider"
+                    data-testid="ceo-portrait"
+                  />
+                  <div>
+                    <p className="font-bold text-[15px]">Sujata</p>
+                    <p className="text-[13px] text-ink/60">Chief Executive Officer (CEO), Interior Designer</p>
+                  </div>
+                </div>
               </div>
             </Reveal>
           </Container>
