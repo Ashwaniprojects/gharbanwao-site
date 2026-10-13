@@ -1,4 +1,5 @@
 import { ArrowRight, Check, X, Linkedin } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Container, Placeholder, Reveal, SectionHeader } from "./shared";
 import { COMPARISON, PRICING, PRICING_ROWS, TEAM } from "@/data/content";
 import { scrollToId } from "@/lib/scroll";
@@ -27,7 +28,7 @@ export const Pricing = () => (
         ))}
       </div>
       <Reveal className="mt-8">
-        <a href="/packages" onClick={(e) => e.preventDefault()} className="inline-flex items-center gap-1.5 font-bold underline decoration-green decoration-2 underline-offset-4" data-testid="pricing-details-link">Full inclusions and exclusions on each package <ArrowRight className="h-4 w-4" /></a>
+        <Link to="/packages" className="inline-flex items-center gap-1.5 font-bold underline decoration-green decoration-2 underline-offset-4" data-testid="pricing-details-link">Full inclusions, payment schedule and material spec on each package <ArrowRight className="h-4 w-4" /></Link>
       </Reveal>
     </Container>
   </section>

@@ -8,11 +8,20 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Container, Reveal, SectionHeader } from "./shared";
 import { Logo } from "./Logo";
-import { CITIES, FAQS, FOOTER_NAV, PHONES, WHATSAPP_URL } from "@/data/content";
+import { CITIES, FOOTER_NAV, PHONES, WHATSAPP_URL, HOME_FAQS } from "@/data/content";
 import { createLead } from "@/lib/api";
 import { scrollToId } from "@/lib/scroll";
 
-const PAGE_ROUTES = ["about", "reviews", "contact", "blog", "privacy", "terms"];
+const PAGE_ROUTES = ["about", "reviews", "contact", "blog", "privacy", "terms", "faq", "packages"];
+
+// Footer entries either point at a real page (`href`) or scroll to a
+// section on the homepage (`id`).
+const FooterLink = ({ item }) => {
+  if (item.href) {
+    return <Link to={item.href} className="hover:underline decoration-green decoration-2 underline-offset-4" data-testid={`footer-link-${item.label.toLowerCase().replace(/\s+/g, "-")}`}>{item.label}</Link>;
+  }
+  return <button onClick={() => footerGo(item.id)} className="hover:underline decoration-green decoration-2 underline-offset-4" data-testid={`footer-link-${item.id}`}>{item.label}</button>;
+};
 
 const footerGo = (id) => {
   if (id === "home") {
@@ -35,11 +44,14 @@ export const FAQ = () => (
   <section id="faq" className="section-gb" data-testid="faq-section">
     <Container className="grid lg:grid-cols-5 gap-10">
       <div className="lg:col-span-2">
-        <SectionHeader label="12 REAL QUESTIONS" title="Things homeowners actually ask us" supporting={`If the answer is "it depends," we say "it depends" and explain the variables.`} />
+        <SectionHeader label="TOP 5 QUESTIONS" title="Things homeowners actually ask us" supporting={`If the answer is "it depends," we say "it depends" and explain the variables.`} />
+        <Reveal delay={0.1} className="mt-6">
+          <Link to="/faq" className="inline-flex items-center gap-1.5 font-bold underline decoration-green decoration-2 underline-offset-4" data-testid="faq-all-link">Read all 15 construction FAQs <ArrowRight className="h-4 w-4" /></Link>
+        </Reveal>
       </div>
       <Reveal className="lg:col-span-3">
         <Accordion type="single" collapsible className="divide-y divide-divider border-y border-divider" data-testid="faq-accordion">
-          {FAQS.map(([q, a], i) => (
+          {HOME_FAQS.map(([q, a], i) => (
             <AccordionItem key={q} value={`q${i}`} className="border-0 data-[state=open]:bg-wash-yellow px-4 -mx-4 rounded-xl transition-colors">
               <AccordionTrigger className="py-5 text-left text-[16px] md:text-[17px] font-bold hover:no-underline [&>svg]:text-green-700" data-testid={`faq-trigger-${i + 1}`}>
                 <span className="flex gap-4"><span className="font-mono text-[12px] text-ink/40 mt-1.5">{String(i + 1).padStart(2, "0")}</span>{q}</span>
@@ -141,8 +153,8 @@ export const Footer = () => (
       <div>
         <p className="mono-label text-ink/50 mb-4">Explore</p>
         <ul className="space-y-2 text-[15px] font-semibold">
-          {FOOTER_NAV.slice(0, 4).map((n) => (
-            <li key={n.id}><button onClick={() => footerGo(n.id)} className="hover:underline decoration-green decoration-2 underline-offset-4" data-testid={`footer-link-${n.id}`}>{n.label}</button></li>
+          {FOOTER_NAV.slice(0, 5).map((n) => (
+            <li key={n.label}><FooterLink item={n} /></li>
           ))}
           <li><Link to="/register" className="hover:underline decoration-green decoration-2 underline-offset-4" data-testid="footer-link-register">Register with us</Link></li>
         </ul>
@@ -150,8 +162,8 @@ export const Footer = () => (
       <div>
         <p className="mono-label text-ink/50 mb-4">Explore</p>
         <ul className="space-y-2 text-[15px] font-semibold">
-          {FOOTER_NAV.slice(4).map((n) => (
-            <li key={n.id}><button onClick={() => footerGo(n.id)} className="hover:underline decoration-green decoration-2 underline-offset-4" data-testid={`footer-link-${n.id}`}>{n.label}</button></li>
+          {FOOTER_NAV.slice(5).map((n) => (
+            <li key={n.label}><FooterLink item={n} /></li>
           ))}
           <li><Link to="/blog" className="hover:underline decoration-green decoration-2 underline-offset-4" data-testid="footer-link-blog">Blog</Link></li>
         </ul>

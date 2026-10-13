@@ -13,14 +13,17 @@ export const NAV = [
 ];
 
 // Footer "Explore" column — the full sitemap, including items removed from the header
+// Footer links. `href` entries are real pages; `id` entries scroll to a
+// section on the homepage.
 export const FOOTER_NAV = [
   { label: "Home", id: "home" },
   { label: "About Us", id: "about" },
   { label: "Services", id: "services" },
-  { label: "Projects", id: "projects" },
-  { label: "Packages", id: "packages" },
-  { label: "Calculator", id: "calculator" },
+  { label: "Packages", href: "/packages" },
+  { label: "Payment Schedule", href: "/packages#payment" },
+  { label: "Calculator", href: "/calculator" },
   { label: "Reviews", id: "testimonials" },
+  { label: "FAQs", href: "/faq" },
   { label: "Contact", id: "contact" },
 ];
 
@@ -61,7 +64,7 @@ export const WHY = [
   { icon: "Camera", title: "Real-time project tracking", text: "Your WhatsApp gets site photos every Monday and Thursday." },
   { icon: "ShieldCheck", title: "100% money safety", text: "Payments linked to stage completion, not calendar dates." },
   { icon: "Landmark", title: "Structural warranty", text: "25 years on structure. In writing. Transferable on resale." },
-  { icon: "CalendarRange", title: "Flexible payment schedule", text: "7 or 9 installments, mapped to your cash flow, not ours." },
+  { icon: "CalendarRange", title: "Stage-linked payment schedule", text: "The same 9-stage schedule on every package, mapped to work finished, not ours." },
   { icon: "Headset", title: "Dedicated customer support", text: "One project manager per build. One WhatsApp number. One accountable name." },
   { icon: "Timer", title: "On-time delivery", text: "Average delay across 260+ homes: 11 days. We publish it." },
   { icon: "History", title: "9+ years of experience", text: "Started 2017. Still Lucknow-headquartered." },
@@ -143,8 +146,63 @@ export const PRICING = [
 ];
 export const PRICING_ROWS = ["Structure warranty", "Payment stages", "Site visits by engineer", "Material grade", "Finishing level", "Post-handover support"];
 
+// One schedule for all three packages. The percentages are the published
+// contract terms; the rupee column is an illustrative 1500 sqft Gold build
+// so a homeowner can sanity-check the numbers against their own quote.
+export const PAYMENT_SCHEDULE = [
+  { stage: "Advance at the time of agreement sign", pct: 20, note: "If less is paid at signing, the full 20% must be completed within 15 days from the date work starts." },
+  { stage: "Before plinth beam & DPC", pct: 10, note: "" },
+  { stage: "Before 5' brick wall work", pct: 10, note: "" },
+  { stage: "Before shuttering for slab", pct: 20, note: "" },
+  { stage: "Before plumbing & electrical work", pct: 10, note: "" },
+  { stage: "Before flooring", pct: 10, note: "" },
+  { stage: "Before painting work", pct: 10, note: "" },
+  { stage: "Before door and window", pct: 8, note: "" },
+  { stage: "Before sanitary & miscellaneous work", pct: "Remaining", note: "The balance after the stages above." },
+];
+export const PAYMENT_RULES = [
+  "Every instalment is released only after you inspect and sign off the completed stage.",
+  "All payments must be completed 15 days before possession.",
+  "No payment is tied to a calendar date. It is tied to work actually finished on site.",
+  "Any mid-construction change is issued as a written change order with its cost before work begins.",
+];
+export const PAYMENT_EXAMPLE = { area: 1500, rate: 1699, total: 2548500 };
+
+export const MATERIALS_COMPARISON = [
+  {
+    material: "Morang",
+    gb: ["Fresh red morang only.", "Used as per structural requirement."],
+    other: ["Low quality.", "Soil-mixed morang.", "Thin morang."],
+  },
+  {
+    material: "Gitti",
+    gb: ["Black kabrai gitti only.", "Proper shape, as per standard."],
+    other: ["Mixed gitti.", "Not in standard size, which reduces structural strength."],
+  },
+  {
+    material: "Cement",
+    gb: ["Branded cement as named in the specification.", "Purchased direct from the rack.", "Fresh cement only."],
+    other: ["Non-branded cement.", "Stock cement from mini-plants.", "Old cement, which loses strength."],
+  },
+  {
+    material: "Bricks",
+    gb: ["First-class bricks only.", "Uniform red or brown colour.", "Strength test can be performed."],
+    other: ["Mixed bricks, including lal petty.", "Not in proper shape."],
+  },
+  {
+    material: "TMT Bars",
+    gb: ["Branded TMT bars from authorised dealers only.", "Verifiable by the customer."],
+    other: ["Local TMT bars.", "Non-branded TMT mixed into branded TMT."],
+  },
+  {
+    material: "Mixing Ratio",
+    gb: ["All mixing follows M20 grade at 1:1.5 (2:3).", "Verifiable by the customer."],
+    other: ["Standard ratio is not followed.", "Materials are under-mixed to save on quantity."],
+  },
+];
+
 export const COMPARISON = [
-  ["Payment linked to stages", "7 or 9 stages", "Weekly cash calls"],
+  ["Payment linked to stages", "Same 9-stage schedule on all packages", "Weekly cash calls"],
   ["Material brand named in quote", "Yes, in writing", "\"As per site\""],
   ["Structural warranty", "25 years written", "None"],
   ["Weekly site photos to homeowner", "Mon + Thu", "\"Come visit anytime\""],
@@ -162,19 +220,42 @@ export const TEAM = [
   { img: "IMG-80", name: "Vivek Rastogi", role: "Customer Success Lead", years: "6 yrs", specialty: "The one WhatsApp number. Replies in under 2 hours." },
 ];
 
+// The full set of 15 questions lives on /faq. The homepage keeps five of
+// them, chosen because they are the ones that actually block a decision:
+// cost, budget, inclusions, hidden charges and getting started.
+const HOME_FAQ_QUESTIONS = [
+  "What is the cost of building a house in Lucknow per sq. ft.?",
+  "Can you build my house within my budget?",
+  "What is included in your construction package?",
+  "Are there any hidden charges in house construction?",
+  "How can I get started with Ghar Banwao?",
+];
+
 export const FAQS = [
-  ["How much does a 1500 sqft 2 BHK cost in Lucknow in 2026?", "Between ₹19.49 lakh (Silver, ₹1,299/sqft) and ₹29.99 lakh (Platinum, ₹1,999/sqft) for construction. Most homeowners land near ₹25.5 lakh on Gold (₹1,699/sqft). Plot cost, approvals, and interiors beyond the package are separate. Use the calculator above for your exact size."],
-  ["How long does construction actually take?", "8 to 11 months for a 1500 to 2500 sqft home. Our average across 260 homes is 9 months 2 weeks. Monsoon, approval queues, and mid-way design changes are the three variables that move this."],
-  ["What happens if construction gets delayed?", "The agreement has a written delay clause. Delays caused by us carry a per-day deduction. Delays from approvals, weather, or your changes are logged and shared on WhatsApp the day they happen. Our published average delay is 11 days."],
-  ["Can I visit the site anytime?", "Yes. No appointment needed. The site supervisor is there 9am to 6pm, six days a week. Many homeowners' parents visit daily. We also send photos every Monday and Thursday."],
-  ["Who approves which cement, steel, bricks are used?", "You do. Brands and grades are named in the quote before you sign. Any change needs your written OK. Samples are tested before site delivery and rejected batches are returned."],
-  ["What is the payment schedule?", "7 installments on Silver, 9 on Gold and Platinum. Each one is released only after you sign off the completed stage. No payment is tied to a calendar date."],
-  ["What is NOT included in your quote?", "Plot cost, government approval fees, electricity and water connection charges, boundary wall beyond 4 ft, and interiors not listed in the package. Every exclusion is listed on page 2 of the quote."],
-  ["What is the structural warranty? What does it cover?", "25 years, in writing, on the RCC structure: foundation, columns, beams, slabs. Covers structural cracks and settlement. It is transferable if you sell the home. Finishes carry a separate 12-month support."],
-  ["Do you handle approvals and permits?", "Yes. LDA or Nagar Nigam plan sanction, and the completion certificate. Government fees are at actuals and shown separately. It depends on the authority — typically 4 to 7 weeks."],
-  ["Can I use my own architect?", "Yes. We build from your architect's approved drawings. Our structural engineer reviews them first and we will tell you if anything needs to change for safety."],
-  ["What if I want to change something mid-construction?", "Common. We issue a written change order with the cost and timeline impact before doing the work. You approve it on WhatsApp. Nothing changes without that."],
-  ["How do I know you won't disappear?", "260 homes on the map above, each with a real address. 9 years, same office in Lucknow. Payments are stage-linked so your money is never ahead of the work."],
+  ["What is the cost of building a house in Lucknow per sq. ft.?", "House construction in Lucknow starts at ₹1,299/sqft on Silver, ₹1,699/sqft on Gold and ₹1,999/sqft on Platinum. That rate covers construction only. Your plot cost, LDA or Nagar Nigam approval fees, electricity and water connection charges, and interiors beyond the package are billed separately, and every exclusion is listed on page 2 of the written quote before you sign anything."],
+  ["How much will it cost to build a 1,000 sq. ft. house?", "A 1,000 sqft home works out to ₹12.99 lakh on Silver, ₹16.99 lakh on Gold and ₹19.99 lakh on Platinum for construction. Most homeowners in Lucknow land on Gold for a 1,000 sqft 2 BHK. Use the cost calculator on this site with your exact plot size to get your own number in under a minute."],
+  ["Can you build my house within my budget?", "Yes, and we tell you honestly if we cannot. Bring your budget to the free consultation and we will work backwards from it. We will tell you what fits at that number, what has to be dropped, and which package matches it. If the number genuinely will not build a safe home, we say so rather than take the contract."],
+  ["What is included in your construction package?", "Every package covers the full structure from foundation to handover: RCC structure, brickwork, plaster, waterproofing, plumbing and electrical wiring, flooring, painting, doors and windows, and sanitary fittings. The difference between Silver, Gold and Platinum is the material grade, the finishing level, and how long we support you after handover. Structural warranty is 25 years on all three."],
+  ["Are there any hidden charges in house construction?", "No. The quote names every item, every brand and every stage before you sign. Anything outside it is listed as an exclusion in writing. If you change something mid-construction, we issue a written change order showing the exact cost and timeline impact, and nothing is done until you approve it on WhatsApp."],
+  ["How do I know you will use good-quality construction materials?", "Because you approve them and you can verify them. Brands and grades are named in the quote before you sign. Cement is bought fresh direct from the rack, TMT bars come from authorised dealers, bricks are first-class, and all mixing follows M20 grade at 1:1.5. Batches are tested before site delivery and rejected batches are returned. You can check any of it on any site visit."],
+  ["How long will it take to complete my house?", "8 to 11 months for a 1,500 to 2,500 sqft home. Our average across 260 homes is 9 months 2 weeks. Monsoon, approval queues and mid-way design changes are the three things that move that number, and the agreement carries a written on-time delivery clause."],
+  ["Do you provide a written agreement before starting construction?", "Yes, always, before a single brick is laid. It names the payment schedule, the material brands and grades, the stage timeline, the 25-year structural warranty and the delay clause. If any of those are missing, do not start the work."],
+  ["Do you help with LDA map approval in Lucknow?", "Yes. We handle LDA and Nagar Nigam plan sanction and the completion certificate. Government fees are charged at actuals and shown separately from our construction rate. It depends on the authority, but typically takes 4 to 7 weeks."],
+  ["Can I see the 2D floor plan and 3D elevation before construction?", "Yes. You approve the 2D floor plan and the 3D elevation before construction starts, and we build to those approved drawings. If you already have an architect, we will build from their drawings after our structural engineer reviews them for safety."],
+  ["Can I make changes to my house design?", "Yes, it is common. We issue a written change order with the cost and timeline impact before doing the work, and you approve it on WhatsApp. Nothing changes on site without that approval, so you are never surprised by a bill."],
+  ["How will I track the progress of my house construction?", "Two ways. Visit the site anytime without an appointment; the supervisor is there 9am to 6pm, six days a week. And we send site photos every Monday and Thursday on WhatsApp, so you can follow the build even from another city. One named project manager is your single point of contact."],
+  ["Do you provide a warranty on construction work?", "25 years in writing on the RCC structure: foundation, columns, beams and slabs. It covers structural cracks and settlement, and it is transferable if you sell the home. Finishes carry a separate 12-month support, and post-handover fixes are free during that period."],
+  ["Why should I choose Ghar Banwao over a local contractor?", "Four things a local contractor usually will not put in writing: a 25-year structural warranty, payment released only after you sign off each finished stage, brands and grades named in the quote, and one named project manager who answers your WhatsApp. We have delivered 260 homes across 8 UP cities from the same Lucknow office since 2017, and the materials comparison on the packages page shows exactly where the difference sits."],
+  ["How can I get started with Ghar Banwao?", "Book a free consultation using the form on this page. We call within 2 hours on business days, visit your site for free, discuss the design for free, and send a written quote with no commitment to continue. You can also WhatsApp us directly on 09648249999."],
+];
+
+export const HOME_FAQS = FAQS.filter(([q]) => HOME_FAQ_QUESTIONS.includes(q));
+
+export const FAQ_GROUPS = [
+  { label: "Cost & Budget", questions: [0, 1, 2, 4] },
+  { label: "Quality & Materials", questions: [5] },
+  { label: "Timeline & Process", questions: [6, 8, 9, 10, 11] },
+  { label: "Trust & Getting Started", questions: [3, 7, 12, 13, 14] },
 ];
 
 export const SEARCH_POPULAR = ["2 BHK cost Lucknow", "30×50 house plan", "turnkey package", "brick quality", "GB-229"];

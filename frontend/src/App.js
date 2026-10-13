@@ -11,6 +11,8 @@ import TermsPage from "@/pages/TermsPage";
 import CalculatorPage from "@/pages/CalculatorPage";
 import RegisterPage from "@/pages/RegisterPage";
 import ReviewsPage from "@/pages/ReviewsPage";
+import FaqPage from "@/pages/FaqPage";
+import PackagesPage from "@/pages/PackagesPage";
 import { CalcProvider } from "@/lib/calcContext";
 import { useLenis } from "@/hooks/useLenis";
 import { BuilderMascot } from "@/components/site/BuilderMascot";
@@ -31,6 +33,8 @@ function App() {
             <Route path="/calculator" element={<CalculatorPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/reviews" element={<ReviewsPage />} />
+            <Route path="/faq" element={<FaqPage />} />
+            <Route path="/packages" element={<PackagesPage />} />
             <Route path="*" element={<Home />} />
           </Routes>
         </BrowserRouter>
