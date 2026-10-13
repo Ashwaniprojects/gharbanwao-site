@@ -200,16 +200,6 @@ export const MATERIALS_COMPARISON = [
   },
 ];
 
-export const COMPARISON = [
-  ["Payment linked to stages", "Same 9-stage schedule on all packages", "Weekly cash calls"],
-  ["Material brand named in quote", "Yes, in writing", "\"As per site\""],
-  ["Structural warranty", "25 years written", "None"],
-  ["Weekly site photos to homeowner", "Mon + Thu", "\"Come visit anytime\""],
-  ["Dedicated project manager", "One name, one WhatsApp", "Owner is also 4 other sites"],
-  ["Post-handover fixes", "12 months free", "Charged"],
-  ["Written on-time delivery clause", "Yes", "No"],
-];
-
 export const TEAM = [
   { img: "IMG-75", name: "Er. Virendra Kumar Nishad", role: "Chairman & Managing Director", years: "14 yrs", specialty: "Has personally handed over 190 of the 260 homes." },
   { img: "IMG-76", name: "Er. Neha Tripathi", role: "Lead Structural Engineer", years: "11 yrs", specialty: "RCC design, soil-bearing analysis, retrofit." },
