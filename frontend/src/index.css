@@ -103,7 +103,12 @@
   .btn-animated .arr-icon {
     transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   }
-  .btn-animated .circle-fill {
+  /* The expanding hover circle is drawn by ::before rather than a markup span.
+     That keeps it working wherever the class is applied, so a button cannot
+     end up turning its text white on a transparent background by forgetting
+     to include the fill element. */
+  .btn-animated::before {
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -114,6 +119,7 @@
     border-radius: 50%;
     transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
     z-index: 0;
+    pointer-events: none;
   }
   .btn-animated:hover {
     color: #ffffff;
@@ -121,7 +127,7 @@
     box-shadow: 0 0 0 3px transparent;
     border-radius: 12px;
   }
-  .btn-animated:hover .circle-fill {
+  .btn-animated:hover::before {
     width: 300px;
     height: 300px;
     opacity: 1;
@@ -133,7 +139,7 @@
   .btn-animated:active {
     scale: 0.96;
   }
-  .btn-animated > *:not(.circle-fill) {
+  .btn-animated > * {
     position: relative;
     z-index: 1;
   }
@@ -142,7 +148,7 @@
     box-shadow: 0 0 0 3px var(--secondary-brand);
     color: #000;
   }
-  .btn-animated--yellow .circle-fill {
+  .btn-animated--yellow::before {
     background-color: var(--secondary-brand);
   }
   .btn-animated--yellow:hover {
@@ -150,22 +156,20 @@
     border-color: var(--secondary-brand);
   }
   /* Solid green: the primary action colour, filled by default rather than
-     outlined, so it reads as the main call to action. */
+     outlined, so it reads as the main call to action. On hover the circle
+     sweeps in white and the label flips to green. */
   .btn-animated--green {
     background-color: var(--primary-brand);
     color: #ffffff;
     border-color: var(--primary-brand);
     box-shadow: 0 0 0 3px var(--primary-brand);
   }
-  .btn-animated--green .circle-fill {
+  .btn-animated--green::before {
     background-color: #ffffff;
   }
   .btn-animated--green:hover {
     color: var(--primary-brand);
     border-color: var(--primary-brand);
-  }
-  .btn-animated--green:hover .circle-fill {
-    opacity: 1;
   }
   .btn-animated--green:hover svg {
     color: var(--primary-brand);

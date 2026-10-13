@@ -22,7 +22,6 @@ export function Btn({
 
   return (
     <span className={`${cls} ${className}`.trim()} {...props}>
-      <span className="circle-fill" />
       {children}
       {IconComp && <IconComp className="arr-icon h-[18px] w-[18px]" strokeWidth={2.5} />}
     </span>
