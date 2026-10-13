@@ -108,51 +108,69 @@ export default function AboutPage() {
           </Container>
         </section>
 
-        {/* Director Note */}
-        <section className="section-gb" data-testid="about-director">
+        {/* CMD Message */}
+        <section className="section-gb bg-wash-yellow" data-testid="about-cmd">
           <Container className="max-w-4xl">
             <Reveal>
               <SectionHeader
-                label="DIRECTOR'S NOTE"
-                title="Why I started Ghar Banwao."
-                supporting="Viren Nishad, Director, Ghar Banwao"
+                label="CMD'S MESSAGE"
+                title="Building for the long term."
+                supporting="Er. Virendra Kumar Nishad, Chairman and Managing Director, Ghar Banwao"
               />
             </Reveal>
             <Reveal className="mt-8">
-              <div className="card-gb p-8 bg-paper">
-                <p className="text-[16px] leading-relaxed text-ink/80 italic">
-                  "I started Ghar Banwao in 2017 because I watched too many families sign contracts they did not understand, pay for materials they never saw, and wait for homes that never finished. I had spent 14 years in construction management and I knew exactly where the system was broken — and I knew exactly how to fix it."
+              <div className="card-gb p-8 bg-paper space-y-5">
+                <p className="text-[16px] leading-relaxed text-ink/80">
+                  At Ghar Banwao, our journey is driven by a bold ambition: to transform the way India experiences home construction. We recognize that the construction industry has enormous potential, yet customers often face challenges in finding reliable professionals, ensuring transparency, managing costs, and coordinating multiple services. Our vision is to bridge these gaps by building a trusted, technology-driven platform that brings the entire home construction journey together under one roof.
                 </p>
-                <p className="text-[16px] leading-relaxed text-ink/80 italic mt-4">
-                  "Today, 260+ homes later, the fix is simple: name the brand before you buy it, photograph the work before you pay for it, and give the family a single name that actually answers the phone. That is not revolutionary. That is basic. But in our industry, basic is disruptive."
+                <p className="text-[16px] leading-relaxed text-ink/80">
+                  As CMD, I believe that sustainable growth comes from understanding customer needs, embracing innovation, and consistently delivering on our promises. We are focused on building more than a service company. We are building an ecosystem that makes construction more accessible, organized, transparent, and dependable.
                 </p>
-                <p className="mt-6 font-bold text-[15px]">Viren Nishad</p>
-                <p className="text-[13px] text-ink/60">Director, Ghar Banwao</p>
+                <p className="text-[16px] leading-relaxed text-ink/80">
+                  Our long-term ambition is to establish Ghar Banwao as one of India's leading construction services portals, empowering individuals to move from the first idea of a dream home to its successful completion with greater confidence and convenience.
+                </p>
+                <p className="text-[16px] leading-relaxed text-ink/80">
+                  For us, success is not measured merely by the number of projects we complete, but by the trust we earn, the standards we establish, and the difference we make in the way people build.
+                </p>
+                <p className="text-[16px] leading-relaxed text-ink/80">
+                  We are building Ghar Banwao with a vision that goes beyond individual homes to shape the future of India's construction industry.
+                </p>
+                <p className="mt-6 font-bold text-[15px]">Er. Virendra Kumar Nishad</p>
+                <p className="text-[13px] text-ink/60">Chairman and Managing Director</p>
               </div>
             </Reveal>
           </Container>
         </section>
 
-        {/* CMD Note */}
-        <section className="section-gb bg-wash-yellow" data-testid="about-cmd">
+        {/* CEO Message */}
+        <section className="section-gb" data-testid="about-ceo">
           <Container className="max-w-4xl">
             <Reveal>
               <SectionHeader
-                label="CMD'S NOTE"
-                title="Building for the long term."
-                supporting="Sujata Nishad, Chief Managing Director, Ghar Banwao"
+                label="MESSAGE FROM THE CEO"
+                title="Customers at the centre of every decision."
+                supporting="Sujata, Chief Executive Officer (CEO), Interior Designer, Ghar Banwao"
               />
             </Reveal>
             <Reveal className="mt-8">
-              <div className="card-gb p-8 bg-paper">
-                <p className="text-[16px] leading-relaxed text-ink/80 italic">
-                  "When a family hands us their life savings to build a home, that is not a transaction — it is a relationship. Every home we deliver is a promise kept. Every warranty certificate we sign is a commitment to stand behind what we built, long after the keys are handed over."
+              <div className="card-gb p-8 bg-paper space-y-5">
+                <p className="text-[16px] leading-relaxed text-ink/80">
+                  At Ghar Banwao, my vision is to redefine the home-building experience by placing our customers at the centre of every decision we make. I believe that building a home should be an exciting and fulfilling journey, not a complicated or stressful process.
                 </p>
-                <p className="text-[16px] leading-relaxed text-ink/80 italic mt-4">
-                  "We are not building for quarterly targets. We are building for the next generation that will live in these homes, sell them, and tell their friends who built them. Reputation is the only asset that compounds. Everything else depreciates."
+                <p className="text-[16px] leading-relaxed text-ink/80">
+                  As CEO, my priority is to build an organization that earns customer trust through transparency, delivers value through quality, and creates lasting relationships through accountability. We strive to understand every customer's unique vision, requirements, and budget, translating them into thoughtfully planned homes with a seamless experience from concept to completion.
                 </p>
-                <p className="mt-6 font-bold text-[15px]">Sujata Nishad</p>
-                <p className="text-[13px] text-ink/60">Chief Managing Director, Ghar Banwao</p>
+                <p className="text-[16px] leading-relaxed text-ink/80">
+                  I believe the future of home construction lies in making reliable services more accessible, organized, and customer-friendly. Our goal is to bring architecture, construction, and interior design together through a single, dependable platform that empowers customers to make informed decisions with confidence.
+                </p>
+                <p className="text-[16px] leading-relaxed text-ink/80">
+                  At Ghar Banwao, success is not measured merely by the homes we build, but by the trust we earn and the satisfaction we deliver. As we grow, our commitment remains unwavering: to continuously improve, innovate, and make the dream of owning a well-built home simpler for every customer.
+                </p>
+                <p className="text-[16px] leading-relaxed text-ink/80">
+                  Our ambition is to make Ghar Banwao India's most trusted, customer-centric home construction services platform — where every dream matters and every customer comes first.
+                </p>
+                <p className="mt-6 font-bold text-[15px]">Sujata</p>
+                <p className="text-[13px] text-ink/60">Chief Executive Officer (CEO), Interior Designer</p>
               </div>
             </Reveal>
           </Container>
