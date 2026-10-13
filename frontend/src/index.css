@@ -71,109 +71,12 @@
     box-shadow: 15px 15px 30px #d6d6ce,
                 -15px -15px 30px #fafaf2;
   }
+  .star-gb {
+    color: #d9a400;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55), 0 1px 2px rgba(120, 84, 0, 0.45);
+  }
   .pill {
     @apply inline-flex items-center justify-center gap-2 rounded-full font-bold transition-[transform,background-color,color,border-color] duration-200 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2;
-  }
-  .btn-animated {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 14px 32px;
-    border: 3px solid;
-    border-color: var(--primary-brand);
-    font-size: 15px;
-    background-color: transparent;
-    border-radius: 100px;
-    font-weight: 700;
-    color: #000000;
-    box-shadow: 0 0 0 3px var(--primary-brand);
-    cursor: pointer;
-    overflow: hidden;
-    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-    text-decoration: none;
-  }
-  .btn-animated svg {
-    position: relative;
-    width: 18px;
-    height: 18px;
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-    flex-shrink: 0;
-  }
-  .btn-animated .arr-icon {
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-  }
-  /* The expanding hover circle is drawn by ::before rather than a markup span.
-     That keeps it working wherever the class is applied, so a button cannot
-     end up turning its text white on a transparent background by forgetting
-     to include the fill element. */
-  .btn-animated::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 0;
-    height: 0;
-    background-color: var(--primary-brand);
-    border-radius: 50%;
-    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-    z-index: 0;
-    pointer-events: none;
-  }
-  .btn-animated:hover {
-    color: #000000;
-    border-color: var(--primary-brand);
-    box-shadow: 0 0 0 3px transparent;
-    border-radius: 12px;
-  }
-  .btn-animated:hover::before {
-    width: 300px;
-    height: 300px;
-    opacity: 1;
-  }
-  .btn-animated:hover svg {
-    color: #000000;
-    transform: translateX(3px);
-  }
-  .btn-animated:active {
-    scale: 0.96;
-  }
-  .btn-animated > * {
-    position: relative;
-    z-index: 1;
-  }
-  .btn-animated--yellow {
-    border-color: var(--secondary-brand);
-    box-shadow: 0 0 0 3px var(--secondary-brand);
-    color: #000;
-  }
-  .btn-animated--yellow::before {
-    background-color: var(--secondary-brand);
-  }
-  .btn-animated--yellow:hover {
-    color: #000;
-    border-color: var(--secondary-brand);
-  }
-  /* Solid green: the primary action colour, filled by default rather than
-     outlined, so it reads as the main call to action. The label stays black at
-     rest and on hover, matching the yellow button, and the circle sweeps in a
-     darker green so the hover state still reads. */
-  .btn-animated--green {
-    background-color: var(--primary-brand);
-    color: #000000;
-    border-color: var(--primary-brand);
-    box-shadow: 0 0 0 3px var(--primary-brand);
-  }
-  .btn-animated--green::before {
-    background-color: #7fae1e;
-  }
-  .btn-animated--green:hover {
-    color: #000000;
-    border-color: var(--primary-brand);
-  }
-  .btn-animated--green:hover svg {
-    color: #000000;
   }
   .pill-green {
     @apply pill bg-green text-ink hover:bg-green-600 hover:text-ink;
@@ -183,6 +86,9 @@
   }
   .pill-ghost {
     @apply pill border border-ink bg-transparent text-ink hover:bg-ink hover:text-paper;
+  }
+  .pill-outline-green {
+    @apply pill border border-green text-green hover:bg-green hover:text-ink;
   }
   .input-gb {
     @apply h-12 w-full rounded-lg border border-divider bg-paper px-4 text-[16px] font-medium text-ink placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-green;

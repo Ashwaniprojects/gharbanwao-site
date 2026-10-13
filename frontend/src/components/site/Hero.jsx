@@ -47,8 +47,8 @@ export const Hero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.72, duration: 0.5 }}
           >
-            <button onClick={() => scrollToId("contact")} className="btn-animated" data-testid="hero-cta-start">
-              Start Your Project <ArrowRight className="arr-icon h-[18px] w-[18px]" strokeWidth={2.5} />
+            <button onClick={() => scrollToId("contact")} className="pill-green h-12 px-6 text-[15px]" data-testid="hero-cta-start">
+              Start Your Project <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2.5} />
             </button>
             <button onClick={() => scrollToId("calculator")} className="pill-yellow h-14 px-8 text-[17px]" data-testid="hero-cta-calculator">
               Try the Cost Calculator

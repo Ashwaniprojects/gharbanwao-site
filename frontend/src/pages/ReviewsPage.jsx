@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, ArrowRight, Play, Star } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowRight, Play, Star } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Container, Reveal, SectionHeader, Stars } from "@/components/site/shared";
 import { Navbar } from "@/components/site/Navbar";
@@ -13,7 +12,7 @@ const VIDEO_REVIEWS = VIDEOS;
 const StarRow = ({ rating }) => (
   <span className="inline-flex gap-0.5">
     {[1, 2, 3, 4, 5].map((n) => (
-      <Star key={n} className={`h-3.5 w-3.5 ${n <= rating ? "fill-yellow text-yellow" : "fill-none text-gray-300"}`} strokeWidth={1.5} />
+      <Star key={n} className={`h-3.5 w-3.5 ${n <= rating ? "fill-[#FFD21F] star-gb" : "fill-none text-gray-300"}`} strokeWidth={1.5} />
     ))}
   </span>
 );
@@ -29,11 +28,6 @@ export default function ReviewsPage() {
         {/* Hero */}
         <section className="section-gb pt-24 md:pt-28" data-testid="reviews-hero">
           <Container className="max-w-5xl">
-            <Reveal>
-              <Link to="/" className="inline-flex items-center gap-2 text-[14px] font-semibold text-ink/60 hover:text-ink transition-colors mb-8" data-testid="reviews-back">
-                <ArrowLeft className="h-4 w-4" /> Back to Home
-              </Link>
-            </Reveal>
             <SectionHeader
               label="6 CUSTOMER REVIEWS · WATCH THE HOMES"
               title="Hear It from Our Happy Homeowners."
@@ -132,10 +126,10 @@ export default function ReviewsPage() {
                 href="https://www.google.com/maps"
                 target="_blank"
                 rel="noreferrer"
-                className="btn-animated"
+                className="pill-green h-12 px-6 text-[15px]"
                 data-testid="reviews-google-link"
               >
-                Read all reviews on Google <ArrowRight className="arr-icon h-[18px] w-[18px]" strokeWidth={2.5} />
+                Read all reviews on Google <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2.5} />
               </a>
             </Reveal>
           </Container>
@@ -157,17 +151,17 @@ export default function ReviewsPage() {
                 href="https://wa.aisensy.com/+919198059992"
                 target="_blank"
                 rel="noreferrer"
-                className="pill-yellow px-8"
+                className="pill-yellow h-12 px-6 text-[15px]"
                 data-testid="reviews-whatsapp-cta"
               >
                 Chat on WhatsApp
               </a>
               <a
                 href="tel:09648249999"
-                className="btn-animated"
+                className="pill-green h-12 px-6 text-[15px]"
                 data-testid="reviews-call-cta"
               >
-                Call 09648249999 <ArrowRight className="arr-icon h-[18px] w-[18px]" strokeWidth={2.5} />
+                Call 09648249999 <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2.5} />
               </a>
             </Reveal>
           </Container>

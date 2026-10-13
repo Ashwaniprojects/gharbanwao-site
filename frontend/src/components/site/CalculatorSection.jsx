@@ -75,8 +75,8 @@ export const CalculatorSection = ({ standalone = false }) => {
               <p className="text-[15px]">Total Estimated Cost: <strong className="font-mono text-[17px] text-green-700" data-testid="calc-preview-total">{estimate ? formatINR(estimate.total) : "—"}</strong></p>
               {isError && <p className="text-red-600 text-[14px]" data-testid="calc-error">Rates could not be loaded.</p>}
             </div>
-            <button onClick={() => setStep(step === 1 ? 2 : 1)} className="btn-animated" data-testid="calc-next-button">
-              {step === 1 ? "Next" : "Edit inputs"} <ArrowRight className={`arr-icon h-[18px] w-[18px] transition-transform ${step === 1 ? "" : "rotate-180"}`} strokeWidth={2.5} />
+            <button onClick={() => setStep(step === 1 ? 2 : 1)} className="pill-green h-12 px-6 text-[15px]" data-testid="calc-next-button">
+              {step === 1 ? "Next" : "Edit inputs"} <ArrowRight className={`h-[18px] w-[18px] transition-transform ${step === 1 ? "" : "rotate-180"}`} strokeWidth={2.5} />
             </button>
           </div>
         </Reveal>
@@ -108,12 +108,12 @@ export const CalculatorSection = ({ standalone = false }) => {
 
                 <div className="mt-8 flex flex-col md:flex-row md:items-center gap-3 md:justify-end no-print" data-testid="calculator-step3">
                   <MonoLabel className="md:mr-auto">Step 03 · Actions</MonoLabel>
-                  <button onClick={handleDownloadPdf} disabled={pdfLoading} className="btn-animated disabled:opacity-60" data-testid="calc-download-pdf-button">
-                    <Download className="arr-icon h-[18px] w-[18px]" strokeWidth={2.5} /> {pdfLoading ? "Preparing PDF…" : "Download PDF"}
+                  <button onClick={handleDownloadPdf} disabled={pdfLoading} className="pill-green h-12 px-6 text-[15px] disabled:opacity-60" data-testid="calc-download-pdf-button">
+                    <Download className="h-[18px] w-[18px]" strokeWidth={2.5} /> {pdfLoading ? "Preparing PDF…" : "Download PDF"}
                   </button>
-                  <button onClick={() => window.print()} className="btn-animated" data-testid="calc-print-button"><Printer className="arr-icon h-[18px] w-[18px]" strokeWidth={2.5} /> Print Final Estimate</button>
-                  <button onClick={() => setShareOpen(true)} className="btn-animated" data-testid="calc-share-button"><Share2 className="arr-icon h-[18px] w-[18px]" strokeWidth={2.5} /> Share Final Estimate</button>
-                  <button onClick={() => scrollToId("contact")} className="btn-animated" data-testid="calc-book-visit-button">Book Free Site Visit <ArrowRight className="arr-icon h-[18px] w-[18px]" strokeWidth={2.5} /></button>
+                  <button onClick={() => window.print()} className="pill-ghost h-12 px-6 text-[15px]" data-testid="calc-print-button"><Printer className="h-[18px] w-[18px]" strokeWidth={2.5} /> Print Final Estimate</button>
+                  <button onClick={() => setShareOpen(true)} className="pill-ghost h-12 px-6 text-[15px]" data-testid="calc-share-button"><Share2 className="h-[18px] w-[18px]" strokeWidth={2.5} /> Share Final Estimate</button>
+                  <button onClick={() => scrollToId("contact")} className="pill-green h-12 px-6 text-[15px]" data-testid="calc-book-visit-button">Book Free Site Visit <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2.5} /></button>
                 </div>
                 <p className="mt-2 text-right text-[12px] text-ink/50 no-print" data-testid="calc-download-pdf-hint">Download the PDF to send it to family or save for your records — no sign-up needed.</p>
               </div>

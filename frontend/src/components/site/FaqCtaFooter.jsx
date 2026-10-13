@@ -98,7 +98,7 @@ export const FinalCTA = () => {
             <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5 fill-green text-green" /> 4.8/5 Google</span><span>·</span><span>260+ homes</span><span>·</span><span>Avg response in under 2 hours</span>
           </Reveal>
           <Reveal className="mt-10 flex flex-col sm:flex-row gap-3">
-            <a href={`tel:${PHONES[0]}`} className="btn-animated" data-testid="cta-call-link"><Phone className="arr-icon h-[18px] w-[18px]" strokeWidth={2.5} /> {PHONES[0]}</a>
+            <a href={`tel:${PHONES[0]}`} className="pill-green h-12 px-6 text-[15px]" data-testid="cta-call-link"><Phone className="h-[18px] w-[18px]" strokeWidth={2.5} /> {PHONES[0]}</a>
             <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="pill-yellow h-12 px-6 text-[15px] border border-ink/10" data-testid="cta-whatsapp-link"><MessageCircle className="h-4 w-4" /> WhatsApp us</a>
           </Reveal>
         </div>

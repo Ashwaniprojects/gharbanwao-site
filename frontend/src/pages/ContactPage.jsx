@@ -88,8 +88,8 @@ export default function ContactPage() {
               <a href="https://wa.aisensy.com/+919198059992" target="_blank" rel="noreferrer" className="pill-yellow px-8" data-testid="contact-whatsapp-btn">
                 Chat on WhatsApp
               </a>
-              <a href="tel:09648249999" className="btn-animated" data-testid="contact-call-btn">
-                Call 09648249999 <ArrowRight className="arr-icon h-[18px] w-[18px]" strokeWidth={2.5} />
+              <a href="tel:09648249999" className="pill-green h-12 px-6 text-[15px]" data-testid="contact-call-btn">
+                Call 09648249999 <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2.5} />
               </a>
             </Reveal>
           </Container>

@@ -46,7 +46,7 @@ export default function FaqPage() {
               />
             </Reveal>
             <Reveal delay={0.1} className="mt-8 flex flex-wrap justify-center gap-3">
-              <a href="tel:09648249999" className="btn-animated"><Phone className="arr-icon h-[18px] w-[18px]" strokeWidth={2.5} /> Call 09648249999</a>
+              <a href="tel:09648249999" className="pill-green h-12 px-6 text-[15px]"><Phone className="h-[18px] w-[18px]" strokeWidth={2.5} /> Call 09648249999</a>
               <Link to="/calculator" className="pill-yellow h-12 px-6 text-[15px] border border-ink/10">Estimate your cost</Link>
             </Reveal>
           </Container>
