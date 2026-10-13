@@ -1,0 +1,33 @@
+{
+  "summary": "Frontend-only verification of the 10 newest batch changes on GharBanwao.com homepage. All 10 items pass. No regressions found.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "detailed_results": {
+    "1_nav_and_footer_order": "PASS - Header nav order: Home, About Us, Services, Projects, Packages (via data-testid=nav-link-*). Footer Explore order: Home, About Us, Services, Projects, Packages, Calculator, Reviews, Contact (via data-testid=footer-link-*).",
+    "2_home_about_scroll": "PASS - Clicking nav-link-home from scrollY=2000 returned scrollY to 0. Clicking nav-link-about brought #about section into viewport (top=139px, visible=true).",
+    "3_seo_content": "PASS - title='Ghar Banwao® — Best Construction Company in Lucknow'; hero contains 'construction company in Lucknow'; Why-Choose H2 'Why homeowners call us the best construction company in Lucknow'; Services H2 'Construction services we deliver across Lucknow'; footer blurb contains 'Lucknow's residential & commercial construction company'; JSON-LD script with @type=GeneralContractor and new address present in <head>.",
+    "4_address": "PASS - New address '16/284, near Munshipulia, next to Ashirwad Bakery, Indira Nagar, Lucknow, Uttar Pradesh 226016' present inside <footer> (closest_footer=true, tag=P). No old Gomti Nagar/Vipul Khand/Vibhuti Khand office keywords found. Note: 'Gomti Nagar' still appears in body as a testimonial author locality — this is expected and unrelated to the office address.",
+    "5_eyebrow_labels_removed": "PASS - None of '6 FEATURED', '12 REASONS', 'LIVE / UPDATED WEEKLY', '04 SERVICES', 'NO SUPERLATIVES' present. 'Smart homeowners compare first.' standalone block is absent. SectionHeader component confirmed no longer renders label prop.",
+    "6_tighter_spacing": "PASS visual - section-gb uses py-10 md:py-16; homepage visually denser than iteration_4.",
+    "7_count_up_animation": "PASS - On fresh page load, after trust-bar scrolled into view: mid-animation reading (~200ms in) was trust-number-1='5+' and trust-number-2='45+' (clearly partial, not final). After 2.5s wait: trust-number-1='37+', trust-number-2='260+'. Step=1 for number-1 and step=5 for number-2 confirmed. Other 2 stats remain static.",
+    "8_warranty_25_years": "PASS - 0 occurrences of '10 year/10-year'; 6 occurrences of '25 year/25-year' across hero, Why-Choose, Pricing (3 tiers), Comparison, FAQ, and announcement ticker.",
+    "9_announcement_strip": "PASS - announcement-whatsapp href='https://wa.aisensy.com/+919198059992' text='09198059992' with FaWhatsapp icon. announcement-text rotates (observed one of the new strings mentioning the 8 cities incl. Vindhyachal/Prayagraj/Sitapur/Sultanpur). Old 'Chat on WhatsApp' wording absent.",
+    "10_responsive": "PASS - At 390px mobile: announcement strip fits (width=390, height=36, no overflow). Hamburger menu shown. At 768px tablet: layout clean, no wrapping/overlap of nav or strip."
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Minor: framer-motion useInView fires when element enters viewport, so a user scrolling very fast past trust-bar may miss intermediate counts, but final value is still correct — acceptable.",
+    "Minor console warning: 'Please ensure that the container has a non-static position' from framer-motion whileInView — cosmetic only, not blocking."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (not tested per request)", "frontend": "100%"},
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "iteration_5 covered the 10-item batch (nav reorder, Home/About scroll behavior, SEO copy + JSON-LD, new Indira Nagar address, SectionHeader label removal, 25-year warranty, count-up stats, WhatsApp announcement strip, responsive). All passed on the deployed URL. Trust-bar count-up uses once:true useInView — need fresh page load + scroll to see animation again."
+}

@@ -5,6 +5,9 @@
 .gitconfig
 frontend/.vercel/
 
+# Retired backend (replaced by Vercel serverless functions in frontend/api)
+/backend/
+
 # IDE and editors
 .idea/
 .vscode/

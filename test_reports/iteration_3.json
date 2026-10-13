@@ -1,0 +1,31 @@
+{
+  "summary": "Iteration 3 full test of the nav/structure/register/map batch. Backend: 23/23 pytest pass (14 existing + 9 new for /api/registrations and project lat/lng). Frontend: all 9 requested flows verified on desktop (1920x1080), mobile (390x844) and tablet (768x1024). Header Services dropdown works (4 items, Architecture opens https://nakshaabanwao.com/ in new tab, outside-click closes). Calculator & Contact removed from top-level header nav. Mobile hamburger menu shows Services section with 4 inline sub-items. Footer Explore column has all 7 anchor links (projects/services/calculator/packages/about/reviews/contact) + Register with us Link to /register. /register page renders with 3 tabs (vendor/channel_partner/hiring); submitted all 3 forms end-to-end via UI, got success toast each, forms reset. Projects section shows Ongoing(37)/Completed(260) tabs, default is Ongoing, result count updates on tab change (37 projects on Ongoing, 260 on Completed). Real Leaflet+OpenStreetMap tiles render (9 tiles on mobile, 3 clusters on tablet). Marker clusters show numeric count bubbles. Locality filter correctly scopes within selected tab.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "ProjectsMap mobile 390px", "issues": ["Package chip row (All/Essential/Signature/Premium) overflows the viewport horizontally and clips 'Premium' chip off-screen — chips row needs flex-wrap or horizontal scroll on <400px widths."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/backend/tests/test_registrations.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Minor: ProjectsMap filter package chip row overflows on 390px mobile — add flex-wrap or overflow-x-auto to the chip container so 'Premium' is not clipped."
+  ],
+  "critical_code_review_comments": [
+    "ProjectsMap.jsx map container uses `min-h-[460px] lg:min-h-[720px]` but the parent Reveal wrapper does NOT set height on the map div for mobile. Map renders at the min-height, which is fine, but if the MapContainer ever receives 0px height before data loads, Leaflet will stay collapsed — not observed here because min-h is set.",
+    "RegisterForms.jsx line 42: `[cfg.extra]: f.extra || undefined` uses computed property on the mutation payload — works, but means the local state key is always `extra` while the backend field name varies per type. This is fine functionally but slightly confusing; worth a comment.",
+    "Navbar.jsx servicesRef mousedown listener closes dropdown on outside click but does NOT close it on Escape key — minor a11y gap, non-blocking.",
+    "Backend server.py registrations endpoint has no server-side validation that `type` ∈ {vendor, channel_partner, hiring}. Any string is accepted. Low risk (UI constrains it) but should be a Literal[...] in the Pydantic model."
+  ],
+  "updated_files": ["/app/backend/tests/test_registrations.py"],
+  "success_rate": { "backend": "100% (23/23)", "frontend": "100%" },
+  "seed_data_creation": "3 UI-submitted test registrations (TEST_UI_Vendor / TEST_UI_CP / TEST_UI_Hire) + 3 pytest-created test registrations (TEST_Vendor / TEST_CP / TEST_Hire) now live in db.registrations collection.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All iteration-3 scope verified. Backend tests live in /app/backend/tests/{backend_test.py, test_registrations.py}. Projects model now has lat/lng (not x/y). /api/registrations POST and GET?type= are both working. Only cosmetic nit remaining: package chip row horizontal overflow on <400px screens in ProjectsMap filter bar."
+}

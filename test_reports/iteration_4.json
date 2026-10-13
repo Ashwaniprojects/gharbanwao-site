@@ -1,0 +1,16 @@
+{
+  "summary": "Iteration 4 validation for 14 content/pricing/ordering changes on GharBanwao homepage. All 14 items pass. Backend /api/config/calculator confirmed Lucknow per-sqft: basic=1299, medium=1699 (raw 1698.57), premium=1999 (raw 1999.04). Frontend hero calculator (default Lucknow + medium) renders ₹1,699 per sqft. City dropdowns across hero, consultation form all show the new 8 cities (Lucknow, Kanpur, Ayodhya, Gorakhpur, Vindhyachal, Prayagraj, Sitapur, Sultanpur); Varanasi/Allahabad/Agra/Noida removed. WhatsApp links on announcement strip, final CTA, and mobile sticky bar all point to https://wa.aisensy.com/+919198059992. Nav phone has yellow pill (bg-yellow + rounded-full). Hero mono label 'GB · 2026 · LUCKNOW' removed; hero-calculator shows only 'Oct 2026 rates' badge (no GB-CALC-01 · LIVE). Calculator section header shows 'PLANNING TOOL' only. Trust bar order correct (37+, 260+, 4.8/5, 9+ yrs). WhyChoose closing tagline shows Hindi + italic mono transliteration, old English line gone. Services order correct. Process headline updated and callout removed. Testimonials and video testimonials headings updated. Section order: TrustBar → VideoTestimonials → WhyChoose confirmed via DOM scroll position (video@4229 < why@5297). Footer has 5 socials (Facebook/Instagram/Threads/YouTube/Pinterest) with correct hrefs, all target=_blank.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Minor: /app/frontend/src/data/content.js PRICING entries (Essential ₹1,650, Signature ₹1,950, Premium ₹2,450) and FAQ answer 'Between ₹24.75 lakh (Essential, ₹1,650/sqft) and ₹36.75 lakh (Premium, ₹2,450/sqft)' now mismatch the new calculator pricing of 1299/1699/1999. Consider aligning Pricing cards & FAQ copy with the new /sqft rates so the Pricing table doesn't contradict the calculator (not part of the 14 requested items but creates inconsistency on same page)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All 14 content changes verified live. If pricing cards/FAQ copy in content.js (Essential/Signature/Premium prices) are updated by main agent to match new calculator rates, re-verify Pricing section + FAQ #1 text."
+}

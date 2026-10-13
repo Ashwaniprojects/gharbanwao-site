@@ -1,0 +1,22 @@
+{
+  "summary": "Targeted frontend regression check for Hero headline Devanagari clipping bug fix. Verified H1 (data-testid=hero-headline) and subtitle (hero-tagline) render all glyphs without clipping on both desktop (1920x1080) and mobile (390x844). Mask spans now provide sufficient vertical padding (paddingBottom 30.4px, paddingTop 6.08px with matching negative margins) so matras/conjuncts in भूमिपूजन, गृहप्रवेश, सफ़र, आपका, साथ, हमारा are fully visible. Entrance slide-up animation plays cleanly per line (0.9s stagger). Smoke-tested hero CTAs: 'Try the Cost Calculator' scrolls to #calculator on both desktop (scrollY>100) and mobile (scrollY=8367). No console errors observed. Backend testing skipped per request.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/test_reports/iteration_1.json"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Hero.jsx uses `-mb-[0.4em] -mt-[0.08em]` negative margins to cancel the extra padding added for Devanagari matras. This works but means every line's visual box collapses to original line-height — fine for current layout, but worth noting that if the designer ever shrinks line-height further the mask bottom could re-clip. Measured: mask height 131.19px vs inner 112px (~19px headroom) at mobile — adequate.",
+    "LINES array (भूमिपूजन से गृहप्रवेश तक,/सफ़र आपका./साथ हमारा.) is a hardcoded content literal in Hero.jsx — fine for current MVP but could move to a content config if copy iterates."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "N/A (skipped)", "frontend": "100%" },
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Hero clipping bug fix is verified. Hero.jsx mask spans use pb-[0.4em]/-mb-[0.4em] and pt-[0.08em]/-mt-[0.08em] with leading-[1.4] for the H1. Full-site regression (backend 14/14, frontend 100%) was done in iteration_1 — not re-run.",
+  "rca_of_the_issue": "Original clipping: the overflow-hidden mask span used for the per-line slide-up reveal animation had pb-[0.1em]/-mb-[0.1em], tuned for Latin glyphs. Devanagari matras (ू, ृ, ा) and nukta (फ़) extend further below the Latin baseline and above the x-height than Latin descenders/ascenders, so they were being cut off by `overflow:hidden` on the mask. Fix: increase pb to 0.4em and add pt 0.08em (with matching negative margins to preserve layout spacing), plus bump H1 leading from 1.15 to 1.4. Verified: all three H1 lines show ~19px vertical headroom inside mask on mobile; no visible clipping at desktop or mobile."
+}
