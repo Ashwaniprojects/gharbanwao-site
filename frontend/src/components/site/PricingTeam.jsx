@@ -1,7 +1,7 @@
 import { ArrowRight, Check, X, Linkedin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Container, Placeholder, Reveal, SectionHeader } from "./shared";
-import { MATERIALS_COMPARISON, PRICING, PRICING_ROWS, TEAM } from "@/data/content";
+import { PRICING, PRICING_ROWS, TEAM, WHY_GB, WHY_OTHER } from "@/data/content";
 import { scrollToId } from "@/lib/scroll";
 
 export const Pricing = () => (
@@ -37,50 +37,33 @@ export const Pricing = () => (
 export const Comparison = () => (
   <section className="section-gb" data-testid="comparison-section">
     <Container>
-      <SectionHeader label="GHAR BANWAO VS LOCAL CONTRACTOR" title="Why Ghar Banwao is the best choice for your dream home." supporting="Construction materials, side by side. The specification on the left is what we contract to. You can verify any of it on any site visit." />
-      <Reveal className="mt-12 card-gb overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-[15px] min-w-[720px]">
-            <thead>
-              <tr className="text-left border-b border-divider">
-                <th className="p-4 md:p-5 font-semibold w-[18%] bg-paper sticky left-0">Construction Materials</th>
-                <th className="p-4 md:p-5 font-extrabold text-[17px] bg-wash-green w-[41%]">
-                  <span className="flex items-center gap-2"><Check className="h-5 w-5 text-green-700" strokeWidth={3} /> By Ghar Banwao</span>
-                </th>
-                <th className="p-4 md:p-5 font-extrabold text-[17px] text-ink/70 bg-wash-yellow w-[41%]">
-                  <span className="flex items-center gap-2"><X className="h-5 w-5 text-ink/40" strokeWidth={3} /> Other Construction Contractor</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-divider">
-              {MATERIALS_COMPARISON.map((row) => (
-                <tr key={row.material} className="align-top" data-testid={`materials-row-${row.material.toLowerCase().replace(/\s+/g, "-")}`}>
-                  <td className="p-4 md:p-5 font-bold bg-paper sticky left-0">{row.material}</td>
-                  <td className="p-4 md:p-5 bg-wash-green/40">
-                    <ul className="space-y-1.5">
-                      {row.gb.map((item) => (
-                        <li key={item} className="flex gap-2 text-ink/80">
-                          <Check className="h-4 w-4 shrink-0 text-green-700 mt-1" strokeWidth={3} />{item}
-                        </li>
-                      ))}
-                    </ul>
-                  </td>
-                  <td className="p-4 md:p-5 bg-wash-yellow/40">
-                    <ul className="space-y-1.5">
-                      {row.other.map((item) => (
-                        <li key={item} className="flex gap-2 text-ink/70">
-                          <X className="h-4 w-4 shrink-0 text-ink/40 mt-1" strokeWidth={3} />{item}
-                        </li>
-                      ))}
-                    </ul>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Reveal>
-      <p className="mt-6 text-[15px] text-ink/60 max-w-[68ch]">Mixing ratio and material brands are named in your quote and can be verified by you at any stage. This is why we published the comparison ourselves.</p>
+      <SectionHeader label="GHAR BANWAO VS LOCAL CONTRACTOR" title="Why Ghar Banwao is the best choice for your dream home." supporting="What you get from us, and what you are left to handle yourself with a typical local contractor." />
+      <div className="mt-12 grid md:grid-cols-2 gap-5">
+        <Reveal className="card-gb p-6 md:p-8 bg-paper" data-testid="why-gb-card">
+          <p className="flex items-center gap-2 font-extrabold text-[17px] pb-4 mb-5 border-b border-divider">
+            <Check className="h-5 w-5 text-green-700" strokeWidth={3} /> Why to choose Ghar Banwao
+          </p>
+          <ul className="space-y-2.5">
+            {WHY_GB.map((item) => (
+              <li key={item} className="flex gap-2.5 text-[15px] text-ink/80">
+                <Check className="h-4 w-4 shrink-0 text-green-700 mt-1.5" strokeWidth={3} />{item}
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+        <Reveal delay={0.1} className="card-gb p-6 md:p-8 bg-wash-yellow" data-testid="why-other-card">
+          <p className="flex items-center gap-2 font-extrabold text-[17px] pb-4 mb-5 border-b border-divider">
+            <X className="h-5 w-5 text-ink/40" strokeWidth={3} /> Disadvantages of other contractors
+          </p>
+          <ul className="space-y-2.5">
+            {WHY_OTHER.map((item) => (
+              <li key={item} className="flex gap-2.5 text-[15px] text-ink/70">
+                <X className="h-4 w-4 shrink-0 text-ink/40 mt-1.5" strokeWidth={3} />{item}
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+      </div>
     </Container>
   </section>
 );

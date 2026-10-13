@@ -167,37 +167,42 @@ export const PAYMENT_RULES = [
 ];
 export const PAYMENT_EXAMPLE = { area: 1500, rate: 1699, total: 2548500 };
 
-export const MATERIALS_COMPARISON = [
-  {
-    material: "Morang",
-    gb: ["Fresh red morang only.", "Used as per structural requirement."],
-    other: ["Low quality.", "Soil-mixed morang.", "Thin morang."],
-  },
-  {
-    material: "Gitti",
-    gb: ["Black kabrai gitti only.", "Proper shape, as per standard."],
-    other: ["Mixed gitti.", "Not in standard size, which reduces structural strength."],
-  },
-  {
-    material: "Cement",
-    gb: ["Branded cement as named in the specification.", "Purchased direct from the rack.", "Fresh cement only."],
-    other: ["Non-branded cement.", "Stock cement from mini-plants.", "Old cement, which loses strength."],
-  },
-  {
-    material: "Bricks",
-    gb: ["First-class bricks only.", "Uniform red or brown colour.", "Strength test can be performed."],
-    other: ["Mixed bricks, including lal petty.", "Not in proper shape."],
-  },
-  {
-    material: "TMT Bars",
-    gb: ["Branded TMT bars from authorised dealers only.", "Verifiable by the customer."],
-    other: ["Local TMT bars.", "Non-branded TMT mixed into branded TMT."],
-  },
-  {
-    material: "Mixing Ratio",
-    gb: ["All mixing follows M20 grade at 1:1.5 (2:3).", "Verifiable by the customer."],
-    other: ["Standard ratio is not followed.", "Materials are under-mixed to save on quantity."],
-  },
+// Homepage and /packages comparison. `gb` is our side, `other` is the
+// typical local contractor's. Rendered as a two-column list rather than
+// a table because the rows do not pair up one-to-one.
+export const WHY_GB = [
+  "Private Limited firm, with a real office address and contact details.",
+  "25 years of structure guarantee on construction.",
+  "6 months maintenance on all finishing.",
+  "Verification and no-dues process.",
+  "Dedicated customer support.",
+  "Proper billing and receipts.",
+  "Guarantee and warranty based on individual products.",
+  "No extra cost for architect services.",
+  "Weekly project report and planning for the next stage.",
+  "Hassle-free construction and vendor management.",
+  "Skilled team of labour and masons.",
+  "Professional, experienced architects, civil engineers and interior designers.",
+  "Time-bound work, with on-time delivery.",
+  "Our own quality control.",
+  "Loan assistance.",
+  "Customised quotation and flexible payment options.",
+];
+export const WHY_OTHER = [
+  "No office that is reachable for customers.",
+  "No guarantee of structure.",
+  "No maintenance after possession.",
+  "No customer support.",
+  "No options for billing.",
+  "No guarantee or warranty on finishing items.",
+  "No options to choose finishing items.",
+  "No waterproofing or termite treatment.",
+  "Hassle of managing labour and materials yourself.",
+  "Extra cost for architect services.",
+  "Non-skilled and untechnical approach.",
+  "No loan assistance.",
+  "No space for discussion and verification.",
+  "Misleading and fake promises.",
 ];
 
 export const TEAM = [
