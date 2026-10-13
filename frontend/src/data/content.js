@@ -140,12 +140,11 @@ export const VIDEOS = [
 ];
 
 export const PRICING = [
-  { name: "Silver", price: "₹1,299", best: "First-time builders, tight budgets", rows: ["25 years", "7", "Weekly", "Standard", "Essential", "6 months"], cta: "Get Quote", featured: false },
-  { name: "Gold", price: "₹1,699", best: "Most homeowners, best value", rows: ["25 years", "9", "2× weekly", "Mid-premium", "Enhanced", "12 months"], cta: "Get Quote", featured: true },
-  { name: "Platinum", price: "₹1,999", best: "Larger plots, custom finishes", rows: ["25 years", "9 + custom", "2× weekly + on-demand", "Premium", "Custom-specified", "24 months"], cta: "Book Design Session", featured: false },
+  { name: "Silver", price: "₹1,299", best: "First-time builders, tight budgets", rows: ["25 years", "9, same for all", "Weekly", "Standard", "Essential", "6 months"], cta: "Get Quote", featured: false },
+  { name: "Gold", price: "₹1,699", best: "Most homeowners, best value", rows: ["25 years", "9, same for all", "2× weekly", "Mid-premium", "Enhanced", "12 months"], cta: "Get Quote", featured: true },
+  { name: "Platinum", price: "₹1,999", best: "Larger plots, custom finishes", rows: ["25 years", "9, same for all", "2× weekly + on-demand", "Premium", "Custom-specified", "24 months"], cta: "Book Design Session", featured: false },
 ];
 export const PRICING_ROWS = ["Structure warranty", "Payment stages", "Site visits by engineer", "Material grade", "Finishing level", "Post-handover support"];
-
 // One schedule for all three packages. The percentages are the published
 // contract terms; the rupee column is an illustrative 1500 sqft Gold build
 // so a homeowner can sanity-check the numbers against their own quote.
