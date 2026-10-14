@@ -12,7 +12,7 @@ import { CITIES, FOOTER_NAV, PHONES, WHATSAPP_URL, HOME_FAQS } from "@/data/cont
 import { createLead } from "@/lib/api";
 import { scrollToId } from "@/lib/scroll";
 
-const PAGE_ROUTES = ["about", "reviews", "contact", "privacy", "terms", "faq", "packages"];
+const PAGE_ROUTES = ["about", "reviews", "contact", "privacy", "terms", "faq"];
 
 // Footer entries either point at a real page (`href`) or scroll to a
 // section on the homepage (`id`).
@@ -66,10 +66,9 @@ export const FAQ = () => (
 );
 
 const TIMELINES = ["Within 1 month", "1–3 months", "3–6 months", "Just exploring"];
-const PKGS = ["Silver", "Gold", "Platinum", "Not sure yet"];
 
 export const FinalCTA = () => {
-  const [f, setF] = useState({ name: "", phone: "", whatsapp: "", city: "Lucknow", locality: "", plot_size: "", timeline: "", package_interest: "" });
+  const [f, setF] = useState({ name: "", phone: "", whatsapp: "", city: "Lucknow", locality: "", plot_size: "", timeline: "" });
   const set = (k) => (e) => setF((p) => ({ ...p, [k]: e?.target ? e.target.value : e }));
   const mutation = useMutation({
     mutationFn: createLead,
@@ -80,7 +79,7 @@ export const FinalCTA = () => {
       if (res && res.whatsapp_fallback) {
         window.open(res.whatsapp_fallback, "_blank", "noopener");
       }
-      setF({ name: "", phone: "", whatsapp: "", city: "Lucknow", locality: "", plot_size: "", timeline: "", package_interest: "" });
+      setF({ name: "", phone: "", whatsapp: "", city: "Lucknow", locality: "", plot_size: "", timeline: "" });
     },
     onError: () => toast.error("Could not submit. WhatsApp us at 09648249999."),
   });
@@ -123,10 +122,6 @@ export const FinalCTA = () => {
                 <SelectContent>{TIMELINES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
               </Select>
             </div>
-            <Select value={f.package_interest} onValueChange={set("package_interest")}>
-              <SelectTrigger className="h-12 rounded-lg border-divider text-[16px]" data-testid="form-package-select"><SelectValue placeholder="Package interest (optional)" /></SelectTrigger>
-              <SelectContent>{PKGS.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
-            </Select>
             <button type="submit" disabled={mutation.isPending} className="pill-green h-14 text-[17px] disabled:opacity-60" data-testid="form-submit-button">
               {mutation.isPending ? "Booking…" : "Book Free Consultation"} <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
             </button>

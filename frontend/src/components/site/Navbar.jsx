@@ -34,14 +34,13 @@ export const Navbar = () => {
   const go = (id) => {
     setMenuOpen(false);
     setServicesOpen(false);
-    // Home, About and Reviews are their own routes; Packages is too, so it
-    // must not fall through to scrollToId below, which would land on the
-    // homepage pricing summary instead of the full /packages page.
+    // Home, About and Reviews are their own routes, so they must not fall
+    // through to scrollToId below, which assumes we are already on the homepage.
     if (id === "home") {
       window.location.href = "/";
       return;
     }
-    if (id === "about" || id === "reviews" || id === "packages") {
+    if (id === "about" || id === "reviews") {
       window.location.href = `/${id}`;
       return;
     }

@@ -1,38 +1,6 @@
-import { ArrowRight, Check, X, Linkedin } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Check, X, Linkedin } from "lucide-react";
 import { Container, Placeholder, Reveal, SectionHeader } from "./shared";
-import { PRICING, PRICING_ROWS, TEAM, WHY_GB, WHY_OTHER } from "@/data/content";
-import { scrollToId } from "@/lib/scroll";
-
-export const Pricing = () => (
-  <section id="packages" className="section-gb bg-wash-green" data-testid="pricing-section">
-    <Container>
-      <SectionHeader label="03 PACKAGES · PER SQFT" title="Pick a package. Every number is public." supporting="Same structural warranty on all three. The difference is finish, frequency, and support length." />
-      <div className="mt-14 flex lg:grid lg:grid-cols-3 gap-5 overflow-x-auto lg:overflow-visible snap-x snap-mandatory -mx-6 px-6 lg:mx-0 lg:px-0 pb-4 lg:pb-0">
-        {PRICING.map((p, i) => (
-          <Reveal key={p.name} delay={i * 0.07} className={`snap-center shrink-0 w-[85vw] sm:w-[360px] lg:w-auto card-gb p-6 md:p-8 flex flex-col ${p.featured ? "border-green lg:-translate-y-2 bg-paper relative" : "bg-paper"}`} data-testid={`pricing-card-${p.name.toLowerCase()}`}>
-            {p.featured && <span className="absolute -top-3 left-8 font-mono text-[10px] uppercase tracking-[0.1em] bg-green px-2.5 py-1 rounded-full">Most homeowners pick this</span>}
-            <p className="mono-label text-ink/60">{p.name}</p>
-            <p className="mt-3 display text-4xl md:text-5xl">{p.price}<span className="text-lg font-bold text-ink/50"> / sqft</span></p>
-            <p className="mt-2 text-[14px] text-ink/60">Starts at. Best for {p.best.toLowerCase()}.</p>
-            <dl className="mt-6 divide-y divide-divider border-y border-divider">
-              {PRICING_ROWS.map((label, j) => (
-                <div key={label} className="py-3 flex justify-between gap-4 text-[14px]">
-                  <dt className="text-ink/60">{label}</dt>
-                  <dd className="font-semibold text-right">{p.rows[j]}</dd>
-                </div>
-              ))}
-            </dl>
-            <button onClick={() => scrollToId("contact")} className={`${p.featured ? "pill-green" : "pill-outline-green"} mt-8 h-12 px-6 text-[15px]`} data-testid={`pricing-cta-${p.name.toLowerCase()}`}>{p.cta} <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2.5} /></button>
-          </Reveal>
-        ))}
-      </div>
-      <Reveal className="mt-8">
-        <Link to="/packages" className="inline-flex items-center gap-1.5 font-bold underline decoration-green decoration-2 underline-offset-4" data-testid="pricing-details-link">Full inclusions, payment schedule and material spec on each package <ArrowRight className="h-4 w-4" /></Link>
-      </Reveal>
-    </Container>
-  </section>
-);
+import { TEAM, WHY_GB, WHY_OTHER } from "@/data/content";
 
 export const Comparison = () => (
   <section className="section-gb" data-testid="comparison-section">

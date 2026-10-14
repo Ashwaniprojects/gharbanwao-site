@@ -18,7 +18,6 @@ export const NAV = [
   { label: "About Us", id: "about" },
   { label: "Services", id: "services" },
   { label: "Projects", id: "projects" },
-  { label: "Packages", id: "packages" },
   { label: "Reviews", id: "reviews" },
 ];
 
@@ -29,8 +28,6 @@ export const FOOTER_NAV = [
   { label: "Home", id: "home" },
   { label: "About Us", id: "about" },
   { label: "Services", id: "services" },
-  { label: "Packages", href: "/packages" },
-  { label: "Payment Schedule", href: "/packages#payment" },
   { label: "Calculator", href: "/calculator" },
   { label: "Reviews", id: "testimonials" },
   { label: "FAQs", href: "/faq" },
