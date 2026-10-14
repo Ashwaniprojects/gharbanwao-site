@@ -3,6 +3,7 @@ import { Navbar } from "@/components/site/Navbar";
 import { Footer, MobileBar } from "@/components/site/FaqCtaFooter";
 import { Container, Reveal, SectionHeader } from "@/components/site/shared";
 import { ArrowRight, Phone, MessageCircle, MapPin, Mail, Clock } from "lucide-react";
+import { WHATSAPP_URL } from "@/data/content";
 
 export default function ContactPage() {
   return (
@@ -28,7 +29,7 @@ export default function ContactPage() {
             <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {[
                 { icon: Phone, label: "Call us", value: "09648249999", href: "tel:09648249999" },
-                { icon: MessageCircle, label: "WhatsApp", value: "09198059992", href: "https://wa.aisensy.com/+919198059992" },
+                { icon: MessageCircle, label: "WhatsApp", value: "09198059992", href: WHATSAPP_URL },
                 { icon: Mail, label: "Email", value: "hello@gharbanwao.com", href: "mailto:hello@gharbanwao.com" },
                 { icon: MapPin, label: "Visit us", value: "Indira Nagar, Lucknow", href: "https://maps.google.com" },
               ].map((c, i) => (
@@ -85,7 +86,7 @@ export default function ContactPage() {
               />
             </Reveal>
             <Reveal className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <a href="https://wa.aisensy.com/+919198059992" target="_blank" rel="noreferrer" className="pill-yellow px-8" data-testid="contact-whatsapp-btn">
+              <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="pill-yellow px-8" data-testid="contact-whatsapp-btn">
                 Chat on WhatsApp
               </a>
               <a href="tel:09648249999" className="pill-green h-12 px-6 text-[15px]" data-testid="contact-call-btn">

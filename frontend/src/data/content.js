@@ -1,6 +1,16 @@
 export const PHONES = ["09648249999", "09648259999"];
-export const WHATSAPP_URL = "https://wa.aisensy.com/+919198059992";
+export const WHATSAPP_NUMBER = "919198059992";
 export const WHATSAPP_DISPLAY = "09198059992";
+
+// A pre-filled first message is what kicks off the AI Sensy auto-reply, so every
+// WhatsApp entry point on the site carries it. Keep the wording identical to
+// the live gharbanwao.com site so the same campaign replies fire.
+export const WHATSAPP_DEFAULT_MESSAGE =
+  "Hello, I want to know about house Design & construction services.";
+
+export const WHATSAPP_URL = `https://api.whatsapp.com/send/?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(
+  WHATSAPP_DEFAULT_MESSAGE
+)}&type=phone_number&app_absent=0`;
 
 // Primary header nav (lean — Calculator and Contact live elsewhere: Calculator is inside Services, Contact moved to footer)
 export const NAV = [

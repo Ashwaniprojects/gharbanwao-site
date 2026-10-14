@@ -6,6 +6,7 @@ import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/FaqCtaFooter";
 import { VIDEOS } from "@/data/content";
 import { TESTIMONIALS } from "@/data/content";
+import { WHATSAPP_URL } from "@/data/content";
 
 const VIDEO_REVIEWS = VIDEOS;
 
@@ -148,7 +149,7 @@ export default function ReviewsPage() {
             </Reveal>
             <Reveal className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
               <a
-                href="https://wa.aisensy.com/+919198059992"
+                href={WHATSAPP_URL}
                 target="_blank"
                 rel="noreferrer"
                 className="pill-yellow h-12 px-6 text-[15px]"
