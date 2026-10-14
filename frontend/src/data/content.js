@@ -112,6 +112,11 @@ export const TESTIMONIALS = [
   ["Sachin Tripathi", "Lucknow", "2025", "Excellent work. Build of our dream house are so very beautiful like villa. We are thankful to company owner Mr. Virendra and all company workers. Very understanding and good core team work performance.", "", "5"],
   ["Sunil", "Lucknow", "2025", "The best and the greatest company in Lucknow even in UP. The services are top notch. The customer support is top notch. The quality is top notch and also a great and affordable budget service. I am glad to like this company.", "", "5"],
   ["Jasleen Bhatia", "Lucknow", "2025", "My experience with Ghar Banwao was amazing. Their team members were very professional. Also they built my dream home in committed time. I would definitely recommend Ghar Banwao to everyone. Keep growing.", "", "5"],
+  ["Sapna Thakur", "Lucknow", "2025", "Best construction company. I am happy to choose Ghar Banwao for my house design and construction. They provided me multiple house designs with updates, a supportive team, and very professional services.", "", "5"],
+  ["Divyanshu Yadav", "Lucknow", "2025", "Great structure and all-round construction work. Quality components, quality work, and transparency. Value for money. Highly recommended.", "", "5"],
+  ["Hinaz", "Lucknow", "2025", "Ghar Banwao made building my home in Lucknow super easy and stress-free. The team was professional, used quality materials, and delivered on time. Highly recommended for anyone looking to build their dream home.", "", "5"],
+  ["Siddharth Tiwari", "Lucknow", "2025", "I had a great experience working with this company for my home construction. The team is highly professional, completed the project on time, and maintained top-quality materials throughout. The design turned out exactly as we envisioned. Their customer service is also very responsive and helpful. I highly recommend them to anyone looking for a reliable construction company.", "", "5"],
+  ["Durga Prasad Vishwakarma", "Lucknow", "2025", "Ghar Banwao is the best budget-friendly and professional work done by a construction company in Lucknow.", "", "5"],
 ].map(([name, locality, date, quote, project_id, rating], i) => ({
   name,
   locality,

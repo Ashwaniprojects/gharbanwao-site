@@ -29,7 +29,7 @@ export const Testimonials = () => {
   return (
     <section id="testimonials" className="section-gb border-t border-divider overflow-hidden" data-testid="testimonials-section">
       <Container>
-        <SectionHeader label="30 OF 260+ · UNEDITED" title="Explore genuine experiences shared by our valued customers." supporting="30 homeowners agreed to go on record. We did not pick the easy ones." />
+        <SectionHeader label="22 OF 260+ · UNEDITED" title="Explore genuine experiences shared by our valued customers." supporting="22 homeowners agreed to go on record. We did not pick the easy ones." />
       </Container>
       <div className="mt-14 space-y-5">
         {reduce ? (

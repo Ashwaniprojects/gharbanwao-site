@@ -5,7 +5,7 @@ import { Navbar } from "@/components/site/Navbar";
 import { Hero } from "@/components/site/Hero";
 import { TrustBar, WhyChoose } from "@/components/site/TrustWhy";
 import { ProjectsMap } from "@/components/site/ProjectsMap";
-import { Materials, Process, Services } from "@/components/site/ServicesProcessMaterials";
+import { Process, Services } from "@/components/site/ServicesProcessMaterials";
 import { CalculatorSection } from "@/components/site/CalculatorSection";
 import { Testimonials, VideoTestimonials } from "@/components/site/SocialProof";
 import { Comparison, Pricing } from "@/components/site/PricingTeam";
@@ -29,7 +29,6 @@ export default function Home() {
         <Services />
         <CalculatorSection />
         <Process />
-        <Materials />
         <Testimonials />
         <Pricing />
         <Comparison />
