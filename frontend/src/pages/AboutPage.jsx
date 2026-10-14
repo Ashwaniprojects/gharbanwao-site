@@ -58,11 +58,6 @@ export default function AboutPage() {
                   className="w-full h-full object-cover aspect-[4/3] md:aspect-[16/10] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                   data-testid="about-story-image"
                 />
-                <figcaption className="absolute inset-x-0 bottom-0 flex items-end bg-gradient-to-t from-black/70 via-black/30 to-transparent px-5 pb-4 pt-12 md:px-6 md:pb-5">
-                  <span className="mono-label text-[11px] text-white/90 md:text-[12px]">
-                    Blueprint review on site — every drawing explained, every question answered.
-                  </span>
-                </figcaption>
               </figure>
             </Reveal>
             <Reveal className="mt-8">
@@ -103,11 +98,6 @@ export default function AboutPage() {
                   className="w-full h-full object-cover aspect-[4/3] md:aspect-[3/2] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                   data-testid="about-vision-image"
                 />
-                <figcaption className="absolute inset-x-0 bottom-0 flex items-end bg-gradient-to-t from-black/70 via-black/30 to-transparent px-5 pb-4 pt-12 md:px-6 md:pb-5">
-                  <span className="mono-label text-[11px] text-white/90 md:text-[12px]">
-                    Homes, shops, factories and schools — built for every Indian, in every state.
-                  </span>
-                </figcaption>
               </figure>
             </Reveal>
             <Reveal className="mt-8">
@@ -145,11 +135,6 @@ export default function AboutPage() {
                   className="w-full h-full object-cover aspect-[4/3] md:aspect-[16/10] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                   data-testid="about-mission-image"
                 />
-                <figcaption className="absolute inset-x-0 bottom-0 flex items-end bg-gradient-to-t from-black/70 via-black/30 to-transparent px-5 pb-4 pt-12 md:px-6 md:pb-5">
-                  <span className="mono-label text-[11px] text-white/90 md:text-[12px]">
-                    Within budget, beyond expectations — the standard every Ghar Banwao home meets.
-                  </span>
-                </figcaption>
               </figure>
             </Reveal>
             <Reveal className="mt-8">

@@ -66,6 +66,24 @@
   .card-gb {
     @apply rounded-2xl border border-divider bg-paper transition-shadow duration-300 hover:shadow-[0_18px_40px_-24px_rgba(0,0,0,0.25)];
   }
+  /* Map pins and clusters. MarkerCluster's default stylesheet is imported for
+     layout only; every visual is owned here so cluster circles stay a fixed
+     size and never inherit the library's scaled-up background rings. */
+  .gb-map-pin,
+  .gb-map-cluster {
+    background: transparent !important;
+    border: 0 !important;
+  }
+  .gb-map-cluster div {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+  }
+  .leaflet-div-icon.gb-map-cluster::before,
+  .leaflet-div-icon.gb-map-cluster::after {
+    content: none !important;
+  }
   .why-card {
     @apply rounded-[30px] bg-[#e8e8e0];
     box-shadow: 15px 15px 30px #d6d6ce,

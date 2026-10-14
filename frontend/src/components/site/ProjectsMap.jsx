@@ -44,10 +44,11 @@ const pinIcon = (status, isActive) => {
 
 const clusterIcon = (cluster) => {
   const count = cluster.getChildCount();
-  const size = count > 50 ? 52 : count > 15 ? 44 : 36;
+  const size = count > 50 ? 40 : count > 15 ? 34 : 28;
+  const fontSize = count > 50 ? 13 : count > 15 ? 12 : 11;
   return L.divIcon({
     className: "gb-map-cluster",
-    html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:#93C526;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:${count > 50 ? 14 : 12}px;color:#000;">${count}</div>`,
+    html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:#93C526;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:${fontSize}px;color:#000;line-height:1;">${count}</div>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
   });
@@ -55,6 +56,18 @@ const clusterIcon = (cluster) => {
 
 const FitToPoints = ({ locality, points }) => {
   const map = useMap();
+  useEffect(() => {
+    // The map sits inside a Reveal wrapper that animates from opacity 0 and
+    // translateY, so Leaflet measures a mid-animation box on mount and draws
+    // its bounds against the wrong size. Measure again once it has settled.
+    const t = setTimeout(() => map.invalidateSize(), 450);
+    const onResize = () => map.invalidateSize();
+    window.addEventListener("resize", onResize);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [map]);
   useEffect(() => {
     if (locality !== "all" && points.length > 0) {
       if (points.length === 1) map.setView(points[0], 15);
@@ -162,7 +175,7 @@ export const ProjectsMap = () => {
             <MapContainer bounds={LUCKNOW_BOUNDS} scrollWheelZoom className="h-full w-full" style={{ height: "100%", width: "100%" }} data-testid="projects-map-canvas">
               <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <FitToPoints locality={locality} points={points} />
-              <MarkerClusterGroup chunkedLoading iconCreateFunction={clusterIcon} maxClusterRadius={55} spiderfyOnMaxZoom>
+              <MarkerClusterGroup chunkedLoading iconCreateFunction={clusterIcon} maxClusterRadius={75} disableClusteringAtZoom={16} spiderfyOnMaxZoom spiderfyDistanceMultiplier={1.8}>
                 {filtered.map((p) => (
                   <Marker
                     key={p.gb_id}
