@@ -75,17 +75,31 @@ export const Process = () => {
               );
               const content = (
                 <div className={`pl-16 md:pl-0 ${isLeft ? "md:pr-14 md:text-right" : "md:pl-14"}`} data-testid={`process-stage-${p.n}`}>
-                  <div className={`card-gb p-5 ${isLeft ? "md:ml-auto" : "md:mr-auto"} max-w-md`}>
-                    <div className="flex items-center gap-3 mb-2.5">
-                      <span className="mono-label text-green text-[12px] font-bold tracking-widest">{String(i + 1).padStart(2, "0")}</span>
-                      {isMilestone && (
-                        <span className="mono-label text-yellow text-[11px] font-bold tracking-widest bg-ink/5 px-2 py-0.5 rounded-full">
-                          MILESTONE
-                        </span>
-                      )}
+                  <div className={`card-gb overflow-hidden ${isLeft ? "md:ml-auto" : "md:mr-auto"} max-w-md`}>
+                    {p.img && (
+                      <img
+                        src={p.img}
+                        alt={p.name}
+                        width="800"
+                        height="450"
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full aspect-[16/9] object-cover"
+                        data-testid={`process-image-${p.n}`}
+                      />
+                    )}
+                    <div className="p-5">
+                      <div className={`flex items-center gap-3 mb-2.5 ${isLeft ? "md:justify-end" : ""}`}>
+                        <span className="mono-label text-green text-[12px] font-bold tracking-widest">{String(i + 1).padStart(2, "0")}</span>
+                        {isMilestone && (
+                          <span className="mono-label text-[10px] font-bold tracking-[0.18em] text-ink bg-yellow px-2 py-[3px] rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.12)]">
+                            MILESTONE
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="text-[18px] md:text-[20px] font-bold tracking-tight leading-snug">{p.name}</h3>
+                      <p className="mt-2 text-[13.5px] md:text-[14px] text-ink/65 leading-relaxed">{p.highlight}</p>
                     </div>
-                    <h3 className="text-[18px] md:text-[20px] font-bold tracking-tight leading-snug">{p.name}</h3>
-                    <p className="mt-2 text-[13.5px] md:text-[14px] text-ink/65 leading-relaxed">{p.highlight}</p>
                   </div>
                 </div>
               );

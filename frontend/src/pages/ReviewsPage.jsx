@@ -113,7 +113,7 @@ export default function ReviewsPage() {
                         <StarRow rating={r.rating} />
                       </div>
                       <p className="mt-3 text-[14px] text-ink/75 leading-relaxed line-clamp-4">&ldquo;{r.quote}&rdquo;</p>
-                      {r.project_id !== "GB-Unknown" && (
+                      {r.project_id && (
                         <p className="mt-3 text-[12px] font-mono text-ink/40">Project {r.project_id}</p>
                       )}
                     </div>

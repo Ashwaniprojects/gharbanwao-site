@@ -46,6 +46,25 @@ export default function AboutPage() {
                 supporting="Ghar Banwao was launched with a single vision — to cater to every need of construction on one single platform. Whether you are building your first home, expanding your commercial space, or renovating an existing property, Ghar Banwao connects you with the right architects, civil engineers, contractors, and material suppliers — all in one place."
               />
             </Reveal>
+            <Reveal className="mt-8" delay={0.05}>
+              <figure className="group relative overflow-hidden rounded-2xl border border-divider bg-divider">
+                <img
+                  src="/images/about/onsite-blueprint-consultation.webp"
+                  alt="A Ghar Banwao engineer reviewing the floor plan with a couple at their Lucknow construction site"
+                  width={1200}
+                  height={900}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover aspect-[4/3] md:aspect-[16/10] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  data-testid="about-story-image"
+                />
+                <figcaption className="absolute inset-x-0 bottom-0 flex items-end bg-gradient-to-t from-black/70 via-black/30 to-transparent px-5 pb-4 pt-12 md:px-6 md:pb-5">
+                  <span className="mono-label text-[11px] text-white/90 md:text-[12px]">
+                    Blueprint review on site — every drawing explained, every question answered.
+                  </span>
+                </figcaption>
+              </figure>
+            </Reveal>
             <Reveal className="mt-8">
               <div className="card-gb p-8 bg-paper space-y-5">
                 <p className="text-[16px] leading-relaxed text-ink/80">
@@ -72,6 +91,25 @@ export default function AboutPage() {
                 supporting="We want to build a place where anyone planning to construct anything can do it comfortably — with full access to every detail of every person involved in their project."
               />
             </Reveal>
+            <Reveal className="mt-8" delay={0.05}>
+              <figure className="group relative overflow-hidden rounded-2xl border border-divider bg-divider">
+                <img
+                  src="/images/about/blueprints-across-india.webp"
+                  alt="A family reviewing blueprints with a Ghar Banwao engineer, with a map of India showing project locations across the country"
+                  width={1200}
+                  height={800}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover aspect-[4/3] md:aspect-[3/2] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  data-testid="about-vision-image"
+                />
+                <figcaption className="absolute inset-x-0 bottom-0 flex items-end bg-gradient-to-t from-black/70 via-black/30 to-transparent px-5 pb-4 pt-12 md:px-6 md:pb-5">
+                  <span className="mono-label text-[11px] text-white/90 md:text-[12px]">
+                    Homes, shops, factories and schools — built for every Indian, in every state.
+                  </span>
+                </figcaption>
+              </figure>
+            </Reveal>
             <Reveal className="mt-8">
               <div className="card-gb p-8 bg-paper">
                 <p className="text-[16px] leading-relaxed text-ink/80">
@@ -94,6 +132,25 @@ export default function AboutPage() {
                 title="The first choice for every dream space — within budget, beyond expectations."
                 supporting="Our mission is to deliver quality construction with honest pricing, transparent processes, and accountability at every step."
               />
+            </Reveal>
+            <Reveal className="mt-8" delay={0.05}>
+              <figure className="group relative overflow-hidden rounded-2xl border border-divider bg-divider">
+                <img
+                  src="/images/about/warm-modern-house.webp"
+                  alt="A completed Ghar Banwao home at dusk, with warm interior lighting and landscaped front garden"
+                  width={1200}
+                  height={900}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover aspect-[4/3] md:aspect-[16/10] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  data-testid="about-mission-image"
+                />
+                <figcaption className="absolute inset-x-0 bottom-0 flex items-end bg-gradient-to-t from-black/70 via-black/30 to-transparent px-5 pb-4 pt-12 md:px-6 md:pb-5">
+                  <span className="mono-label text-[11px] text-white/90 md:text-[12px]">
+                    Within budget, beyond expectations — the standard every Ghar Banwao home meets.
+                  </span>
+                </figcaption>
+              </figure>
             </Reveal>
             <Reveal className="mt-8">
               <div className="card-gb p-8 bg-paper">

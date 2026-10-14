@@ -8,23 +8,18 @@ const HOME_VIDEOS = VIDEOS.slice(0, 6);
 
 const TCard = ({ t }) => (
   <article className="w-[300px] md:w-[380px] shrink-0 mx-2.5 card-gb p-6 flex flex-col bg-paper h-full" data-testid="testimonial-card">
-    <div className="flex items-center gap-3">
-      <div className="h-16 w-16 rounded-full bg-[#E9E9E6] grid place-items-center font-mono text-[9px] shrink-0">{t.portrait}</div>
-      <div>
-        <p className="font-bold text-[17px] leading-tight">{t.name}</p>
-        <p className="text-[14px] text-ink/60">{t.locality}</p>
-      </div>
+    <div>
+      <p className="font-bold text-[17px] leading-tight">{t.name}</p>
+      <p className="text-[14px] text-ink/60">{t.locality}</p>
     </div>
     <p className="mt-4 text-[13px] flex items-center gap-2"><Stars n={t.rating} /> <span className="text-ink/60">{t.source} · {t.date}</span></p>
     <p className="mt-4 text-[15px] leading-relaxed line-clamp-5">&ldquo;{t.quote}&rdquo;</p>
-    <div className="mt-auto pt-4 border-t border-divider flex items-center gap-3">
-      <div className="h-10 w-10 rounded-lg bg-[#E9E9E6] grid place-items-center font-mono text-[8px] shrink-0">{t.thumb}</div>
-      <div className="text-[13px] leading-tight">
-        <p className="font-mono font-medium">{t.project_id}</p>
-        <p className="text-ink/60">{t.project_size}</p>
+    {t.project_id && (
+      <div className="mt-auto pt-4 border-t border-divider flex items-center gap-3">
+        <p className="text-[13px] leading-tight font-mono font-medium">{t.project_id}</p>
+        <a href={`/projects/${t.project_id.toLowerCase()}`} onClick={(e) => e.preventDefault()} className="ml-auto inline-flex items-center gap-1 text-[13px] font-bold underline decoration-green decoration-2 underline-offset-4">View project <ArrowRight className="h-3.5 w-3.5" /></a>
       </div>
-      <a href={`/projects/${t.project_id.toLowerCase()}`} onClick={(e) => e.preventDefault()} className="ml-auto inline-flex items-center gap-1 text-[13px] font-bold underline decoration-green decoration-2 underline-offset-4">View project <ArrowRight className="h-3.5 w-3.5" /></a>
-    </div>
+    )}
   </article>
 );
 

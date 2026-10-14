@@ -16,6 +16,7 @@ import PackagesPage from "@/pages/PackagesPage";
 import { CalcProvider } from "@/lib/calcContext";
 import { useLenis } from "@/hooks/useLenis";
 import { BuilderMascot } from "@/components/site/BuilderMascot";
+import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
 
 function App() {
   useLenis();
@@ -41,6 +42,7 @@ function App() {
       </HelmetProvider>
       <Toaster position="top-center" richColors />
       <BuilderMascot size={80} />
+      <FloatingWhatsApp />
     </CalcProvider>
   );
 }
