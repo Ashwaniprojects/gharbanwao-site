@@ -1,242 +1,439 @@
+import { ArrowRight, Phone, ClipboardList, HardHat, MessageSquare, ShieldCheck } from "lucide-react";
 import { AnnouncementStrip } from "@/components/site/AnnouncementStrip";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer, MobileBar } from "@/components/site/FaqCtaFooter";
-import { Container, Reveal, SectionHeader } from "@/components/site/shared";
+import { Container, Reveal } from "@/components/site/shared";
+import { BentoGrid } from "@/components/spectrumui/bento-grid";
+import { BentoCard } from "@/components/spectrumui/bento-card";
+import { TESTIMONIALS, PHONES, WHATSAPP_URL } from "@/data/content";
 import { Helmet } from "react-helmet-async";
+
+const PHONE_HREF = `tel:${PHONES[0]}`;
+
+// Leadership messages keep their original substance; wording is condensed to
+// the 80-120 word target in the redesign brief. Do not expand without the
+// owner's approval — the full originals are preserved in git history.
+const CMD_MESSAGE = [
+  "At Ghar Banwao, we set out to transform how India experiences home construction. Homeowners still struggle to find reliable professionals, keep costs transparent, and coordinate dozens of services under one roof.",
+  "We are closing those gaps with a trusted, technology-driven platform that brings the entire journey together. Sustainable growth comes from understanding customer needs, embracing innovation, and delivering on every promise we make.",
+  "Success is not the number of homes we complete — it is the trust we earn, the standards we set, and the difference we make in how people build.",
+];
+
+const CEO_MESSAGE = [
+  "I am redefining the home-building experience by putting our customers at the centre of every decision. Building a home should be exciting and fulfilling, never complicated or stressful.",
+  "My priority is an organisation that earns trust through transparency, delivers value through quality, and builds lasting relationships through accountability — bringing architecture, construction, and interior design together through a single dependable platform.",
+  "As we grow, our commitment does not change: make the dream of owning a well-built home simpler for every customer.",
+];
+
+const COMMITMENTS = [
+  {
+    icon: <ClipboardList className="h-5 w-5" strokeWidth={2.25} />,
+    title: "Transparent process",
+    description:
+      "Written scope, itemised costs, and a fixed milestone schedule before work starts. Progress updates reach you at every stage — no verbal-only commitments, no surprises at handover.",
+  },
+  {
+    icon: <HardHat className="h-5 w-5" strokeWidth={2.25} />,
+    title: "Quality-focused execution",
+    description:
+      "Brand-verified materials matched to your agreement, checked on site against specification. Engineers and supervisors are qualified, named on your project, and accountable for workmanship.",
+  },
+  {
+    icon: <MessageSquare className="h-5 w-5" strokeWidth={2.25} />,
+    title: "Accountability at every stage",
+    description:
+      "One point of contact who answers your call, a documented process for raising issues, and a written resolution you can track — from the first site visit to the day you get your keys.",
+  },
+];
+
+const PROJECTS = [
+  {
+    img: "/images/about/onsite-blueprint-consultation.webp",
+    alt: "A Ghar Banwao engineer reviewing the floor plan with a couple at their construction site",
+    label: "Consultation & planning",
+    location: "Uttar Pradesh",
+    className: "lg:col-span-2 aspect-[16/10]",
+  },
+  {
+    img: "/images/about/warm-modern-indian-home.webp",
+    alt: "A completed Ghar Banwao home at dusk, with warm interior lighting, stone cladding and landscaped front garden",
+    label: "Completed home",
+    location: "Uttar Pradesh",
+    className: "aspect-[4/5]",
+  },
+  {
+    img: "/images/about/modern-brick-house-under-construction.webp",
+    alt: "A two-storey home under construction with brick masonry, concrete columns and stacked cement bags on site",
+    label: "Under construction",
+    location: "Uttar Pradesh",
+    className: "aspect-[4/5]",
+  },
+  {
+    img: "/images/about/proud-family-dream-home.webp",
+    alt: "A homeowner family standing outside their completed Ghar Banwao home",
+    label: "Homeowner handover",
+    location: "Uttar Pradesh",
+    className: "aspect-[4/5]",
+  },
+  {
+    img: "/images/about/warm-modern-house.webp",
+    alt: "A finished home facade with warm lighting and a paved driveway at dusk",
+    label: "Delivered project",
+    location: "Uttar Pradesh",
+    className: "aspect-[4/5]",
+  },
+  {
+    img: "/images/about/blueprints-across-india.webp",
+    alt: "A family reviewing blueprints with a Ghar Banwao engineer, with a map of India showing project locations across the country",
+    label: "Design & drawings",
+    location: "Serving 8 UP cities",
+    className: "lg:col-span-2 aspect-[16/10]",
+  },
+];
+
+const PROOF = [
+  { value: "260+", label: "Homes handed over", note: "Since 2017" },
+  { value: "180+", label: "Google reviews", note: "From homeowners" },
+  { value: "8", label: "Cities served", note: "Across Uttar Pradesh" },
+  { value: "25 yr", label: "Structural warranty", note: "On delivered homes" },
+];
+
+const FEATURED_TESTIMONIALS = [
+  {
+    quote: "Excellent construction company! They built my dream home with outstanding quality and professionalism. The work was completed on time, and the entire team was very supportive and skilled. Highly recommended!",
+    name: "Bhaskar Mishra",
+    locality: "Lucknow",
+    year: "2025",
+    projectId: "GB-217",
+  },
+  {
+    quote: "Ghar Banwao made my dream home. Thank you so much for making such a beautiful home for us.",
+    name: "Vishal Sharma",
+    locality: "Lucknow",
+    year: "2025",
+    projectId: "",
+  },
+  {
+    quote: "Truly amazing company. Excellent coordination and quality work. I will highly recommend Ghar Banwao for house construction and designing.",
+    name: "Krishna Kumari",
+    locality: "Lucknow",
+    year: "2025",
+    projectId: "",
+  },
+];
+
+function CtaLink({ href, children, variant = "green", external = false, ...rest }) {
+  const cls = variant === "green" ? "pill-green" : variant === "ghost" ? "pill-ghost" : "pill-outline-green";
+  const attrs = external ? { target: "_blank", rel: "noopener,noreferrer" } : {};
+  return (
+    <a href={href} className={`${cls} h-12 px-6 text-[16px]`} {...attrs} {...rest}>
+      {children}
+    </a>
+  );
+}
+
+function LeaderBlock({ label, title, name, role, portrait, alt, paragraphs }) {
+  return (
+    <Reveal className="h-full">
+      <article className="card-gb flex h-full flex-col bg-paper p-7 md:p-9" data-testid={`about-${label.toLowerCase().replace(/[^a-z]/g, "")}`}>
+        <span className="mono-label text-green">{label}</span>
+        <h3 className="display mt-3 text-2xl md:text-[28px]">{title}</h3>
+        <div className="mt-5 space-y-4 text-[16px] leading-relaxed text-ink/80">
+          {paragraphs.map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+        </div>
+        <div className="mt-auto pt-7 flex items-center gap-4 border-t border-divider">
+          <img
+            src={portrait}
+            alt={alt}
+            width={88}
+            height={88}
+            loading="lazy"
+            decoding="async"
+            className="h-[88px] w-[88px] shrink-0 rounded-full object-cover object-top border border-divider"
+          />
+          <div>
+            <p className="font-bold text-[15px]">{name}</p>
+            <p className="text-[13px] text-ink/60">{role}</p>
+          </div>
+        </div>
+      </article>
+    </Reveal>
+  );
+}
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-paper text-ink">
       <Helmet>
-        <title>About Us — Ghar Banwao | Best Construction Company in Lucknow</title>
-        <meta name="description" content="Ghar Banwao is a construction company in Lucknow, Uttar Pradesh. Since 2017, we have delivered 260+ homes across 8 UP cities — Lucknow, Kanpur, Ayodhya, Gorakhpur, and more. India's first revolutionary construction platform connecting homeowners with verified architects, civil engineers, and contractors." />
-        <meta name="keywords" content="construction company Lucknow, best construction company Lucknow, home construction Lucknow, builders in Lucknow, civil engineers Lucknow, architects Lucknow, residential construction Lucknow, commercial construction Lucknow, construction company Uttar Pradesh, home builders UP, Ghar Banwao, Lucknow construction company, house construction company India, construction platform India" />
+        <title>About Ghar Banwao — A trusted construction partner for homeowners in Lucknow</title>
+        <meta name="description" content="Ghar Banwao is a construction company in Lucknow, Uttar Pradesh. Since 2017 we have delivered 260+ homes across 8 UP cities with transparent pricing, verified professionals, and a 25-year structural warranty. Book a free consultation." />
+        <meta name="keywords" content="construction company Lucknow, home construction Lucknow, builders in Lucknow, civil engineers Lucknow, architects Lucknow, residential construction Lucknow, construction company Uttar Pradesh, Ghar Banwao, house construction Lucknow" />
         <link rel="canonical" href="https://gharbanwao.com/about" />
-        <meta property="og:title" content="About Ghar Banwao — Best Construction Company in Lucknow" />
-        <meta property="og:description" content="Lucknow's most trusted construction company since 2017. 260+ homes delivered across Uttar Pradesh with transparent pricing, verified professionals, and a 25-year structural warranty." />
+        <meta property="og:title" content="About Ghar Banwao — A trusted construction partner for homeowners in Lucknow" />
+        <meta property="og:description" content="260+ homes delivered across Uttar Pradesh since 2017. Transparent pricing, verified professionals, and a 25-year structural warranty. Talk to our team about your plans." />
         <meta property="og:url" content="https://gharbanwao.com/about" />
         <meta property="og:type" content="website" />
-        <meta name="twitter:title" content="About Ghar Banwao — Best Construction Company in Lucknow" />
-        <meta name="twitter:description" content="Lucknow's most trusted construction company since 2017. 260+ homes delivered across Uttar Pradesh." />
+        <meta name="twitter:title" content="About Ghar Banwao — A trusted construction partner for homeowners in Lucknow" />
+        <meta name="twitter:description" content="260+ homes delivered across Uttar Pradesh since 2017. Transparent pricing and a 25-year structural warranty." />
       </Helmet>
       <AnnouncementStrip />
       <Navbar />
       <main>
-        {/* Hero */}
+        {/* 1. Hero */}
         <section className="section-gb" data-testid="about-hero">
-          <Container className="max-w-4xl">
-            <Reveal>
-              <SectionHeader
-                label="ABOUT US"
-                title="Construction company in Lucknow built on trust, transparency, and quality."
-                supporting="Ghar Banwao is a construction company in Lucknow, Uttar Pradesh. Since 2017, we have handed over 260+ homes across Lucknow, Kanpur, Ayodhya, Gorakhpur, and other UP cities — and we are just getting started."
-                align="center"
-              />
-            </Reveal>
-          </Container>
-        </section>
-
-        {/* About */}
-        <section className="section-gb bg-wash-yellow" data-testid="about-story">
-          <Container className="max-w-4xl">
-            <Reveal>
-              <SectionHeader
-                label="OUR STORY"
-                title="A revolutionary initiative to change the way Lucknow builds."
-                supporting="Ghar Banwao was launched with a single vision — to cater to every need of construction on one single platform. Whether you are building your first home, expanding your commercial space, or renovating an existing property, Ghar Banwao connects you with the right architects, civil engineers, contractors, and material suppliers — all in one place."
-              />
-            </Reveal>
-            <Reveal className="mt-8" delay={0.05}>
-              <figure className="group relative overflow-hidden rounded-2xl border border-divider bg-divider">
-                <img
-                  src="/images/about/onsite-blueprint-consultation.webp"
-                  alt="A Ghar Banwao engineer reviewing the floor plan with a couple at their Lucknow construction site"
-                  width={1200}
-                  height={900}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover aspect-[4/3] md:aspect-[16/10] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                  data-testid="about-story-image"
-                />
-              </figure>
-            </Reveal>
-            <Reveal className="mt-8">
-              <div className="card-gb p-8 bg-paper space-y-5">
-                <p className="text-[16px] leading-relaxed text-ink/80">
-                  Ghar Banwao is the first revolutionary initiative to change the overall outlook of construction in Lucknow. We provide a hassle-free and effortless platform to discover the right professionals for every stage of your construction project — from foundation to finishing. Our aim is to be every citizen's first choice when they are thinking about construction in any segment, anywhere in India.
-                </p>
-                <p className="text-[16px] leading-relaxed text-ink/80">
-                  We have a team of the best architects and civil engineers for construction in Lucknow. Every professional on our platform is verified, experienced, and committed to delivering on time. When you choose Ghar Banwao, you are not just hiring a builder — you are partnering with a team that treats your dream as their own.
-                </p>
-                <p className="text-[16px] leading-relaxed text-ink/80 italic">
-                  Everyone has a dream of their own home. At Ghar Banwao, we make your dream our dream project.
-                </p>
+          <Container>
+            <div className="grid gap-10 lg:grid-cols-12 lg:gap-12 items-center">
+              <div className="lg:col-span-7">
+                <Reveal>
+                  <span className="mono-label text-green">ABOUT GHAR BANWAO</span>
+                  <h1 className="display mt-4 text-[38px] sm:text-5xl lg:text-[58px] xl:text-[64px]">
+                    A better way to build your home in Lucknow.
+                  </h1>
+                  <p className="mt-6 text-base md:text-lg text-ink/70 max-w-[58ch] leading-relaxed">
+                    From planning to construction, we help homeowners move forward with clearer processes,
+                    quality-focused execution, and accountability at every step.
+                  </p>
+                  <div className="mt-9 flex flex-wrap items-center gap-3">
+                    <CtaLink href="/contact">
+                      Book a Free Consultation <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
+                    </CtaLink>
+                    <CtaLink href="/#projects" variant="ghost">
+                      Explore Our Projects
+                    </CtaLink>
+                  </div>
+                  <p className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-[14px] font-medium text-ink/70">
+                    <span className="inline-flex items-center gap-1.5">
+                      <ShieldCheck className="h-4 w-4 text-green" strokeWidth={2.5} /> 25-year structural warranty
+                    </span>
+                    <span aria-hidden="true">·</span>
+                    <span>Free site visit + written quote in 48 hours</span>
+                  </p>
+                </Reveal>
               </div>
-            </Reveal>
-          </Container>
-        </section>
-
-        {/* Vision */}
-        <section className="section-gb" data-testid="about-vision">
-          <Container className="max-w-4xl">
-            <Reveal>
-              <SectionHeader
-                label="OUR VISION"
-                title="To be every citizen's first choice for construction in India."
-                supporting="We want to build a place where anyone planning to construct anything can do it comfortably — with full access to every detail of every person involved in their project."
-              />
-            </Reveal>
-            <Reveal className="mt-8" delay={0.05}>
-              <figure className="group relative overflow-hidden rounded-2xl border border-divider bg-divider">
-                <img
-                  src="/images/about/blueprints-across-india.webp"
-                  alt="A family reviewing blueprints with a Ghar Banwao engineer, with a map of India showing project locations across the country"
-                  width={1200}
-                  height={800}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover aspect-[4/3] md:aspect-[3/2] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                  data-testid="about-vision-image"
-                />
-              </figure>
-            </Reveal>
-            <Reveal className="mt-8">
-              <div className="card-gb p-8 bg-paper">
-                <p className="text-[16px] leading-relaxed text-ink/80">
-                  Our vision is to organize all construction personnel-related information and make it universally accessible and useful. We want to build a platform where every individual has easy access to the person they need for their construction — whether it is a structural engineer, a site supervisor, an architect, or a material supplier. No more calling five different people to get one answer. No more wondering if the person you hired is actually qualified.
-                </p>
-                <p className="text-[16px] leading-relaxed text-ink/80 mt-4">
-                  We are building for the entire country. Our vision is not limited to Lucknow or Uttar Pradesh. We are building a platform that serves every Indian who is planning to construct anything — a home, a shop, a factory, a school — with the confidence that comes from having the right people behind you.
-                </p>
+              <div className="lg:col-span-5 relative">
+                <Reveal delay={0.08}>
+                  <div className="relative">
+                    <div className="absolute -bottom-4 -right-4 h-full w-full rounded-2xl bg-wash-green" aria-hidden="true" />
+                    <figure className="group relative overflow-hidden rounded-2xl border border-divider bg-divider">
+                      <img
+                        src="/images/about/warm-modern-house.webp"
+                        alt="A completed Ghar Banwao home at dusk, with warm interior lighting and landscaped front garden"
+                        width={1000}
+                        height={1250}
+                        loading="eager"
+                        decoding="async"
+                        className="w-full aspect-[4/5] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                        data-testid="about-hero-image"
+                      />
+                    </figure>
+                  </div>
+                </Reveal>
               </div>
-            </Reveal>
+            </div>
           </Container>
         </section>
 
-        {/* Mission */}
-        <section className="section-gb bg-wash-yellow" data-testid="about-mission">
-          <Container className="max-w-4xl">
+        {/* 2. Proof strip */}
+        <section className="bg-wash-green section-gb" data-testid="about-proof">
+          <Container>
             <Reveal>
-              <SectionHeader
-                label="OUR MISSION"
-                title="The first choice for every dream space — within budget, beyond expectations."
-                supporting="Our mission is to deliver quality construction with honest pricing, transparent processes, and accountability at every step."
-              />
+              <span className="mono-label text-green">WHY HOMEOWNERS TRUST US</span>
             </Reveal>
-            <Reveal className="mt-8" delay={0.05}>
-              <figure className="group relative overflow-hidden rounded-2xl border border-divider bg-divider">
-                <img
-                  src="/images/about/warm-modern-house.webp"
-                  alt="A completed Ghar Banwao home at dusk, with warm interior lighting and landscaped front garden"
-                  width={1200}
-                  height={900}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover aspect-[4/3] md:aspect-[16/10] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                  data-testid="about-mission-image"
+            <dl className="mt-7 grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4 md:gap-x-8">
+              {PROOF.map((p, i) => (
+                <Reveal key={p.label} delay={i * 0.05}>
+                  <div className="border-t border-ink/10 pt-5">
+                    <dt className="sr-only">{p.label}</dt>
+                    <dd>
+                      <span className="display block text-4xl md:text-5xl lg:text-[56px] leading-none">{p.value}</span>
+                      <span className="mt-3 block text-[15px] font-bold">{p.label}</span>
+                      <span className="mt-1 block text-[13px] text-ink/60">{p.note}</span>
+                    </dd>
+                  </div>
+                </Reveal>
+              ))}
+            </dl>
+          </Container>
+        </section>
+
+        {/* 3. What homeowners can expect */}
+        <section className="section-gb" data-testid="about-commitments">
+          <Container>
+            <Reveal>
+              <span className="mono-label text-green">WHAT HOMEOWNERS CAN EXPECT</span>
+              <h2 className="display mt-4 text-3xl sm:text-4xl lg:text-[44px] max-w-[24ch]">
+                Three commitments we hold on every site.
+              </h2>
+              <p className="mt-5 text-base md:text-lg text-ink/70 max-w-[62ch] leading-relaxed">
+                Building a home is one of the largest investments a family makes. Here is exactly how we
+                take that responsibility.
+              </p>
+            </Reveal>
+            <BentoGrid className="mt-12 lg:max-w-none">
+              {COMMITMENTS.map((c, i) => (
+                <BentoCard
+                  key={c.title}
+                  colSpan={i === 0 ? 2 : 1}
+                  className="bg-paper border-divider hover:border-green/40 [&_h3]:text-ink [&_h3]:text-lg [&_h3]:font-bold [&_h3]:font-sans [&_h3]:tracking-tight [&_p]:text-[15px] [&_p]:leading-relaxed [&_p]:text-ink/70 [&_p]:mt-1.5"
+                  title={c.title}
+                  description={c.description}
+                  icon={
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-wash-green text-green">
+                      {c.icon}
+                    </span>
+                  }
                 />
-              </figure>
-            </Reveal>
-            <Reveal className="mt-8">
-              <div className="card-gb p-8 bg-paper">
-                <p className="text-[16px] leading-relaxed text-ink/80">
-                  Ghar Banwao's mission is to be the first choice of every person who is willing to design and build their dream spaces — within budget and with the best quality of materials. We believe that satisfactory results are not an accident. They come from a process built on transparency, accountability, and relentless attention to detail.
-                </p>
-                <p className="text-[16px] leading-relaxed text-ink/80 mt-4">
-                  Every project we take on is governed by three commitments: honest pricing from day one, quality materials you can verify, and a single point of contact who answers your call. These are not values we write on a wall — they are rules we enforce on every site, every day.
-                </p>
-              </div>
-            </Reveal>
+              ))}
+            </BentoGrid>
           </Container>
         </section>
 
-        {/* CMD Message */}
-        <section className="section-gb bg-wash-yellow" data-testid="about-cmd">
-          <Container className="max-w-4xl">
+        {/* 4. Real projects */}
+        <section className="section-gb bg-paper" data-testid="about-projects">
+          <Container>
+            <div className="flex flex-wrap items-end justify-between gap-6">
+              <Reveal>
+                <span className="mono-label text-green">REAL PROJECTS</span>
+                <h2 className="display mt-4 text-3xl sm:text-4xl lg:text-[44px] max-w-[22ch]">
+                  See the homes we have delivered.
+                </h2>
+              </Reveal>
+              <Reveal delay={0.05}>
+                <CtaLink href="/#projects" variant="outline" className="h-12 px-6 text-[16px]">
+                  View All Projects <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
+                </CtaLink>
+              </Reveal>
+            </div>
+            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+              {PROJECTS.map((p, i) => (
+                <Reveal key={p.img} delay={i * 0.05} className={p.className}>
+                  <figure className="group relative h-full overflow-hidden rounded-2xl border border-divider bg-divider">
+                    <img
+                      src={p.img}
+                      alt={p.alt}
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                    />
+                    <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent p-5 pt-12">
+                      <span className="block text-[15px] font-bold text-white">{p.label}</span>
+                      <span className="mt-0.5 block text-[13px] text-white/80">{p.location}</span>
+                    </figcaption>
+                  </figure>
+                </Reveal>
+              ))}
+            </div>
+          </Container>
+        </section>
+
+        {/* 5. The people behind the work */}
+        <section className="section-gb" data-testid="about-leadership">
+          <Container>
             <Reveal>
-              <SectionHeader
+              <span className="mono-label text-green">THE PEOPLE BEHIND THE WORK</span>
+              <h2 className="display mt-4 text-3xl sm:text-4xl lg:text-[44px] max-w-[26ch]">
+                Led by people who build for the long term.
+              </h2>
+            </Reveal>
+            <div className="mt-12 grid gap-6 lg:grid-cols-2">
+              <LeaderBlock
                 label="CMD'S MESSAGE"
                 title="Building for the long term."
-                supporting="Er. Virendra Kumar Nishad, Chairman and Managing Director, Ghar Banwao"
+                name="Er. Virendra Kumar Nishad"
+                role="Chairman and Managing Director"
+                portrait="/images/team/virendra-nishad.jpg"
+                alt="Er. Virendra Kumar Nishad, Chairman and Managing Director, Ghar Banwao"
+                paragraphs={CMD_MESSAGE}
               />
-            </Reveal>
-            <Reveal className="mt-8">
-              <div className="card-gb p-8 bg-paper space-y-5">
-                <p className="text-[16px] leading-relaxed text-ink/80">
-                  At Ghar Banwao, our journey is driven by a bold ambition: to transform the way India experiences home construction. We recognize that the construction industry has enormous potential, yet customers often face challenges in finding reliable professionals, ensuring transparency, managing costs, and coordinating multiple services. Our vision is to bridge these gaps by building a trusted, technology-driven platform that brings the entire home construction journey together under one roof.
-                </p>
-                <p className="text-[16px] leading-relaxed text-ink/80">
-                  As CMD, I believe that sustainable growth comes from understanding customer needs, embracing innovation, and consistently delivering on our promises. We are focused on building more than a service company. We are building an ecosystem that makes construction more accessible, organized, transparent, and dependable.
-                </p>
-                <p className="text-[16px] leading-relaxed text-ink/80">
-                  Our long-term ambition is to establish Ghar Banwao as one of India's leading construction services portals, empowering individuals to move from the first idea of a dream home to its successful completion with greater confidence and convenience.
-                </p>
-                <p className="text-[16px] leading-relaxed text-ink/80">
-                  For us, success is not measured merely by the number of projects we complete, but by the trust we earn, the standards we establish, and the difference we make in the way people build.
-                </p>
-                <p className="text-[16px] leading-relaxed text-ink/80">
-                  We are building Ghar Banwao with a vision that goes beyond individual homes to shape the future of India's construction industry.
-                </p>
-                <div className="mt-6 flex items-center gap-4">
-                  <img
-                    src="/images/team/virendra-nishad.jpg"
-                    alt="Er. Virendra Kumar Nishad, Chairman and Managing Director, Ghar Banwao"
-                    width={88}
-                    height={88}
-                    loading="lazy"
-                    className="h-[88px] w-[88px] shrink-0 rounded-full object-cover object-top border border-divider"
-                    data-testid="cmd-portrait"
-                  />
-                  <div>
-                    <p className="font-bold text-[15px]">Er. Virendra Kumar Nishad</p>
-                    <p className="text-[13px] text-ink/60">Chairman and Managing Director</p>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
+              <LeaderBlock
+                label="MESSAGE FROM THE CEO"
+                title="Customers at the centre of every decision."
+                name="Sujata"
+                role="Chief Executive Officer (CEO), Interior Designer"
+                portrait="/images/team/sujata.jpg"
+                alt="Sujata, Chief Executive Officer and Interior Designer, Ghar Banwao"
+                paragraphs={CEO_MESSAGE}
+              />
+            </div>
           </Container>
         </section>
 
-        {/* CEO Message */}
-        <section className="section-gb" data-testid="about-ceo">
-          <Container className="max-w-4xl">
+        {/* 6. Customer proof + final CTA */}
+        <section className="section-gb bg-wash-green" data-testid="about-testimonials">
+          <Container>
             <Reveal>
-              <SectionHeader
-                label="MESSAGE FROM THE CEO"
-                title="Customers at the centre of every decision."
-                supporting="Sujata, Chief Executive Officer (CEO), Interior Designer, Ghar Banwao"
-              />
+              <span className="mono-label text-green">CUSTOMER PROOF</span>
+              <h2 className="display mt-4 text-3xl sm:text-4xl lg:text-[44px] max-w-[24ch]">
+                In their own words.
+              </h2>
             </Reveal>
-            <Reveal className="mt-8">
-              <div className="card-gb p-8 bg-paper space-y-5">
-                <p className="text-[16px] leading-relaxed text-ink/80">
-                  At Ghar Banwao, my vision is to redefine the home-building experience by placing our customers at the centre of every decision we make. I believe that building a home should be an exciting and fulfilling journey, not a complicated or stressful process.
-                </p>
-                <p className="text-[16px] leading-relaxed text-ink/80">
-                  As CEO, my priority is to build an organization that earns customer trust through transparency, delivers value through quality, and creates lasting relationships through accountability. We strive to understand every customer's unique vision, requirements, and budget, translating them into thoughtfully planned homes with a seamless experience from concept to completion.
-                </p>
-                <p className="text-[16px] leading-relaxed text-ink/80">
-                  I believe the future of home construction lies in making reliable services more accessible, organized, and customer-friendly. Our goal is to bring architecture, construction, and interior design together through a single, dependable platform that empowers customers to make informed decisions with confidence.
-                </p>
-                <p className="text-[16px] leading-relaxed text-ink/80">
-                  At Ghar Banwao, success is not measured merely by the homes we build, but by the trust we earn and the satisfaction we deliver. As we grow, our commitment remains unwavering: to continuously improve, innovate, and make the dream of owning a well-built home simpler for every customer.
-                </p>
-                <p className="text-[16px] leading-relaxed text-ink/80">
-                  Our ambition is to make Ghar Banwao India's most trusted, customer-centric home construction services platform — where every dream matters and every customer comes first.
-                </p>
-                <div className="mt-6 flex items-center gap-4">
-                  <img
-                    src="/images/team/sujata.jpg"
-                    alt="Sujata, Chief Executive Officer and Interior Designer, Ghar Banwao"
-                    width={88}
-                    height={88}
-                    loading="lazy"
-                    className="h-[88px] w-[88px] shrink-0 rounded-full object-cover object-top border border-divider"
-                    data-testid="ceo-portrait"
-                  />
-                  <div>
-                    <p className="font-bold text-[15px]">Sujata</p>
-                    <p className="text-[13px] text-ink/60">Chief Executive Officer (CEO), Interior Designer</p>
+            <div className="mt-12 grid gap-5 md:grid-cols-3 md:gap-6">
+              {FEATURED_TESTIMONIALS.map((t, i) => (
+                <Reveal key={t.name} delay={i * 0.05} className="h-full">
+                  <figure className="card-gb flex h-full flex-col bg-paper p-7" data-testid="about-testimonial-card">
+                    <span className="text-green tracking-tight text-lg leading-none" aria-label="5 star rating">
+                      ★★★★★
+                    </span>
+                    <blockquote className="mt-4 text-[15px] leading-relaxed text-ink/80">
+                      &ldquo;{t.quote}&rdquo;
+                    </blockquote>
+                    <figcaption className="mt-auto pt-6 border-t border-divider">
+                      <p className="font-bold text-[15px] leading-tight">{t.name}</p>
+                      <p className="mt-1 text-[13px] text-ink/60">
+                        {t.locality} · {t.year}
+                        {t.projectId ? ` · ${t.projectId}` : ""}
+                      </p>
+                    </figcaption>
+                  </figure>
+                </Reveal>
+              ))}
+            </div>
+          </Container>
+        </section>
+
+        {/* Final CTA */}
+        <section className="section-gb" data-testid="about-final-cta">
+          <Container>
+            <Reveal>
+              <div className="relative overflow-hidden rounded-[28px] bg-green px-7 py-14 md:px-16 md:py-20 text-center text-ink">
+                <div
+                  className="absolute -right-20 -top-24 h-72 w-72 rounded-full bg-ink/10 blur-3xl"
+                  aria-hidden="true"
+                />
+                <div
+                  className="absolute -left-24 -bottom-24 h-72 w-72 rounded-full bg-ink/10 blur-3xl"
+                  aria-hidden="true"
+                />
+                <div className="relative">
+                  <h2 className="display text-ink text-3xl sm:text-4xl lg:text-[46px]">
+                    Planning to build your home?
+                  </h2>
+                  <p className="mx-auto mt-5 max-w-[52ch] text-base md:text-lg text-ink/75 leading-relaxed">
+                    Talk to our team about your plans, budget, and next steps. No consultation fee —
+                    a free site visit and a written quote within 48 hours.
+                  </p>
+                  <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+                    <CtaLink href="/contact" className="pill h-12 px-6 text-[16px] text-ink border border-ink hover:bg-ink hover:text-green">
+                      Book a Free Consultation <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
+                    </CtaLink>
+                    <a
+                      href={PHONE_HREF}
+                      className="pill h-12 px-6 text-[16px] border border-ink/30 text-ink hover:bg-ink hover:text-green"
+                      data-testid="about-call-cta"
+                    >
+                      <Phone className="h-4 w-4" strokeWidth={2.5} /> {PHONES[0]}
+                    </a>
+                    <a
+                      href={WHATSAPP_URL}
+                      target="_blank"
+                      rel="noopener,noreferrer"
+                      className="pill h-12 px-6 text-[16px] border border-ink/30 text-ink hover:bg-ink hover:text-green"
+                      data-testid="about-whatsapp-cta"
+                    >
+                      WhatsApp us
+                    </a>
                   </div>
                 </div>
               </div>

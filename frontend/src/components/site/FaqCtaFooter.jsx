@@ -12,7 +12,7 @@ import { CITIES, FOOTER_NAV, PHONES, WHATSAPP_URL, HOME_FAQS } from "@/data/cont
 import { createLead } from "@/lib/api";
 import { scrollToId } from "@/lib/scroll";
 
-const PAGE_ROUTES = ["about", "reviews", "contact", "blog", "privacy", "terms", "faq", "packages"];
+const PAGE_ROUTES = ["about", "reviews", "contact", "privacy", "terms", "faq", "packages"];
 
 // Footer entries either point at a real page (`href`) or scroll to a
 // section on the homepage (`id`).
@@ -165,7 +165,6 @@ export const Footer = () => (
           {FOOTER_NAV.slice(5).map((n) => (
             <li key={n.label}><FooterLink item={n} /></li>
           ))}
-          <li><Link to="/blog" className="hover:underline decoration-green decoration-2 underline-offset-4" data-testid="footer-link-blog">Blog</Link></li>
         </ul>
       </div>
       <div>
