@@ -84,6 +84,28 @@
   .leaflet-div-icon.gb-map-cluster::after {
     content: none !important;
   }
+  /* Contain Leaflet inside the map card. Its panes, controls and popups all
+     carry z-index up to 1000, which is a value the page's sticky header
+     (z-40) cannot beat. Those values are only safe while the map's own
+     wrapper forms a stacking context; the framer-motion reveal around the map
+     used to supply one, but it drops its transform once the entrance animation
+     finishes, so the numbers escape and sit over the header. Isolation pins
+     the whole map subtree to its own stacking context permanently. */
+  .gb-map-scope {
+    isolation: isolate;
+    z-index: 0;
+  }
+  /* Above that scope, 1000 is only ever a local ranking, so the map's own
+     overlays can be given the same number to reach its top edge. */
+  .gb-map-scope .leaflet-top,
+  .gb-map-scope .leaflet-bottom {
+    z-index: 1000;
+  }
+  /* The cluster animation shrinks the icon's parent before scaling it up,
+     which re-sizes the 3px white border on our circle as it animates. */
+  .gb-map-cluster {
+    transition: transform 0.3s ease-out, opacity 0.3s ease-in;
+  }
   .why-card {
     @apply rounded-[30px] bg-[#e8e8e0];
     box-shadow: 15px 15px 30px #d6d6ce,

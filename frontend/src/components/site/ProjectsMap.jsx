@@ -80,6 +80,69 @@ const FitToPoints = ({ locality, points }) => {
   return null;
 };
 
+/* The map is the only thing on the page that wants to capture a scroll
+   gesture, and it sits mid-feed where a reader is most likely trying to move
+   down the page. Leaflet's zoom and pan handlers are therefore left disabled
+   until the visitor has deliberately put a finger or cursor on the map; from
+   then on the gesture belongs to the map until they move away from it.
+   Merely preventDefault-ing the events would not fix it — Leaflet still stops
+   propagation on the wheel so the page never sees it, and on touch its own
+   touch-action would swallow the swipe before the browser could scroll the
+   document at all. */
+const ScrollGate = ({ onEngagedChange }) => {
+  const map = useMap();
+  const [engaged, setEngaged] = useState(false);
+
+  useEffect(() => {
+    const container = map.getContainer();
+    const arm = () => setEngaged(true);
+    // Only disarm when focus genuinely leaves the map. A tap on an unfocused
+    // tile can bounce focus to the body and straight back, which would flip
+    // this off again the instant it turned on.
+    const maybeDisarm = (e) => {
+      if (!container.contains(e.relatedTarget)) setEngaged(false);
+    };
+
+    container.addEventListener("pointerdown", arm);
+    container.addEventListener("touchstart", arm);
+    container.addEventListener("focusin", arm);
+    container.addEventListener("focusout", maybeDisarm);
+    return () => {
+      container.removeEventListener("pointerdown", arm);
+      container.removeEventListener("touchstart", arm);
+      container.removeEventListener("focusin", arm);
+      container.removeEventListener("focusout", maybeDisarm);
+    };
+  }, [map]);
+
+  useEffect(() => {
+    if (onEngagedChange) onEngagedChange(engaged);
+    map.scrollWheelZoom[engaged ? "enable" : "disable"]();
+    map.touchZoom[engaged ? "enable" : "disable"]();
+    map.dragging[engaged ? "enable" : "disable"]();
+    // touch-action is what actually releases the browser's own swipe on touch
+    // devices, so it has to track the same flag. It is an inline style on
+    // purpose: Leaflet sets `none` on the same element from a class rule, and
+    // the inline value is what wins. "pan-x pan-y" lets the page scroll in
+    // either direction; "none" hands every gesture to the map.
+    map.getContainer().style.touchAction = engaged ? "none" : "pan-x pan-y";
+  }, [map, engaged, onEngagedChange]);
+
+  return null;
+};
+
+/* Shown until the map is engaged, so the reader knows why a wheel or pinch
+   over it isn't doing anything. */
+const MapHint = ({ engaged }) => {
+  if (engaged) return null;
+  return (
+    <div className="pointer-events-none absolute bottom-[4.5rem] right-4 z-[1000] flex items-center gap-1.5 rounded-lg border border-divider bg-paper/95 px-3 py-2 text-[11px] font-mono uppercase tracking-[0.08em] text-ink/70" data-testid="map-interact-hint">
+      <MapPin className="h-3 w-3 text-green" />
+      <span>Tap to zoom &amp; drag</span>
+    </div>
+  );
+};
+
 const ProjectCard = ({ p }) => (
   <motion.article key={p.gb_id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="card-gb p-6 h-full flex flex-col" data-testid="map-project-card">
     <Placeholder code={`IMG-${p.gb_id.slice(3)}`} ratio="aspect-[16/10]" label={p.locality} />
@@ -117,6 +180,7 @@ export const ProjectsMap = () => {
   const [size, setSize] = useState("all");
   const [pkg, setPkg] = useState("all");
   const [selected, setSelected] = useState(null);
+  const [mapEngaged, setMapEngaged] = useState(false);
 
   const localities = useMemo(() => [...new Set(projects.map((p) => p.locality))].sort(), [projects]);
   const filtered = useMemo(
@@ -170,11 +234,12 @@ export const ProjectsMap = () => {
         </Reveal>
 
         <div className="mt-6 grid lg:grid-cols-3 gap-6">
-          <Reveal className="lg:col-span-2 relative rounded-2xl border border-divider bg-paper overflow-hidden min-h-[460px] lg:min-h-[720px]" data-testid="projects-map">
+          <Reveal className="lg:col-span-2 gb-map-scope relative rounded-2xl border border-divider bg-paper overflow-hidden min-h-[460px] lg:min-h-[720px]" data-testid="projects-map">
             {isLoading && <div className="absolute inset-0 z-[1000] grid place-items-center bg-paper font-mono text-[12px] text-ink/50">Loading 297 pins…</div>}
-            <MapContainer bounds={LUCKNOW_BOUNDS} scrollWheelZoom className="h-full w-full" style={{ height: "100%", width: "100%" }} data-testid="projects-map-canvas">
+            <MapContainer bounds={LUCKNOW_BOUNDS} scrollWheelZoom={false} className="h-full w-full" style={{ height: "100%", width: "100%" }} data-testid="projects-map-canvas">
               <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <FitToPoints locality={locality} points={points} />
+              <ScrollGate onEngagedChange={setMapEngaged} />
               <MarkerClusterGroup chunkedLoading iconCreateFunction={clusterIcon} maxClusterRadius={75} disableClusteringAtZoom={16} spiderfyOnMaxZoom spiderfyDistanceMultiplier={1.8}>
                 {filtered.map((p) => (
                   <Marker
@@ -204,6 +269,7 @@ export const ProjectsMap = () => {
               <MonoLabel className="bg-paper/90 px-3 py-2 rounded-lg border border-divider text-[11px]">Live map · OpenStreetMap</MonoLabel>
               <span className="inline-flex items-center gap-1 font-mono text-[11px] bg-paper/90 px-3 py-2 rounded-lg border border-divider"><MapPin className="h-3 w-3 text-green" /> {filtered.length}</span>
             </div>
+            <MapHint engaged={mapEngaged} />
           </Reveal>
           <Reveal delay={0.1} className="lg:min-h-[720px]" data-testid="map-project-panel">
             {active ? <ProjectCard p={active} /> : <div className="card-gb p-6 h-full grid place-items-center text-ink/50">No projects match these filters.</div>}
