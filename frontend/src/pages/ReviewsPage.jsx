@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ArrowRight, Play, Star } from "lucide-react";
+import { FaInstagram, FaYoutube } from "react-icons/fa6";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Container, Reveal, SectionHeader, Stars } from "@/components/site/shared";
 import { Navbar } from "@/components/site/Navbar";
@@ -31,7 +32,7 @@ export default function ReviewsPage() {
           <Container className="max-w-5xl">
             <SectionHeader
               label="6 CUSTOMER REVIEWS · WATCH THE HOMES"
-              title="Hear It from Our Happy Homeowners."
+              title="Hear It from Our Happy Homeowners. --- Happy Customer Reviews"
               supporting="Shot in front of their completed homes. Their words, their language."
               align="center"
             />
@@ -39,6 +40,26 @@ export default function ReviewsPage() {
               <p className="text-[15px] text-ink/60 text-center max-w-[60ch]">
                 Each video is an unedited walk-through with the family that lived the build. No scripts, no voiceovers — just homeowners showing you what we delivered.
               </p>
+            </Reveal>
+            <Reveal className="mt-8 flex flex-wrap items-center justify-center gap-3" delay={0.05}>
+              <a
+                href="https://www.youtube.com/@gharbanwao"
+                target="_blank"
+                rel="noreferrer"
+                className="pill-ghost h-12 px-6 text-[15px]"
+                data-testid="reviews-youtube-link"
+              >
+                <FaYoutube className="h-[18px] w-[18px] text-[#FF0000]" strokeWidth={2.5} /> YouTube
+              </a>
+              <a
+                href="https://www.instagram.com/gharbanwao/"
+                target="_blank"
+                rel="noreferrer"
+                className="pill-ghost h-12 px-6 text-[15px]"
+                data-testid="reviews-instagram-link"
+              >
+                <FaInstagram className="h-[18px] w-[18px] text-[#D62976]" strokeWidth={2.5} /> Instagram
+              </a>
             </Reveal>
           </Container>
         </section>

@@ -21,23 +21,27 @@ function App() {
   return (
     <CalcProvider>
       <HelmetProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/privacy" element={<PrivacyPage />} />
-            <Route path="/terms" element={<TermsPage />} />
-            <Route path="/calculator" element={<CalculatorPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/reviews" element={<ReviewsPage />} />
-            <Route path="/faq" element={<FaqPage />} />
-            <Route path="*" element={<Home />} />
-          </Routes>
-        </BrowserRouter>
+        <div className="mascot-root">
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/calculator" element={<CalculatorPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/reviews" element={<ReviewsPage />} />
+              <Route path="/faq" element={<FaqPage />} />
+              <Route path="*" element={<Home />} />
+            </Routes>
+          </BrowserRouter>
+        </div>
       </HelmetProvider>
       <Toaster position="top-center" richColors />
-      <BuilderMascot size={80} />
+      <div className="desktop-only">
+        <BuilderMascot size={80} />
+      </div>
       <FloatingWhatsApp />
     </CalcProvider>
   );

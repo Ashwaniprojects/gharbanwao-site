@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
-import { ArrowRight, MessageCircle, Phone, Star } from "lucide-react";
-import { FaFacebook, FaInstagram, FaPinterest, FaThreads, FaYoutube } from "react-icons/fa6";
+import { ArrowRight, Phone, Star, MessageCircle } from "lucide-react";
+import { FaFacebook, FaInstagram, FaPinterest, FaThreads, FaWhatsapp, FaYoutube } from "react-icons/fa6";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Container, Reveal, SectionHeader } from "./shared";
@@ -203,7 +203,7 @@ export const Footer = () => (
 
 export const MobileBar = () => (
   <div className="fixed bottom-0 inset-x-0 z-50 grid grid-cols-2 md:hidden no-print" data-testid="mobile-sticky-bar">
-    <a href={`tel:${PHONES[0]}`} className="h-14 bg-green text-ink font-bold grid place-items-center active:scale-[0.98]" data-testid="mobile-call-button"><span className="inline-flex items-center gap-2"><Phone className="h-4 w-4" /> Call Now</span></a>
-    <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="h-14 bg-yellow text-ink font-bold grid place-items-center active:scale-[0.98]" data-testid="mobile-whatsapp-button"><span className="inline-flex items-center gap-2"><MessageCircle className="h-4 w-4" /> WhatsApp</span></a>
+    <a href={`tel:${PHONES[0]}`} className="h-14 bg-yellow text-ink font-bold grid place-items-center active:scale-[0.98]" data-testid="mobile-call-button"><span className="inline-flex items-center gap-2"><Phone className="h-4 w-4" /> Call Now</span></a>
+    <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="h-14 bg-green text-ink font-bold grid place-items-center active:scale-[0.98]" data-testid="mobile-whatsapp-button"><span className="inline-flex items-center gap-2"><FaWhatsapp className="h-4 w-4" /> WhatsApp</span></a>
   </div>
 );

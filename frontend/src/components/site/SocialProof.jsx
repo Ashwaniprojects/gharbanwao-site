@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Marquee from "react-fast-marquee";
 import { ArrowRight, Play } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Container, Reveal, SectionHeader, Stars } from "./shared";
 import { TESTIMONIALS, VIDEOS } from "@/data/content";
@@ -29,7 +30,7 @@ export const Testimonials = () => {
   return (
     <section id="testimonials" className="section-gb border-t border-divider overflow-hidden" data-testid="testimonials-section">
       <Container>
-        <SectionHeader label="22 OF 260+ · UNEDITED" title="Explore genuine experiences shared by our valued customers." supporting="22 homeowners agreed to go on record. We did not pick the easy ones." />
+        <SectionHeader label="22 OF 263+ · UNEDITED" title="Google reviews by Our Ghar Banwao Happy Family." supporting="22 homeowners agreed to go on record. We did not pick the easy ones." />
       </Container>
       <div className="mt-14 space-y-5">
         {reduce ? (
@@ -54,7 +55,7 @@ export const VideoTestimonials = () => {
   return (
     <section className="section-gb bg-wash-yellow" data-testid="video-testimonials-section">
       <Container>
-        <SectionHeader label={`${VIDEOS.length} CUSTOMER REVIEWS · WATCH THE HOMES`} title="Hear It from Our Happy Homeowners." supporting="Shot in front of their completed homes. Their words, their language." />
+        <SectionHeader label={`${VIDEOS.length} CUSTOMER REVIEWS · WATCH THE HOMES`} title="Hear It from Our Happy Homeowners. --- Happy Customer Reviews" supporting="Shot in front of their completed homes. Their words, their language." />
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {HOME_VIDEOS.map((v, i) => (
             <Reveal key={v.id} delay={i * 0.05}>
@@ -74,6 +75,9 @@ export const VideoTestimonials = () => {
             </Reveal>
           ))}
         </div>
+        <Reveal className="mt-10">
+          <Link to="/reviews" className="inline-flex items-center gap-1.5 font-bold underline decoration-green decoration-2 underline-offset-4" data-testid="more-videos-link">More Videos <ArrowRight className="h-4 w-4" /></Link>
+        </Reveal>
       </Container>
       <Dialog open={!!open} onOpenChange={(o) => !o && setOpen(null)}>
         <DialogContent className="max-w-3xl rounded-2xl border-divider p-3" data-testid="video-lightbox">

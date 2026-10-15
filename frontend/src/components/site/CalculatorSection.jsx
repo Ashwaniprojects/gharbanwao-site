@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Download, Printer, Share2 } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa6";
 import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
 import { Container, MonoLabel, Reveal, SectionHeader } from "./shared";
 import { UnitToggle } from "./HeroCalculator";
 import { CalcDonut, CalcTimeline } from "./CalcCharts";
@@ -12,6 +14,7 @@ import { useCalc } from "@/lib/calcContext";
 import { formatINR } from "@/lib/calc";
 import { scrollToId } from "@/lib/scroll";
 import { downloadEstimatePDF } from "@/lib/pdf";
+import { createLead } from "@/lib/api";
 
 const Field = ({ label, children }) => (
   <label className="grid gap-1.5">
@@ -25,6 +28,37 @@ export const CalculatorSection = ({ standalone = false }) => {
   const [shareOpen, setShareOpen] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
 
+  const whatsappMutation = useMutation({
+    mutationFn: (data) => createLead({ ...data, source: "calculator_whatsapp" }),
+    onSuccess: (res) => {
+      toast.success("Opening WhatsApp", { description: "Send the message and we'll get back to you within 2 hours." });
+      if (res?.whatsapp_fallback) {
+        window.open(res.whatsapp_fallback, "_blank", "noopener");
+      }
+    },
+    onError: () => toast.error("Could not open WhatsApp. Try calling us directly at 09648249999."),
+  });
+
+  const shareOnWhatsApp = () => {
+    if (!estimate) return;
+    const perSqft = formatINR(estimate.perSqft);
+    const total = formatINR(estimate.total);
+    const city = inputs.city;
+    const sqft = Math.round(estimate.sqft).toLocaleString("en-IN");
+    const msg = `Hi Ghar Banwao, I just used your cost calculator.\n\nCity: ${city}\nPlot area: ${sqft} sqft\nCost per sqft: ${perSqft}\nTotal estimated cost: ${total}\n\nI'd like to discuss this further.`;
+    whatsappMutation.mutate({
+      name: "",
+      phone: "",
+      whatsapp: "",
+      city,
+      locality: "",
+      plot_size: `${sqft} sqft`,
+      timeline: "",
+      estimate: { total: estimate.total, perSqft: estimate.perSqft, sqft: estimate.sqft },
+    });
+    window.open(`https://wa.me/919648249999?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+  };
+
   const handleDownloadPdf = async () => {
     if (!estimate) return;
     setPdfLoading(true);
@@ -35,6 +69,7 @@ export const CalculatorSection = ({ standalone = false }) => {
     } finally {
       setPdfLoading(false);
     }
+    shareOnWhatsApp();
   };
 
   return (
@@ -111,11 +146,12 @@ export const CalculatorSection = ({ standalone = false }) => {
                   <button onClick={handleDownloadPdf} disabled={pdfLoading} className="pill-green h-12 px-6 text-[15px] disabled:opacity-60" data-testid="calc-download-pdf-button">
                     <Download className="h-[18px] w-[18px]" strokeWidth={2.5} /> {pdfLoading ? "Preparing PDF…" : "Download PDF"}
                   </button>
-                  <button onClick={() => window.print()} className="pill-ghost h-12 px-6 text-[15px]" data-testid="calc-print-button"><Printer className="h-[18px] w-[18px]" strokeWidth={2.5} /> Print Final Estimate</button>
+                  <button onClick={() => { shareOnWhatsApp(); window.print(); }} className="pill-ghost h-12 px-6 text-[15px]" data-testid="calc-print-button"><Printer className="h-[18px] w-[18px]" strokeWidth={2.5} /> Print Final Estimate</button>
+                  <button onClick={shareOnWhatsApp} disabled={whatsappMutation.isPending} className="pill-ghost h-12 px-6 text-[15px] disabled:opacity-60" data-testid="calc-whatsapp-button"><FaWhatsapp className="h-[18px] w-[18px] text-[#25D366]" strokeWidth={2.5} /> {whatsappMutation.isPending ? "Opening…" : "Share on WhatsApp"}</button>
                   <button onClick={() => setShareOpen(true)} className="pill-ghost h-12 px-6 text-[15px]" data-testid="calc-share-button"><Share2 className="h-[18px] w-[18px]" strokeWidth={2.5} /> Share Final Estimate</button>
                   <button onClick={() => scrollToId("contact")} className="pill-green h-12 px-6 text-[15px]" data-testid="calc-book-visit-button">Book Free Site Visit <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2.5} /></button>
                 </div>
-                <p className="mt-2 text-right text-[12px] text-ink/50 no-print" data-testid="calc-download-pdf-hint">Download the PDF to send it to family or save for your records — no sign-up needed.</p>
+                <p className="mt-2 text-right text-[12px] text-ink/50 no-print" data-testid="calc-download-pdf-hint">Download the PDF to send it to family or save for your records — or share it straight to WhatsApp.</p>
               </div>
             </motion.div>
           )}

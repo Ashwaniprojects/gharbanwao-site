@@ -58,25 +58,25 @@ export const ANNOUNCEMENTS = [
 ];
 
 export const TRUST = [
-  { number: "37+", label: "Ongoing construction", note: "Live on the project map below" },
-  { number: "260+", label: "Homes handed over", note: "Across UP since 2017" },
+  { number: "263+", label: "Projects completed", note: "Handed over across UP since 2017" },
+  { number: "52", label: "Ongoing projects", note: "Live on the project map below" },
   { number: "4.8 / 5", label: "Google rating", note: "From 180+ verified reviews" },
   { number: "9+ yrs", label: "On the ground", note: "Lucknow headquartered" },
 ];
 
 export const WHY = [
-  { icon: "ClipboardCheck", title: "150+ onsite quality checks", text: "Documented stage-wise. You see the checklist, not just the result." },
-  { icon: "FileText", title: "100% materials transparency", text: "Brand, grade, and quantity on every delivery note." },
-  { icon: "FlaskConical", title: "Materials quality control", text: "Sample testing before site delivery. Rejected batches get returned." },
-  { icon: "Camera", title: "Real-time project tracking", text: "Your WhatsApp gets site photos every Monday and Thursday." },
-  { icon: "ShieldCheck", title: "100% money safety", text: "Payments linked to stage completion, not calendar dates." },
-  { icon: "Landmark", title: "Structural warranty", text: "25 years on structure. In writing. Transferable on resale." },
-  { icon: "CalendarRange", title: "Stage-linked payment schedule", text: "The same 9-stage schedule on every package, mapped to work finished, not ours." },
-  { icon: "Headset", title: "Dedicated customer support", text: "One project manager per build. One WhatsApp number. One accountable name." },
-  { icon: "Timer", title: "On-time delivery", text: "Average delay across 260+ homes: 11 days. We publish it." },
-  { icon: "History", title: "9+ years of experience", text: "Started 2017. Still Lucknow-headquartered." },
-  { icon: "HardHat", title: "Dedicated engineers", text: "One structural, one site, one quality — assigned per project." },
-  { icon: "Wrench", title: "Post-handover support", text: "12 months of free fixes on anything we built." },
+  { icon: "ClipboardCheck", title: "150+ onsite quality checks", text: "Documented stage-wise. You see the checklist, not just the result.", img: "/images/about/onsite-blueprint-consultation.webp" },
+  { icon: "FileText", title: "100% materials transparency", text: "Brand, grade, and quantity on every delivery note.", img: "/images/about/modern-brick-house-under-construction.webp" },
+  { icon: "FlaskConical", title: "Materials quality control", text: "Sample testing before site delivery. Rejected batches get returned.", img: "/images/featured/construction.png" },
+  { icon: "Camera", title: "Real-time project tracking", text: "Your WhatsApp gets site photos every Monday and Thursday.", img: "/images/about/blueprints-across-india.webp" },
+  { icon: "ShieldCheck", title: "100% money safety", text: "Payments linked to stage completion, not calendar dates.", img: "/images/featured/architecture.png" },
+  { icon: "Landmark", title: "Structural warranty", text: "25 years on structure. In writing. Transferable on resale.", img: "/images/about/warm-modern-house.webp" },
+  { icon: "CalendarRange", title: "Stage-linked payment schedule", text: "The same 9-stage schedule on every package, mapped to work finished, not ours.", img: "/images/about/warm-modern-indian-home.webp" },
+  { icon: "Headset", title: "Dedicated customer support", text: "One project manager per build. One WhatsApp number. One accountable name.", img: "/images/featured/renovation.png" },
+  { icon: "Timer", title: "On-time delivery", text: "Average delay across 263+ homes: 11 days. We publish it.", img: "/images/about/proud-family-dream-home.webp" },
+  { icon: "History", title: "9+ years of experience", text: "Started 2017. Still Lucknow-headquartered.", img: "/images/featured/interior.png" },
+  { icon: "HardHat", title: "Dedicated engineers", text: "One structural, one site, one quality — assigned per project.", img: "/images/about/onsite-blueprint-consultation.webp" },
+  { icon: "Wrench", title: "Post-handover support", text: "12 months of free fixes on anything we built.", img: "/images/about/warm-modern-house.webp" },
 ];
 
 export const SERVICES = [
@@ -87,13 +87,13 @@ export const SERVICES = [
 ];
 
 export const PROCESS = [
-  { n: "01", name: "Search the Right Company", highlight: "Compare profiles, reviews and past projects before you commit to anyone." },
-  { n: "02", name: "Appointment & Meeting", highlight: "Book a free consultation call or an in-person site visit with our team." },
-  { n: "03", name: "NB Project Code Allotment", highlight: "Your design file is registered with Nakshaa Banwao, our architecture arm." },
-  { n: "04", name: "Meet Architect & Engineer Team", highlight: "Discuss layout, Vastu, elevation and structural needs face to face." },
+  { n: "01", name: "Search the Right Company", highlight: "Compare profiles, reviews and past projects before you commit to anyone.", img: "/images/about/blueprints-across-india.webp" },
+  { n: "02", name: "Appointment & Meeting", highlight: "Book a free consultation call or an in-person site visit with our team.", img: "/images/about/onsite-blueprint-consultation.webp" },
+  { n: "03", name: "NB Project Code Allotment", highlight: "Your design file is registered with Nakshaa Banwao, our architecture arm.", img: "/images/featured/architecture.png" },
+  { n: "04", name: "Meet Architect & Engineer Team", highlight: "Discuss layout, Vastu, elevation and structural needs face to face.", img: "/images/about/modern-brick-house-under-construction.webp" },
   { n: "05", name: "Design & Final Discussion", highlight: "Floor plan, 3D elevation and structural drawing finalized together.", img: "/images/process/step-05-design.webp" },
-  { n: "06", name: "Get Quotation & Agreement", highlight: "A transparent, phase-wise quote signed before a single brick moves." },
-  { n: "07", name: "GB Project Code Allotment", highlight: "Your build is registered with Ghar Banwao and assigned a site engineer." },
+  { n: "06", name: "Get Quotation & Agreement", highlight: "A transparent, phase-wise quote signed before a single brick moves.", img: "/images/about/warm-modern-indian-home.webp" },
+  { n: "07", name: "GB Project Code Allotment", highlight: "Your build is registered with Ghar Banwao and assigned a site engineer.", img: "/images/featured/construction.png" },
   { n: "08", name: "Pooja & Work Start", highlight: "Bhoomi pujan first, then foundation work begins right on schedule.", img: "/images/process/step-08-pooja.webp" },
   { n: "09", name: "Step-by-Step Project Update & Engineer Support", highlight: "Weekly WhatsApp photo updates with direct access to your engineer.", img: "/images/process/step-09-updates.webp" },
   { n: "10", name: "Finishing & Delivery", highlight: "150-point checklist, warranty handover, and keys in your hand.", img: "/images/process/step-10-handover.webp" },
