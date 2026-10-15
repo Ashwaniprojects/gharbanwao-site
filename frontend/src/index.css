@@ -2,24 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Builder Mascot cursor — desktop only */
-.desktop-only {
-  display: none;
-}
-@media (hover: hover) and (pointer: fine) {
-  .desktop-only {
-    display: block;
-  }
-  .mascot-root,
-  .mascot-root * {
-    cursor: none !important;
-  }
-  .mascot-root input,
-  .mascot-root textarea {
-    cursor: text !important;
-  }
-}
-
 @layer base {
   :root {
     --text: #000000;
