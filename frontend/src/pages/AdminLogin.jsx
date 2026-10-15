@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { KeyRound, LogOut } from "lucide-react";
+import { Eye, EyeOff, KeyRound, LogOut } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/site/Logo";
@@ -17,6 +17,7 @@ const STYLES = {
 
 export const AdminLogin = ({ onAuthenticated }) => {
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
 
@@ -59,17 +60,33 @@ export const AdminLogin = ({ onAuthenticated }) => {
               >
                 Password
               </label>
-              <Input
-                id="admin-password"
-                data-testid="admin-password-input"
-                type="password"
-                autoComplete="current-password"
-                autoFocus
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={STYLES.input}
-                placeholder="••••••••"
-              />
+              <div className="relative">
+                <Input
+                  id="admin-password"
+                  data-testid="admin-password-input"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  autoFocus
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={`${STYLES.input} pr-12`}
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  data-testid="admin-password-toggle"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-pressed={showPassword}
+                  className="absolute inset-y-0 right-0 flex w-12 items-center justify-center rounded-r-lg text-ink/45 transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" strokeWidth={2.25} />
+                  ) : (
+                    <Eye className="h-5 w-5" strokeWidth={2.25} />
+                  )}
+                </button>
+              </div>
             </div>
             {error ? (
               <p
