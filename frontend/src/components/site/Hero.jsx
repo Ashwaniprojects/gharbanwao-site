@@ -16,11 +16,11 @@ export const Hero = () => {
       <div className="absolute inset-y-0 left-0 w-full lg:w-[60%] bg-wash-yellow grain" aria-hidden="true" />
       <div className="absolute -left-24 top-1/2 h-[520px] w-[520px] rounded-full bg-yellow/40 blur-3xl -translate-y-1/2 hidden lg:block" aria-hidden="true" />
       <div className="container-gb relative grid lg:grid-cols-5 gap-10 lg:gap-6 py-14 lg:py-24 min-h-[calc(100vh-108px)] items-center">
-        <div className="lg:col-span-3 lg:pr-12">
+        <div className="lg:col-span-3 lg:pr-12" style={{ containerType: "inline-size" }}>
           <h1
             lang="hi"
-            className="display mt-6 text-[40px] sm:text-5xl lg:text-[68px] xl:text-[76px] leading-[1.4]"
-            style={{ fontFamily: '"Mukta", "Manrope", sans-serif', letterSpacing: "normal" }}
+            className="display mt-6 leading-[1.4]"
+            style={{ fontFamily: '"Mukta", "Manrope", sans-serif', letterSpacing: "normal", fontSize: "clamp(26px, 10cqw, 76px)" }}
             data-testid="hero-headline"
           >
             <span className="block overflow-hidden pb-[0.4em] -mb-[0.4em] pt-[0.08em] -mt-[0.08em]">

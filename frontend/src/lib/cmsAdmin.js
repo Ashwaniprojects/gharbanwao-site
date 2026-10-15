@@ -126,14 +126,14 @@ const datePayload = (value) => (value ? `${value}T00:00:00.000Z` : null);
 export const savePost = ({ slug, ...payload }) =>
   withLock(async () => {
     const body = { ...payload };
-    if (body.published_at === undefined) body.published_at = datePayload(payload.published_at);
+    body.published_at = datePayload(body.published_at);
     return request.post("/api/content/posts", body).then((r) => r.data);
   });
 
 export const updatePost = (slug, { slug: _ignored, ...payload }) =>
   withLock(async () => {
     const body = { ...payload };
-    if (body.published_at === undefined) body.published_at = datePayload(payload.published_at);
+    body.published_at = datePayload(body.published_at);
     // The slug never moves on an edit; the server ignores it, so never send a
     // derived one that would 409 against another post.
     return request.put(`/api/content/posts/${encodeURIComponent(slug)}`, body).then((r) => r.data);

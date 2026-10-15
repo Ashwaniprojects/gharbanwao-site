@@ -10,19 +10,23 @@ import { Helmet } from "react-helmet-async";
 
 const PHONE_HREF = `tel:${PHONES[0]}`;
 
-// Leadership messages keep their original substance; wording is condensed to
-// the 80-120 word target in the redesign brief. Do not expand without the
-// owner's approval — the full originals are preserved in git history.
+// The CMD and CEO messages are reproduced exactly as the owner wrote them —
+// they must NOT be condensed, shortened, or reworded. The redesign brief's
+// 80-120 word suggestion does not apply here; the owner overrode it.
 const CMD_MESSAGE = [
-  "At Ghar Banwao, we set out to transform how India experiences home construction. Homeowners still struggle to find reliable professionals, keep costs transparent, and coordinate dozens of services under one roof.",
-  "We are closing those gaps with a trusted, technology-driven platform that brings the entire journey together. Sustainable growth comes from understanding customer needs, embracing innovation, and delivering on every promise we make.",
-  "Success is not the number of homes we complete — it is the trust we earn, the standards we set, and the difference we make in how people build.",
+  "At Ghar Banwao, our journey is driven by a bold ambition: to transform the way India experiences home construction. We recognize that the construction industry has enormous potential, yet customers often face challenges in finding reliable professionals, ensuring transparency, managing costs, and coordinating multiple services. Our vision is to bridge these gaps by building a trusted, technology-driven platform that brings the entire home construction journey together under one roof.",
+  "As CMD, I believe that sustainable growth comes from understanding customer needs, embracing innovation, and consistently delivering on our promises. We are focused on building more than a service company. We are building an ecosystem that makes construction more accessible, organized, transparent, and dependable.",
+  "Our long-term ambition is to establish Ghar Banwao as one of India's leading construction services portals, empowering individuals to move from the first idea of a dream home to its successful completion with greater confidence and convenience.",
+  "For us, success is not measured merely by the number of projects we complete, but by the trust we earn, the standards we establish, and the difference we make in the way people build.",
+  "We are building Ghar Banwao with a vision that goes beyond individual homes to shape the future of India's construction industry.",
 ];
 
 const CEO_MESSAGE = [
-  "I am redefining the home-building experience by putting our customers at the centre of every decision. Building a home should be exciting and fulfilling, never complicated or stressful.",
-  "My priority is an organisation that earns trust through transparency, delivers value through quality, and builds lasting relationships through accountability — bringing architecture, construction, and interior design together through a single dependable platform.",
-  "As we grow, our commitment does not change: make the dream of owning a well-built home simpler for every customer.",
+  "At Ghar Banwao, my vision is to redefine the home-building experience by placing our customers at the centre of every decision we make. I believe that building a home should be an exciting and fulfilling journey, not a complicated or stressful process.",
+  "As CEO, my priority is to build an organization that earns customer trust through transparency, delivers value through quality, and creates lasting relationships through accountability. We strive to understand every customer's unique vision, requirements, and budget, translating them into thoughtfully planned homes with a seamless experience from concept to completion.",
+  "I believe the future of home construction lies in making reliable services more accessible, organized, and customer-friendly. Our goal is to bring architecture, construction, and interior design together through a single, dependable platform that empowers customers to make informed decisions with confidence.",
+  "At Ghar Banwao, success is not measured merely by the homes we build, but by the trust we earn and the satisfaction we deliver. As we grow, our commitment remains unwavering: to continuously improve, innovate, and make the dream of owning a well-built home simpler for every customer.",
+  "Our ambition is to make Ghar Banwao India's most trusted, customer-centric home construction services platform — where every dream matters and every customer comes first.",
 ];
 
 const COMMITMENTS = [

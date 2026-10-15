@@ -222,8 +222,12 @@ const FooterStat = ({ value, suffix = "", decimals = 0, label, note, delay = 0 }
     const node = ref.current?.querySelector("[data-count]");
     if (!node) return;
     const write = (v) => { node.textContent = v.toFixed(decimals); };
-    if (reduce || !inView) {
+    if (reduce) {
       write(value);
+      return;
+    }
+    if (!inView) {
+      write(0);
       return;
     }
     const ctrl = animate(0, value, {
