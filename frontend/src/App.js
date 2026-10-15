@@ -1,5 +1,5 @@
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/sonner";
 import Home from "@/pages/Home";
@@ -11,9 +11,17 @@ import CalculatorPage from "@/pages/CalculatorPage";
 import RegisterPage from "@/pages/RegisterPage";
 import ReviewsPage from "@/pages/ReviewsPage";
 import FaqPage from "@/pages/FaqPage";
+import AdminPage from "@/pages/AdminPage";
 import { CalcProvider } from "@/lib/calcContext";
 import { useLenis } from "@/hooks/useLenis";
 import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
+
+/** The floating WhatsApp button belongs to the marketing site, not the CMS. */
+function SiteChrome() {
+  const { pathname } = useLocation();
+  if (pathname.startsWith("/admin")) return null;
+  return <FloatingWhatsApp />;
+}
 
 function App() {
   useLenis();
@@ -31,12 +39,13 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/reviews" element={<ReviewsPage />} />
             <Route path="/faq" element={<FaqPage />} />
+            <Route path="/admin" element={<AdminPage />} />
             <Route path="*" element={<Home />} />
           </Routes>
+          <SiteChrome />
         </BrowserRouter>
       </HelmetProvider>
       <Toaster position="top-center" richColors />
-      <FloatingWhatsApp />
     </CalcProvider>
   );
 }

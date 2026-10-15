@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { animate, useInView, useReducedMotion } from "framer-motion";
+import Marquee from "react-fast-marquee";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { ArrowRight, Phone, Star, MessageCircle } from "lucide-react";
@@ -13,15 +15,6 @@ import { createLead } from "@/lib/api";
 import { scrollToId } from "@/lib/scroll";
 
 const PAGE_ROUTES = ["about", "reviews", "contact", "privacy", "terms", "faq"];
-
-// Footer entries either point at a real page (`href`) or scroll to a
-// section on the homepage (`id`).
-const FooterLink = ({ item }) => {
-  if (item.href) {
-    return <Link to={item.href} className="hover:underline decoration-green decoration-2 underline-offset-4" data-testid={`footer-link-${item.label.toLowerCase().replace(/\s+/g, "-")}`}>{item.label}</Link>;
-  }
-  return <button onClick={() => footerGo(item.id)} className="hover:underline decoration-green decoration-2 underline-offset-4" data-testid={`footer-link-${item.id}`}>{item.label}</button>;
-};
 
 const footerGo = (id) => {
   if (id === "home") {
@@ -133,69 +126,231 @@ export const FinalCTA = () => {
   );
 };
 
+const FOOTER_EXPLORE = [
+  ...FOOTER_NAV.slice(0, 5),
+  { label: "Register with us", href: "/register" },
+  ...FOOTER_NAV.slice(5),
+];
+
+const FOOTER_TRUST = [
+  { label: "Google reviews ↗", href: "https://www.google.com/maps", external: true },
+  { label: "Warranty PDF", href: "/warranty.pdf", preventDefault: true },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Terms", href: "/terms" },
+  { label: "Login", href: "/admin" },
+];
+
+const FOOTER_SOCIALS = [
+  { Icon: FaFacebook, label: "Facebook", href: "https://www.facebook.com/gharbanwao/", bg: "#1877F2" },
+  { Icon: FaInstagram, label: "Instagram", href: "https://www.instagram.com/gharbanwao/", bg: "linear-gradient(45deg, #FEDA75, #FA7E1E, #D62976, #962FBF, #4F5BD5)" },
+  { Icon: FaThreads, label: "Threads", href: "https://www.threads.com/@gharbanwao", bg: "#000000" },
+  { Icon: FaYoutube, label: "YouTube", href: "https://www.youtube.com/@gharbanwao", bg: "#FF0000" },
+  { Icon: FaPinterest, label: "Pinterest", href: "https://in.pinterest.com/gharbanwao/", bg: "#E60023" },
+];
+
+const FooterLink = ({ item }) => {
+  if (item.preventDefault) {
+    return (
+      <a
+        href={item.href}
+        onClick={(e) => e.preventDefault()}
+        className="hover:underline decoration-green decoration-2 underline-offset-4"
+        data-testid={`footer-link-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
+      >
+        {item.label}
+      </a>
+    );
+  }
+  if (item.external) {
+    return (
+      <a
+        href={item.href}
+        target="_blank"
+        rel="noreferrer"
+        className="hover:underline decoration-green decoration-2 underline-offset-4"
+        data-testid={`footer-link-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
+      >
+        {item.label}
+      </a>
+    );
+  }
+  if (item.href) {
+    return (
+      <Link
+        to={item.href}
+        className="hover:underline decoration-green decoration-2 underline-offset-4"
+        data-testid={`footer-link-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
+      >
+        {item.label}
+      </Link>
+    );
+  }
+  return (
+    <button
+      type="button"
+      onClick={() => footerGo(item.id)}
+      className="hover:underline decoration-green decoration-2 underline-offset-4"
+      data-testid={`footer-link-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
+    >
+      {item.label}
+    </button>
+  );
+};
+
+const FooterLinkList = ({ items }) => (
+  <ul className="space-y-3 text-[15px] font-medium text-ink/70">
+    {items.map((item) => (
+      <li key={item.label}>
+        <FooterLink item={item} />
+      </li>
+    ))}
+  </ul>
+);
+
+const FOOTER_STATS = [
+  { value: 263, suffix: "+", label: "Homes delivered", note: "Across UP since 2017" },
+  { value: 52, suffix: "", label: "Sites live", note: "On the ground this week" },
+  { value: 4.8, suffix: "/5", decimals: 1, label: "Google rating", note: "From 180+ reviews" },
+];
+
+const FooterStat = ({ value, suffix = "", decimals = 0, label, note, delay = 0 }) => {
+  const reduce = useReducedMotion();
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+
+  useEffect(() => {
+    const node = ref.current?.querySelector("[data-count]");
+    if (!node) return;
+    const write = (v) => { node.textContent = v.toFixed(decimals); };
+    if (reduce || !inView) {
+      write(value);
+      return;
+    }
+    const ctrl = animate(0, value, {
+      duration: 1.2,
+      delay,
+      ease: [0.22, 1, 0.36, 1],
+      onUpdate: write,
+    });
+    return ctrl.stop;
+  }, [inView, reduce, value, decimals, delay]);
+
+  return (
+    <div ref={ref} className="group relative border-t border-divider pt-5" data-testid={`footer-stat-${label.toLowerCase().replace(/\s+/g, "-")}`}>
+      <span
+        aria-hidden
+        className="absolute -top-px left-0 h-[2px] w-10 origin-left bg-green transition-transform duration-500 ease-out group-hover:scale-x-[1.8]"
+      />
+      <p className="display text-3xl tabular-nums text-ink sm:text-4xl">
+        <span data-count>{value.toFixed(decimals)}</span>
+        {suffix && <span className="text-green">{suffix}</span>}
+      </p>
+      <p className="mt-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-ink/60">{label}</p>
+      <p className="mt-1 text-[13px] text-ink/55">{note}</p>
+    </div>
+  );
+};
+
+const FooterCities = () => {
+  const reduce = useReducedMotion();
+  const items = CITIES.map((city) => (
+    <span key={city} className="inline-flex items-center whitespace-nowrap">
+      <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-ink/70">{city}</span>
+      <span aria-hidden className="mx-4 text-green">▪</span>
+    </span>
+  ));
+
+  if (reduce) {
+    return (
+      <Container className="py-5">
+        <p className="mono-label text-ink/55">Serving · {CITIES.join(" · ")}</p>
+      </Container>
+    );
+  }
+
+  return (
+    <div className="border-t border-divider py-5" data-testid="footer-cities">
+      <Marquee speed={26} gradient gradientColor="#F4FADF" gradientWidth={70} autoFill>
+        {items}
+      </Marquee>
+    </div>
+  );
+};
+
 export const Footer = () => (
-  <footer className="bg-paper border-t border-divider pb-24 md:pb-0" data-testid="footer">
-    <Container className="py-14 grid md:grid-cols-4 gap-10">
-      <div className="md:col-span-1">
-        <Logo size="h-20" />
-        <p className="mt-4 text-[15px] text-ink/70">Lucknow's #1 construction company — 260+ homes delivered across Uttar Pradesh since 2017.</p>
-        <address className="mt-5 not-italic text-[14px] text-ink/70 space-y-1">
-          <p>16/284, near Munshipulia, next to Ashirwad Bakery, Indira Nagar, Lucknow, Uttar Pradesh 226016</p>
-          <p><a href={`tel:${PHONES[0]}`} className="hover:text-ink">{PHONES[0]}</a> · <a href={`tel:${PHONES[1]}`} className="hover:text-ink">{PHONES[1]}</a></p>
-          <p><a href={WHATSAPP_URL} className="hover:text-ink">WhatsApp</a> · <a href="mailto:hello@gharbanwao.com" className="hover:text-ink">hello@gharbanwao.com</a></p>
-        </address>
-      </div>
-      <div>
-        <p className="mono-label text-ink/50 mb-4">Explore</p>
-        <ul className="space-y-2 text-[15px] font-semibold">
-          {FOOTER_NAV.slice(0, 5).map((n) => (
-            <li key={n.label}><FooterLink item={n} /></li>
-          ))}
-          <li><Link to="/register" className="hover:underline decoration-green decoration-2 underline-offset-4" data-testid="footer-link-register">Register with us</Link></li>
-        </ul>
-      </div>
-      <div>
-        <p className="mono-label text-ink/50 mb-4">Explore</p>
-        <ul className="space-y-2 text-[15px] font-semibold">
-          {FOOTER_NAV.slice(5).map((n) => (
-            <li key={n.label}><FooterLink item={n} /></li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <p className="mono-label text-ink/50 mb-4">Trust</p>
-        <ul className="space-y-2 text-[15px] text-ink/70">
-          <li><a href="https://www.google.com/maps" target="_blank" rel="noreferrer" className="hover:text-ink">Google reviews ↗</a></li>
-          <li><a href="/warranty.pdf" onClick={(e) => e.preventDefault()} className="hover:text-ink">Warranty PDF</a></li>
-          <li><Link to="/privacy" className="hover:underline decoration-green decoration-2 underline-offset-4" data-testid="footer-link-privacy">Privacy</Link> · <Link to="/terms" className="hover:underline decoration-green decoration-2 underline-offset-4" data-testid="footer-link-terms">Terms</Link></li>
-        </ul>
-      </div>
-    </Container>
-    <div className="border-t border-divider">
-      <Container className="py-5 flex flex-col md:flex-row gap-3 md:items-center justify-between font-mono text-[12px] text-ink/60">
-        <p>© 2026 GharBanwao.com®. Lucknow, Kanpur & 6 more UP cities</p>
-        <div className="flex gap-3">
-          {[
-            [FaFacebook, "Facebook", "https://www.facebook.com/gharbanwao/", "#1877F2"],
-            [FaInstagram, "Instagram", "https://www.instagram.com/gharbanwao/", "linear-gradient(45deg, #FEDA75, #FA7E1E, #D62976, #962FBF, #4F5BD5)"],
-            [FaThreads, "Threads", "https://www.threads.com/@gharbanwao", "#000000"],
-            [FaYoutube, "YouTube", "https://www.youtube.com/@gharbanwao", "#FF0000"],
-            [FaPinterest, "Pinterest", "https://in.pinterest.com/gharbanwao/", "#E60023"],
-          ].map(([Icon, s, href, bg]) => (
-            <a
-              key={s}
-              href={href}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={s}
-              style={{ background: bg }}
-              className="h-9 w-9 grid place-items-center rounded-full text-white hover:scale-110 hover:shadow-md transition-transform"
-              data-testid={`footer-social-${s.toLowerCase()}`}
-            >
-              <Icon className="h-4 w-4" />
-            </a>
+  <footer className="bg-wash-green border-t border-divider pb-24 md:pb-0" data-testid="footer">
+    <div className="border-b border-divider">
+      <Container className="py-12">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-10">
+          {FOOTER_STATS.map((stat, i) => (
+            <FooterStat key={stat.label} {...stat} delay={i * 0.12} />
           ))}
         </div>
+      </Container>
+    </div>
+
+    <Container className="py-16">
+      <div className="grid grid-cols-2 gap-x-10 gap-y-12 md:grid-cols-12 md:gap-x-8 md:gap-y-0">
+        <div className="col-span-2 md:col-span-4">
+          <Logo size="h-16" />
+          <p className="mt-5 max-w-[38ch] text-[15px] leading-relaxed text-ink/70">
+            Lucknow's #1 construction company — 260+ homes delivered across Uttar Pradesh since 2017.
+          </p>
+          <address className="mt-7 space-y-2 text-[14px] leading-relaxed text-ink/70 not-italic">
+            <p className="max-w-[44ch]">
+              16/284, near Munshipulia, next to Ashirwad Bakery, Indira Nagar, Lucknow, Uttar Pradesh 226016
+            </p>
+            <p>
+              <a href={`tel:${PHONES[0]}`} className="tabular-nums transition-colors hover:text-ink">{PHONES[0]}</a>
+              <span className="mx-2 text-ink/30">·</span>
+              <a href={`tel:${PHONES[1]}`} className="tabular-nums transition-colors hover:text-ink">{PHONES[1]}</a>
+            </p>
+            <p>
+              <a href={WHATSAPP_URL} className="transition-colors hover:text-ink">WhatsApp</a>
+              <span className="mx-2 text-ink/30">·</span>
+              <a href="mailto:hello@gharbanwao.com" className="transition-colors hover:text-ink">hello@gharbanwao.com</a>
+            </p>
+          </address>
+        </div>
+
+        <div className="col-span-1 md:col-span-3 md:border-t md:border-divider md:pt-5 md:pl-6">
+          <p className="mono-label text-ink/50 mb-4">Explore</p>
+          <FooterLinkList items={FOOTER_EXPLORE} />
+        </div>
+
+        <div className="col-span-1 md:col-span-2 md:border-t md:border-divider md:pt-5 md:pl-6">
+          <p className="mono-label text-ink/50 mb-4">Trust</p>
+          <FooterLinkList items={FOOTER_TRUST} />
+        </div>
+
+        <div className="col-span-2 md:col-span-3 md:border-t md:border-divider md:pt-5 md:pl-6">
+          <p className="mono-label text-ink/50 mb-4">Follow us</p>
+          <ul className="flex flex-wrap gap-2.5">
+            {FOOTER_SOCIALS.map(({ Icon, label, href, bg }) => (
+              <li key={label}>
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={label}
+                  style={{ background: bg }}
+                  className="grid size-9 place-items-center rounded-full text-white ring-1 ring-black/5 transition-[transform,box-shadow] duration-200 hover:scale-105 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
+                  data-testid={`footer-social-${label.toLowerCase()}`}
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </Container>
+
+    <FooterCities />
+
+    <div className="border-t border-divider">
+      <Container className="py-6">
+        <p className="mono-label text-ink/55">© 2026 GharBanwao.com®. Lucknow, Kanpur &amp; 6 more UP cities</p>
       </Container>
     </div>
   </footer>

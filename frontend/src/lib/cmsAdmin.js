@@ -1,0 +1,156 @@
+import axios from "axios";
+
+/*
+ * Thin client for the content service (the CMS backend, deployed separately
+ * from the lead/registration serverless functions). Everything here except
+ * login and the public project list requires an admin Bearer token.
+ *
+ * The base URL is an env-configurable constant rather than a build-time
+ * REACT_APP_* constant, so it can be changed without waiting for a Vercel
+ * rebuild — which is the point of the Deploy button below it. CRA inlines
+ * REACT_APP_* at build time, so any build-time value is a second, separate
+ * override; that is intentional for hotfixing a wrong default.
+ */
+
+export const CMS_BASE_URL =
+  process.env.CMS_BACKEND_URL ||
+  process.env.REACT_APP_CMS_BACKEND_URL ||
+  "https://backend-production-07ed.up.railway.app";
+
+const TOKEN_KEY = "cms_admin_token";
+
+export const getToken = () => localStorage.getItem(TOKEN_KEY) || null;
+
+export const setToken = (token) => localStorage.setItem(TOKEN_KEY, token);
+
+export const clearToken = () => localStorage.removeItem(TOKEN_KEY);
+
+export const isAuthenticated = () => Boolean(getToken());
+
+/**
+ * One request at a time. Mutations are sequential in this UI, and concurrent
+ * saves of the same item from two open tabs is the exact case the lock is for.
+ * Every failed request releases the lock, so a single bad call cannot make the
+ * whole admin page unresponsive.
+ */
+let queue = Promise.resolve();
+export const withLock = (task) => {
+  const next = queue.then(task, task);
+  queue = next.catch(() => {});
+  return next;
+};
+
+const request = axios.create({ baseURL: CMS_BASE_URL });
+
+/** Attach the stored token and let a 401 mean "go back to login". */
+request.interceptors.request.use((config) => {
+  const token = getToken();
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+request.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) clearToken();
+    return Promise.reject(error);
+  },
+);
+
+/** Turn any thrown axios error into a short, human-readable sentence. */
+export const errorMessage = (error, fallback = "Something went wrong.") => {
+  if (error && error.response) {
+    const detail = error.response.data && error.response.data.detail;
+    if (typeof detail === "string" && detail.trim()) return detail;
+    if (detail && typeof detail === "object") {
+      const joined = Object.values(detail)
+        .filter((v) => typeof v === "string")
+        .join(" ");
+      if (joined.trim()) return joined;
+    }
+  }
+  if (error && error.message === "Network Error") {
+    return "The content service is not reachable. Check your connection.";
+  }
+  return fallback;
+};
+
+export const login = (password) =>
+  request
+    .post("/api/admin/login", { password })
+    .then((r) => r.data.token);
+
+export const fetchPosts = (includeDrafts) =>
+  request
+    .get("/api/content/posts", {
+      params: includeDrafts ? { all: true, limit: 50 } : { limit: 50 },
+    })
+    .then((r) => r.data.items || []);
+
+export const fetchProjects = () =>
+  request.get("/api/content/projects", { params: { limit: 50 } }).then((r) => r.data.items || []);
+
+export const uploadImage = (file) =>
+  withLock(async () => {
+    const form = new FormData();
+    form.append("file", file);
+    return request.post("/api/admin/upload", form).then((r) => r.data);
+  });
+
+export const triggerDeploy = () =>
+  withLock(() => request.post("/api/admin/deploy").then((r) => r.data));
+
+/**
+ * The backend builds a slug from the title when none is sent, using
+ * lowercase, one hyphen per run of non-alphanumerics, hyphens trimmed at both
+ * ends. Duplicated here so the form can show and edit the slug that will be
+ * used instead of leaving the admin guessing.
+ */
+export const slugify = (value) =>
+  String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+/**
+ * A post date is stored as a timestamp. date inputs only speak YYYY-MM-DD, so
+ * round-trip through that: take the leading ten characters on the way in, and
+ * pin a saved date to midnight UTC on the way out. A missing date stays null,
+ * which the backend treats as "not published yet".
+ */
+export const dateValue = (value) =>
+  value ? String(value).slice(0, 10) : "";
+
+const datePayload = (value) => (value ? `${value}T00:00:00.000Z` : null);
+
+export const savePost = ({ slug, ...payload }) =>
+  withLock(async () => {
+    const body = { ...payload };
+    if (body.published_at === undefined) body.published_at = datePayload(payload.published_at);
+    return request.post("/api/content/posts", body).then((r) => r.data);
+  });
+
+export const updatePost = (slug, { slug: _ignored, ...payload }) =>
+  withLock(async () => {
+    const body = { ...payload };
+    if (body.published_at === undefined) body.published_at = datePayload(payload.published_at);
+    // The slug never moves on an edit; the server ignores it, so never send a
+    // derived one that would 409 against another post.
+    return request.put(`/api/content/posts/${encodeURIComponent(slug)}`, body).then((r) => r.data);
+  });
+
+export const deletePost = (slug) =>
+  withLock(() => request.delete(`/api/content/posts/${encodeURIComponent(slug)}`)).then((r) => r.data);
+
+export const saveProject = (payload) =>
+  withLock(() => request.post("/api/content/projects", payload).then((r) => r.data));
+
+export const updateProject = (slug, payload) =>
+  withLock(() =>
+    request.put(`/api/content/projects/${encodeURIComponent(slug)}`, payload).then((r) => r.data),
+  );
+
+export const deleteProject = (slug) =>
+  withLock(() =>
+    request.delete(`/api/content/projects/${encodeURIComponent(slug)}`).then((r) => r.data),
+  );
