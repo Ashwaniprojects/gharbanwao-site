@@ -133,8 +133,7 @@ export function renderBody(body, images) {
       </ul>
     );
   };
-  for (const raw of String(body || "").split("
-")) {
+  for (const raw of String(body || "").split("\n")) {
     const line = raw.trim();
     if (!line) {
       flush();

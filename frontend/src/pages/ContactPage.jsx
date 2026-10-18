@@ -52,7 +52,7 @@ export default function ContactPage() {
           })}
         </script>
       </Helmet>
-      <AnnouncementStrip>
+      <AnnouncementStrip />
       <Navbar />
       <main>
         <section className="section-gb" data-testid="contact-hero">
