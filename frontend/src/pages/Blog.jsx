@@ -6,7 +6,7 @@ import { Container, MonoLabel, Placeholder, Reveal, SectionHeader, Stars } from 
 import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
 import { ArrowRight, CalendarDays, Clock, Feather } from "lucide-react";
-import { BLOGS } from "@/data/blogs";
+import { BLOGS, BLOG_UPDATED } from "@/data/blogs";
 
 const SITE = "https://gharbanwao.com";
 const BY_SLUG = Object.fromEntries(BLOGS.map((p) => [p.slug, p]));
