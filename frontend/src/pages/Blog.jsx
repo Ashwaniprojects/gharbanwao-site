@@ -1,12 +1,11 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnnouncementStrip } from "@/components/site/AnnouncementStrip";
 import { Navbar } from "@/components/site/Navbar";
 import { FinalCTA, Footer, MobileBar } from "@/components/site/FaqCtaFooter";
 import { Container, MonoLabel, Placeholder, Reveal, SectionHeader, Stars } from "@/components/site/shared";
 import { Helmet } from "react-helmet-async";
-import { Link, Navigate, NavLink, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, CalendarDays, Clock, Feather, ListChecks } from "lucide-react";
-import { BLOGS, BLOG_UPDATED } from "@/data/blogs";
+import { Link, useParams } from "react-router-dom";
+import { ArrowRight, CalendarDays, Clock, Feather } from "lucide-react";
 
 const SITE = "https://gharbanwao.com";
 const BY_SLUG = Object.fromEntries(BLOGS.map((p) => [p.slug, p]));
@@ -408,6 +407,8 @@ function Related({ from }) {
 }
 
 export function BlogIndex() {
+  const [filter, setFilter] = useState("all");
+  const onFilter = setFilter;
   return (
     <div className="min-h-screen bg-paper text-ink">
       <Head post={LIST_HEAD} list={BLOGS} />
@@ -429,17 +430,13 @@ export function BlogIndex() {
         <section className="section-gb">
           <Container>
             <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
-              <NavLink to="/blog" className={({ isActive }) => `rounded-full px-4 h-10 text-[14px] font-semibold border ${isActive ? "bg-ink text-green border-ink" : "border-divider text-ink/70 hover:border-ink"}`} end>
-                All 30
-              </NavLink>
+              <FilterChip active={filter === "all"} onClick={() => onFilter("all")} label="All 30" />
               {CATEGORIES.map((c) => (
-                <NavLink key={c.name} to={`/blog/${slugify(c.name)}`} className={({ isActive }) => `rounded-full px-4 h-10 text-[14px] font-semibold border ${isActive ? "bg-ink text-green border-ink" : "border-divider text-ink/70 hover:border-ink"}`}>
-                  {c.name}
-                </NavLink>
+                <FilterChip key={c.name} active={filter === c.name} onClick={() => onFilter(c.name)} label={c.name} />
               ))}
             </div>
             <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {BLOGS.map((p, i) => (
+              {BLOGS.filter((p) => filter === "all" || p.category === filter).map((p, i) => (
                 <Reveal key={p.slug} delay={(i % 3) * 0.05}>
                   <Link to={`/blog/${p.slug}`} className="card-gb p-6 bg-paper h-full flex flex-col group">
                     <div className="flex items-center justify-between gap-3">
@@ -469,71 +466,19 @@ export function BlogIndex() {
   );
 }
 
-export function BlogCategory() {
-  const { category } = useParams();
-  const name = unslugify(category);
-  const posts = BLOGS.filter((p) => p.category.toLowerCase() === name.toLowerCase());
-  const known = posts.length > 0;
-  const info = CATEGORIES.find((c) => c.name.toLowerCase() === name.toLowerCase());
+function FilterChip({ active, onClick, label }) {
   return (
-    <div className="min-h-screen bg-paper text-ink">
-      <Head post={{ ...LIST_HEAD, slug: category }} list={BLOGS.filter((p) => p.category.toLowerCase() === name.toLowerCase())} />
-      <AnnouncementStrip />
-      <Navbar />
-      <main>
-        <section className="section-gb bg-wash-yellow">
-          <Container className="max-w-4xl">
-            <div className="flex items-center gap-2 text-[13px] text-ink/55">
-              <Link to="/blog" className="hover:text-green-700">Blog</Link>
-              <span>›</span>
-              <span>{known ? name : category}</span>
-            </div>
-            <div className="mt-5">
-              <MonoLabel>{posts.length} POST{posts.length === 1 ? "" : "S"}</MonoLabel>
-              <h1 className="mt-2 text-[30px] font-bold leading-tight tracking-tight">
-                {known ? name : "Posts not found"}
-              </h1>
-              {info && <p className="mt-3 max-w-2xl text-[16px] text-ink/70">{info.blurb}</p>}
-            </div>
-          </Container>
-        </section>
-        <section className="section-gb">
-          <Container>
-            {posts.length === 0 ? (
-              <p className="rounded-2xl border border-divider bg-wash-yellow px-6 py-8 text-center text-[15px] text-ink/70">
-                Nothing is filed under that category yet.{" "}
-                <Link to="/blog" className="font-bold text-green-700 underline">See all 30 posts</Link>.
-              </p>
-            ) : (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {posts.map((p, i) => (
-                  <Reveal key={p.slug} delay={(i % 3) * 0.05}>
-                    <Link to={`/blog/${p.slug}`} className="card-gb p-6 bg-paper h-full flex flex-col group">
-                      <MonoLabel>{p.category}</MonoLabel>
-                      <p className="mt-3 text-[17px] font-bold leading-snug group-hover:text-green-700 transition-colors">
-                        {p.title}
-                      </p>
-                      <p className="mt-3 text-[14px] leading-relaxed text-ink/65 flex-1">{p.seoDescription}</p>
-                      <span className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-bold text-green-700">
-                        Read post <ArrowRight className="h-4 w-4" />
-                      </span>
-                    </Link>
-                  </Reveal>
-                ))}
-              </div>
-            )}
-          </Container>
-        </section>
-        <FinalCTA />
-      </main>
-      <Footer />
-      <MobileBar />
-    </div>
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-full px-4 h-10 text-[14px] font-semibold border transition-colors ${
+        active ? "bg-ink text-green border-ink" : "border-divider text-ink/70 hover:border-ink"
+      }`}
+    >
+      {label}
+    </button>
   );
 }
-
-const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-const unslugify = (s) => String(s || "").split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 
 export function BlogNotFound() {
   return <Navigate to="/blog" replace />;
