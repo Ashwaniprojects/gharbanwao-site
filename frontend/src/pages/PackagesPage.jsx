@@ -2,10 +2,11 @@ import { AnnouncementStrip } from "@/components/site/AnnouncementStrip";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer, MobileBar, FinalCTA } from "@/components/site/FaqCtaFooter";
 import { Container, Reveal, SectionHeader } from "@/components/site/shared";
-import { Check, X, ArrowRight, ShieldCheck } from "lucide-react";
+import { Comparison } from "@/components/site/PricingTeam";
+import { ArrowRight, ShieldCheck } from "lucide-react";
 import {
   PRICING, PRICING_ROWS, PAYMENT_SCHEDULE, PAYMENT_RULES, PAYMENT_EXAMPLE,
-  WHY_GB, WHY_OTHER, PHONES,
+  PHONES,
 } from "@/data/content";
 import { scrollToId } from "@/lib/scroll";
 import { Helmet } from "react-helmet-async";
@@ -133,39 +134,9 @@ export default function PackagesPage() {
 
         {/* Why us, not a local contractor */}
         <section className="section-gb" data-testid="packages-why">
+          <Comparison />
           <Container>
-            <SectionHeader
-              label="GHAR BANWAO VS LOCAL CONTRACTOR"
-              title="Why Ghar Banwao is the best choice for your dream home."
-              supporting="What you get from us, and what you are left to handle yourself with a typical local contractor."
-            />
-            <div className="mt-12 grid md:grid-cols-2 gap-5">
-              <Reveal className="card-gb p-6 md:p-8 bg-paper" data-testid="packages-why-gb">
-                <p className="flex items-center gap-2 font-extrabold text-[17px] pb-4 mb-5 border-b border-divider">
-                  <Check className="h-5 w-5 text-green" strokeWidth={3} /> Why to choose Ghar Banwao
-                </p>
-                <ul className="space-y-2.5">
-                  {WHY_GB.map((item) => (
-                    <li key={item} className="flex gap-2.5 text-[15px] text-ink/80">
-                      <Check className="h-4 w-4 shrink-0 text-green mt-1.5" strokeWidth={3} />{item}
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
-              <Reveal delay={0.1} className="card-gb p-6 md:p-8 bg-wash-yellow" data-testid="packages-why-other">
-                <p className="flex items-center gap-2 font-extrabold text-[17px] pb-4 mb-5 border-b border-divider">
-                  <X className="h-5 w-5 text-ink/40" strokeWidth={3} /> Disadvantages of other contractors
-                </p>
-                <ul className="space-y-2.5">
-                  {WHY_OTHER.map((item) => (
-                    <li key={item} className="flex gap-2.5 text-[15px] text-ink/70">
-                      <X className="h-4 w-4 shrink-0 text-ink/40 mt-1.5" strokeWidth={3} />{item}
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
-            </div>
-            <Reveal delay={0.2} className="mt-8">
+            <Reveal delay={0.1} className="mt-8">
               <p className="text-[14px] text-ink/60 max-w-3xl">
                 Questions about anything on this page? Call {PHONES[0]}.
               </p>

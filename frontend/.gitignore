@@ -26,3 +26,8 @@ yarn-debug.log*
 yarn-error.log*
 .vercel
 .env*
+
+# Blog drafting scratch - content lives in src/data/blogs.js, not these
+/blog_chunks/
+/.blog_chunks/
+/ghar-bachao-blog/

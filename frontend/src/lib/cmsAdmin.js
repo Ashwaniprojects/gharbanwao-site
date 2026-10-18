@@ -90,6 +90,37 @@ export const fetchPosts = (includeDrafts) =>
 export const fetchProjects = () =>
   request.get("/api/content/projects", { params: { limit: 50 } }).then((r) => r.data.items || []);
 
+/*
+ * Case studies live on the content service too. The list endpoint returns
+ * published stories to anyone, which is what the public site renders, and
+ * returns drafts as well to an admin carrying a token — so the same call
+ * serves both, and `includeDrafts` only decides whether to ask for them.
+ */
+export const fetchCaseStudies = (includeDrafts) =>
+  request
+    .get("/api/content/case-studies", {
+      params: includeDrafts ? { all: true, limit: 50 } : { limit: 50 },
+    })
+    .then((r) => r.data.items || []);
+
+export const fetchCaseStudy = (slug) =>
+  request
+    .get(`/api/content/case-studies/${encodeURIComponent(slug)}`)
+    .then((r) => r.data);
+
+export const saveCaseStudy = (payload) =>
+  withLock(() => request.post("/api/content/case-studies", payload).then((r) => r.data));
+
+export const updateCaseStudy = (slug, payload) =>
+  withLock(() =>
+    request.put(`/api/content/case-studies/${encodeURIComponent(slug)}`, payload).then((r) => r.data),
+  );
+
+export const deleteCaseStudy = (slug) =>
+  withLock(() =>
+    request.delete(`/api/content/case-studies/${encodeURIComponent(slug)}`).then((r) => r.data),
+  );
+
 export const uploadImage = (file) =>
   withLock(async () => {
     const form = new FormData();

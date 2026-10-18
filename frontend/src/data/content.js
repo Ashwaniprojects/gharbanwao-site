@@ -179,39 +179,21 @@ export const PAYMENT_EXAMPLE = { area: 1500, rate: 1699, total: 2548500 };
 // Homepage and /packages comparison. `gb` is our side, `other` is the
 // typical local contractor's. Rendered as a two-column list rather than
 // a table because the rows do not pair up one-to-one.
-export const WHY_GB = [
-  "Private Limited firm, with a real office address and contact details.",
-  "25 years of structure guarantee on construction.",
-  "6 months maintenance on all finishing.",
-  "Verification and no-dues process.",
-  "Dedicated customer support.",
-  "Proper billing and receipts.",
-  "Guarantee and warranty based on individual products.",
-  "No extra cost for architect services.",
-  "Weekly project report and planning for the next stage.",
-  "Hassle-free construction and vendor management.",
-  "Skilled team of labour and masons.",
-  "Professional, experienced architects, civil engineers and interior designers.",
-  "Time-bound work, with on-time delivery.",
-  "Our own quality control.",
-  "Loan assistance.",
-  "Customised quotation and flexible payment options.",
+export const WHY_US = [
+  { title: "Professional design team", text: "Architects, engineers and interior designers from the first drawing to handover, working with a design team that is always reachable." },
+  { title: "25-year structural warranty", text: "Written structural warranty with clearly defined coverage and a claims process. Foundation, columns, beams and slabs remain protected for a quarter of a century." },
+  { title: "150+ stage-wise quality checks", text: "Documented, stage-wise quality checks from excavation to finishing, each inspected and signed off by a dedicated engineer before work moves forward." },
+  { title: "Transparent pricing, in writing", text: "Detailed quotation with material specifications, scope and exclusions. Any additional work or upgrade is discussed and approved in writing before it is executed." },
+  { title: "Payments linked to progress", text: "Stage-wise payments tied to verified completion rather than advance-heavy terms. You release money only after seeing finished work." },
+  { title: "Remote-friendly monitoring", text: "Regular site photos and weekly construction reports, so homeowners living outside the city can follow the build without daily site visits." },
 ];
-export const WHY_OTHER = [
-  "No office that is reachable for customers.",
-  "No guarantee of structure.",
-  "No maintenance after possession.",
-  "No customer support.",
-  "No options for billing.",
-  "No guarantee or warranty on finishing items.",
-  "No options to choose finishing items.",
-  "No waterproofing or termite treatment.",
-  "Hassle of managing labour and materials yourself.",
-  "Extra cost for architect services.",
-  "Non-skilled and untechnical approach.",
-  "No loan assistance.",
-  "No space for discussion and verification.",
-  "Misleading and fake promises.",
+export const WHY_THEM = [
+  { title: "No dedicated design team", text: "Professional design support may not be available, so planning is often left to a single mason or supervisor." },
+  { title: "No structural warranty", text: "A formal structural warranty may not be offered, leaving long-term strength without any written protection." },
+  { title: "Quality checks may be undocumented", text: "Documented checks may be limited, making it hard to trace what was inspected and approved at each stage." },
+  { title: "Cost breakdown may be limited", text: "The cost breakdown may not be itemised in detail, leaving little room to verify value as the work progresses." },
+  { title: "Advance-heavy payments", text: "Advance-heavy terms may apply, with the balance following a schedule you did not define stage by stage." },
+  { title: "Personal supervision required", text: "Updates may require follow-ups, and progress may depend on frequent site visits and your own day-to-day oversight." },
 ];
 
 export const TEAM = [
@@ -235,21 +217,21 @@ const HOME_FAQ_QUESTIONS = [
 ];
 
 export const FAQS = [
-  ["What is the cost of building a house in Lucknow per sq. ft.?", "House construction in Lucknow starts at ₹1,299/sqft on Silver, ₹1,699/sqft on Gold and ₹1,999/sqft on Platinum. That rate covers construction only. Your plot cost, LDA or Nagar Nigam approval fees, electricity and water connection charges, and interiors beyond the package are billed separately, and every exclusion is listed on page 2 of the written quote before you sign anything."],
-  ["How much will it cost to build a 1,000 sq. ft. house?", "A 1,000 sqft home works out to ₹12.99 lakh on Silver, ₹16.99 lakh on Gold and ₹19.99 lakh on Platinum for construction. Most homeowners in Lucknow land on Gold for a 1,000 sqft 2 BHK. Use the cost calculator on this site with your exact plot size to get your own number in under a minute."],
-  ["Can you build my house within my budget?", "Yes, and we tell you honestly if we cannot. Bring your budget to the free consultation and we will work backwards from it. We will tell you what fits at that number, what has to be dropped, and which package matches it. If the number genuinely will not build a safe home, we say so rather than take the contract."],
-  ["What is included in your construction package?", "Every package covers the full structure from foundation to handover: RCC structure, brickwork, plaster, waterproofing, plumbing and electrical wiring, flooring, painting, doors and windows, and sanitary fittings. The difference between Silver, Gold and Platinum is the material grade, the finishing level, and how long we support you after handover. Structural warranty is 25 years on all three."],
-  ["Are there any hidden charges in house construction?", "No. The quote names every item, every brand and every stage before you sign. Anything outside it is listed as an exclusion in writing. If you change something mid-construction, we issue a written change order showing the exact cost and timeline impact, and nothing is done until you approve it on WhatsApp."],
-  ["How do I know you will use good-quality construction materials?", "Because you approve them and you can verify them. Brands and grades are named in the quote before you sign. Cement is bought fresh direct from the rack, TMT bars come from authorised dealers, bricks are first-class, and all mixing follows M20 grade at 1:1.5. Batches are tested before site delivery and rejected batches are returned. You can check any of it on any site visit."],
-  ["How long will it take to complete my house?", "8 to 11 months for a 1,500 to 2,500 sqft home. Our average across 260 homes is 9 months 2 weeks. Monsoon, approval queues and mid-way design changes are the three things that move that number, and the agreement carries a written on-time delivery clause."],
-  ["Do you provide a written agreement before starting construction?", "Yes, always, before a single brick is laid. It names the payment schedule, the material brands and grades, the stage timeline, the 25-year structural warranty and the delay clause. If any of those are missing, do not start the work."],
-  ["Do you help with LDA map approval in Lucknow?", "Yes. We handle LDA and Nagar Nigam plan sanction and the completion certificate. Government fees are charged at actuals and shown separately from our construction rate. It depends on the authority, but typically takes 4 to 7 weeks."],
-  ["Can I see the 2D floor plan and 3D elevation before construction?", "Yes. You approve the 2D floor plan and the 3D elevation before construction starts, and we build to those approved drawings. If you already have an architect, we will build from their drawings after our structural engineer reviews them for safety."],
-  ["Can I make changes to my house design?", "Yes, it is common. We issue a written change order with the cost and timeline impact before doing the work, and you approve it on WhatsApp. Nothing changes on site without that approval, so you are never surprised by a bill."],
-  ["How will I track the progress of my house construction?", "Two ways. Visit the site anytime without an appointment; the supervisor is there 9am to 6pm, six days a week. And we send site photos every Monday and Thursday on WhatsApp, so you can follow the build even from another city. One named project manager is your single point of contact."],
-  ["Do you provide a warranty on construction work?", "25 years in writing on the RCC structure: foundation, columns, beams and slabs. It covers structural cracks and settlement, and it is transferable if you sell the home. Finishes carry a separate 12-month support, and post-handover fixes are free during that period."],
-  ["Why should I choose Ghar Banwao over a local contractor?", "Four things a local contractor usually will not put in writing: a 25-year structural warranty, payment released only after you sign off each finished stage, brands and grades named in the quote, and one named project manager who answers your WhatsApp. We have delivered 260 homes across 8 UP cities from the same Lucknow office since 2017, and the materials comparison on the packages page shows exactly where the difference sits."],
-  ["How can I get started with Ghar Banwao?", "Book a free consultation using the form on this page. We call within 2 hours on business days, visit your site for free, discuss the design for free, and send a written quote with no commitment to continue. You can also WhatsApp us directly on 09648249999."],
+  ["What is the cost of building a house in Lucknow per sq. ft.?", "The cost of house construction in Lucknow varies based on design, materials, finishing, and project requirements. At Ghar Banwao, we offer transparent pricing and flexible construction packages to suit your budget. Contact us for a personalised estimate."],
+  ["How much will it cost to build a 1,000 sq. ft. house?", "The cost of constructing a 1,000 sq. ft. house depends on the number of floors, design, materials, and finishing preferences. At Ghar Banwao, we offer flexible construction packages with transparent pricing."],
+  ["Can you build my house within my budget?", "Yes! At Ghar Banwao, we offer flexible construction packages tailored to your budget and requirements. Our experts help you optimise design, materials, and specifications while maintaining essential quality and safety standards."],
+  ["What is included in your construction package?", "At Ghar Banwao, our construction packages cover everything from structural work to complete home finishing, depending on your chosen package. We offer architectural planning, quality materials, professional supervision, and stage-wise payments."],
+  ["Are there any hidden charges in house construction?", "At Ghar Banwao, we believe in complete pricing transparency. All agreed costs, material specifications, and package inclusions are clearly defined upfront. Any additional work or upgrades are discussed and approved before execution, ensuring no unexpected charges."],
+  ["How do I know you will use good-quality construction materials?", "At Ghar Banwao, we ensure material transparency through clearly defined brands and specifications, regular quality inspections, and dedicated site supervision. You can verify the materials used at every stage of construction for complete peace of mind."],
+  ["How long will it take to complete my house?", "The construction timeline depends on your home's size, number of floors, design complexity, and finishing requirements. At Ghar Banwao, we provide a planned construction schedule, regular progress updates, and dedicated supervision to ensure timely completion."],
+  ["Do you provide a written agreement before starting construction?", "Yes! At Ghar Banwao, we provide a detailed written agreement outlining the scope of work, material specifications, payment schedule, construction timeline, and terms & conditions, ensuring complete transparency and peace of mind before construction begins."],
+  ["Do you help with LDA map approval in Lucknow?", "Yes! At Ghar Banwao, we assist with LDA building plan approval in Lucknow, including architectural drawings, required documentation, and guidance throughout the approval process, helping you start your home construction with confidence."],
+  ["Can I see the 2D floor plan and 3D elevation before construction?", "Yes! At Ghar Banwao, we provide detailed 2D floor plans, complete structural drawings, and realistic 3D elevation designs before construction begins, helping you visualise your dream home and plan every detail with confidence."],
+  ["Can I make changes to my house design?", "Yes! At Ghar Banwao, we offer flexible design customisation to match your preferences and lifestyle. You can request changes to your floor plan, layout, and 3D elevation before construction begins, subject to structural feasibility and agreed design terms."],
+  ["How will I track the progress of my house construction?", "At Ghar Banwao, we keep you informed through regular site updates, progress photos, and weekly construction reports. Our dedicated project team ensures complete transparency, so you can monitor your dream home's progress even when you're away from the site."],
+  ["Do you provide a warranty on construction work?", "Yes! Ghar Banwao offers a structural warranty and post-handover maintenance support to ensure long-term durability and peace of mind. Warranty coverage and conditions are clearly outlined in your construction agreement."],
+  ["Why should I choose Ghar Banwao over a local contractor?", "At Ghar Banwao, we make home construction truly hassle-free. From professional planning and dedicated engineers to transparent pricing, 150+ quality checks, regular progress updates, and post-handover support, we manage every stage of construction so you can enjoy a stress-free journey from planning to possession."],
+  ["How can I get started with Ghar Banwao?", "Getting started is simple! Contact Ghar Banwao at 09648249999, 09648259999 or book a free consultation. Our experts will understand your requirements, discuss your budget, arrange a site visit, and provide a personalised construction proposal to begin your hassle-free home-building journey."],
 ];
 
 export const HOME_FAQS = FAQS.filter(([q]) => HOME_FAQ_QUESTIONS.includes(q));

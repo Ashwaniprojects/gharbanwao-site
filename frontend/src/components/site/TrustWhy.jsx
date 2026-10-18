@@ -34,12 +34,13 @@ const CountDial = ({ to, step = 1, suffix = "+", duration = 1600 }) => {
 
 export const TrustBar = () => (
   <section className="bg-wash-yellow border-t border-green" data-testid="trust-bar">
-    <Container className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-divider border-x border-divider">
+    <Container className="grid grid-cols-2 lg:grid-cols-5 divide-x divide-divider border-x border-divider">
       {[
         { label: "Homes Delivered", note: "across Lucknow & UP", number: <CountDial to={263} step={5} /> },
         { label: "Ongoing Projects", note: "homes under construction", number: <CountDial to={52} step={1} /> },
         { label: "Avg. Rating", note: "Google Reviews", number: "4.8★" },
         { label: "Years Building", note: "in Uttar Pradesh", number: "9+" },
+        { label: "Cities Served", note: "across North India", number: "15+" },
       ].map((t, i) => (
         <Reveal key={t.label} delay={i * 0.06} className="p-6 md:p-10" data-testid={`trust-tile-${i + 1}`}>
           <p className="display text-4xl md:text-6xl lg:text-7xl text-green" data-testid={`trust-number-${i + 1}`}>{t.number}</p>

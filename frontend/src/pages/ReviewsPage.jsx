@@ -32,8 +32,8 @@ export default function ReviewsPage() {
           <Container className="max-w-5xl">
             <SectionHeader
               label="6 CUSTOMER REVIEWS · WATCH THE HOMES"
-              title="Hear It from Our Happy Homeowners. --- Happy Customer Reviews"
-              supporting="Shot in front of their completed homes. Their words, their language."
+              title="Trusted by Homeowners, Proven by Their Experiences."
+              supporting="Hear directly from our customers about their journey with Ghar Banwao—from the first plan to the final handover."
               align="center"
             />
             <Reveal className="mt-6 flex justify-center">
@@ -110,8 +110,8 @@ export default function ReviewsPage() {
           <Container className="max-w-6xl">
             <SectionHeader
               label="GOOGLE REVIEWS · 4.9 / 5 AVERAGE"
-              title="What our customers say on Google"
-              supporting="Over 200+ verified reviews from homeowners across Lucknow and 8 UP cities."
+              title="Built on Trust. Backed by Google Reviews."
+              supporting="Discover what homeowners say about their experience building with Ghar Banwao from the first consultation to the final handover."
               align="center"
             />
             <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

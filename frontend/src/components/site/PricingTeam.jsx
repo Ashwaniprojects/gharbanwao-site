@@ -1,36 +1,65 @@
 import { Check, X, Linkedin } from "lucide-react";
+import { BorderBeam } from "@/components/spectrumui/border-beam";
 import { Container, Placeholder, Reveal, SectionHeader } from "./shared";
-import { TEAM, WHY_GB, WHY_OTHER } from "@/data/content";
+import { TEAM, WHY_US, WHY_THEM } from "@/data/content";
+
+const COMPARE_TITLE = "Why Homeowners Choose Ghar Banwao Over Local Contractors";
+const COMPARE_SUB = "From transparent pricing and professional supervision to quality assurance and post-handover support, discover the difference a professionally managed construction company makes.";
+
+const CompareColumn = ({ tone, items }) => {
+  const us = tone === "us";
+  return (
+    <div className={
+      "relative h-full overflow-hidden rounded-2xl border bg-paper p-6 md:p-8 " +
+      (us ? "border-green" : "border-divider bg-wash-yellow")
+    } data-testid={us ? "why-gb-card" : "why-other-card"}>
+      {us && (
+        <BorderBeam
+          className="rounded-2xl"
+          duration={7}
+          borderWidth={1.25}
+          colorFrom="rgba(147, 197, 38, 0)"
+          colorTo="rgba(147, 197, 38, 0.75)"
+        />
+      )}
+      <p className={
+        "relative z-10 flex items-center gap-2 font-extrabold text-[17px] pb-4 mb-5 border-b border-divider " +
+        (us ? "text-green-700" : "text-ink/50")
+      }>
+        {us
+          ? <Check className="h-5 w-5 text-green" strokeWidth={3} />
+          : <X className="h-5 w-5 text-ink/40" strokeWidth={3} />}
+        {us ? "Why to choose Ghar Banwao" : "Disadvantages of other contractors"}
+      </p>
+      <ul className="relative z-10 space-y-5">
+        {items.map((row) => (
+          <li key={row.title} className="flex gap-3">
+            <span className={
+              "mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full " +
+              (us ? "bg-green/15 text-green-700" : "bg-black/[0.05] text-ink/40")
+            }>
+              {us
+                ? <Check className="h-3 w-3" strokeWidth={3.5} />
+                : <X className="h-3 w-3" strokeWidth={3.5} />}
+            </span>
+            <span className="text-[15px] leading-snug">
+              <span className={"block font-bold " + (us ? "text-ink" : "text-ink/70")}>{row.title}</span>
+              <span className="font-sub mt-0.5 block text-[14px] text-ink/65 leading-relaxed">{row.text}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 export const Comparison = () => (
   <section className="section-gb" data-testid="comparison-section">
     <Container>
-      <SectionHeader label="GHAR BANWAO VS LOCAL CONTRACTOR" title="Why Ghar Banwao is the best choice for your dream home." supporting="What you get from us, and what you are left to handle yourself with a typical local contractor." />
-      <div className="mt-12 grid md:grid-cols-2 gap-5">
-        <Reveal className="card-gb p-6 md:p-8 bg-paper" data-testid="why-gb-card">
-          <p className="flex items-center gap-2 font-extrabold text-[17px] pb-4 mb-5 border-b border-divider">
-            <Check className="h-5 w-5 text-green-700" strokeWidth={3} /> Why to choose Ghar Banwao
-          </p>
-          <ul className="space-y-2.5">
-            {WHY_GB.map((item) => (
-              <li key={item} className="flex gap-2.5 text-[15px] text-ink/80">
-                <Check className="h-4 w-4 shrink-0 text-green-700 mt-1.5" strokeWidth={3} />{item}
-              </li>
-            ))}
-          </ul>
-        </Reveal>
-        <Reveal delay={0.1} className="card-gb p-6 md:p-8 bg-wash-yellow" data-testid="why-other-card">
-          <p className="flex items-center gap-2 font-extrabold text-[17px] pb-4 mb-5 border-b border-divider">
-            <X className="h-5 w-5 text-ink/40" strokeWidth={3} /> Disadvantages of other contractors
-          </p>
-          <ul className="space-y-2.5">
-            {WHY_OTHER.map((item) => (
-              <li key={item} className="flex gap-2.5 text-[15px] text-ink/70">
-                <X className="h-4 w-4 shrink-0 text-ink/40 mt-1.5" strokeWidth={3} />{item}
-              </li>
-            ))}
-          </ul>
-        </Reveal>
+      <SectionHeader label="GHAR BANWAO VS LOCAL CONTRACTOR" title={COMPARE_TITLE} supporting={COMPARE_SUB} />
+      <div className="mt-12 grid md:grid-cols-2 gap-5 items-stretch">
+        <Reveal className="h-full"><CompareColumn tone="us" items={WHY_US} /></Reveal>
+        <Reveal delay={0.1} className="h-full"><CompareColumn tone="them" items={WHY_THEM} /></Reveal>
       </div>
     </Container>
   </section>

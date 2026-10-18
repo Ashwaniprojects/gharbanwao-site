@@ -198,7 +198,7 @@ export const ProjectsMap = () => {
   return (
     <section id="projects" className="section-gb" data-testid="projects-map-section">
       <Container>
-        <SectionHeader label="LIVE / UPDATED WEEKLY" title="We don't tell you we build. We show you where." supporting={`Every green pin is a handed-over home. Every yellow pin is a site you can visit this week. ${projects.length || 297} pins and counting.`} />
+        <SectionHeader label="LIVE / UPDATED WEEKLY" title="Explore Our Completed & Ongoing Projects" supporting={`Discover Ghar Banwao homes near you. Browse by location, project status to explore our work across Lucknow and Uttar Pradesh. ${projects.length || 297} pins and counting.`} />
 
         <Reveal className="mt-10 flex gap-1.5 p-1.5 rounded-full bg-wash-yellow border border-divider w-fit" data-testid="map-status-tabs">
           {STATUS_TABS.map(([v, l]) => (

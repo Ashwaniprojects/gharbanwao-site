@@ -6,7 +6,11 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Manrope"', "ui-sans-serif", "system-ui", "sans-serif"],
+        // Headings use the `display` class in index.css; `font-heading` is the
+        // utility equivalent for one-off heading elements.
+        heading: ['"Poppins"', "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ['"Poppins"', "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ['"Inter"', "ui-sans-serif", "system-ui", "sans-serif"],
         mono: ['"IBM Plex Mono"', "ui-monospace", "monospace"],
       },
       colors: {

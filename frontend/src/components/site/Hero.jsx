@@ -20,7 +20,7 @@ export const Hero = () => {
           <h1
             lang="hi"
             className="display mt-6 leading-[1.4]"
-            style={{ fontFamily: '"Mukta", "Manrope", sans-serif', letterSpacing: "normal", fontSize: "clamp(26px, 10cqw, 76px)" }}
+            style={{ letterSpacing: "normal", fontSize: "clamp(26px, 10cqw, 76px)" }}
             data-testid="hero-headline"
           >
             <span className="block overflow-hidden pb-[0.4em] -mb-[0.4em] pt-[0.08em] -mt-[0.08em]">

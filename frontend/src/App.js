@@ -11,6 +11,8 @@ import CalculatorPage from "@/pages/CalculatorPage";
 import RegisterPage from "@/pages/RegisterPage";
 import ReviewsPage from "@/pages/ReviewsPage";
 import FaqPage from "@/pages/FaqPage";
+import CaseStudiesPage from "@/pages/CaseStudiesPage";
+import CaseStudyDetail from "@/pages/CaseStudyDetail";
 import AdminPage from "@/pages/AdminPage";
 import { CalcProvider } from "@/lib/calcContext";
 import { useLenis } from "@/hooks/useLenis";
@@ -39,6 +41,8 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/reviews" element={<ReviewsPage />} />
             <Route path="/faq" element={<FaqPage />} />
+            <Route path="/case-studies" element={<CaseStudiesPage />} />
+            <Route path="/case-studies/:slug" element={<CaseStudyDetail />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="*" element={<Home />} />
           </Routes>

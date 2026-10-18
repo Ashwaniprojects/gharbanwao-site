@@ -61,7 +61,10 @@
     @apply font-mono text-[12px] md:text-[13px] font-medium uppercase tracking-[0.12em];
   }
   .display {
-    @apply font-sans font-extrabold tracking-tight leading-[1.05];
+    @apply font-heading font-extrabold tracking-tight leading-[1.05];
+  }
+  .font-sub {
+    @apply font-sans font-medium;
   }
   .card-gb {
     @apply rounded-2xl border border-divider bg-paper transition-shadow duration-300 hover:shadow-[0_18px_40px_-24px_rgba(0,0,0,0.25)];

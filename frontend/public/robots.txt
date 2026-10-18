@@ -1,0 +1,37 @@
+# robots.txt - gharbanwao.com
+# Crawling is welcome everywhere. Everything below is a crawl hint, not a wall.
+
+User-agent: *
+Allow: /
+# Sitemap first, so crawlers don't have to discover it by chance.
+Sitemap: https://gharbanwao.com/sitemap.xml
+
+# /admin is the CMS console - authenticated, no index value, and it exposes
+# internal routes and draft slugs to crawlers that find it.
+Disallow: /admin
+# Login and password-reset flows are transactional. Crawling them is useless
+# and they occasionally leak form-field structure.
+Disallow: /login
+Disallow: /reset-password
+
+# Internal-only surfaces. Kept blocked so they stay out of the index whether
+# or not they exist yet.
+Disallow: /api/
+Disallow: /tmp/
+Disallow: /assets/tmp/
+Disallow: /scratch/
+Disallow: /.git/
+Disallow: /package.json
+Disallow: /package-lock.json
+Disallow: /build/
+
+# PDF exports and shareable estimates are legitimate content - they are what
+# the calculator produces and are linkable, so they are not blocked here.
+Allow: /calculator
+
+# NOTE: a crawler reaching an unmatched path is served the marketing home
+# page, not an error document. There is no server-side 404 and no redirect
+# to /home or /contact, so no redirect is claimed here. /packages has been
+# removed from the site entirely; it will likewise resolve to the home page.
+# Crawl-delay is a polite ask, not a guarantee.
+Crawl-delay: 1
