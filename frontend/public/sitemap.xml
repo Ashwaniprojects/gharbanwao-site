@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<!-- /contact is routable but is a section anchor, not a standalone page, so it is not listed. -->
+<!-- /contact is a standalone page with its own Head and LocalBusiness schema. -->
 <!-- src/data/blogs.js holds 30 finished posts with 150 image briefs. They are not listed here -->
 <!-- because no /blog route renders them yet: /blog/* currently serves the home page, which Google -->
 <!-- records as soft-404s and treats as duplicate content. Add them once a blog renderer exists. -->
@@ -39,6 +39,12 @@
     <loc>https://gharbanwao.com/faq</loc>
     <lastmod>2026-10-18</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gharbanwao.com/contact</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>

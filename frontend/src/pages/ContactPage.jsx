@@ -4,11 +4,55 @@ import { Footer, MobileBar } from "@/components/site/FaqCtaFooter";
 import { Container, Reveal, SectionHeader } from "@/components/site/shared";
 import { ArrowRight, Phone, MessageCircle, MapPin, Mail, Clock } from "lucide-react";
 import { WHATSAPP_URL } from "@/data/content";
+import { Helmet } from "react-helmet-async";
 
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-paper text-ink" data-testid="contact-page">
-      <AnnouncementStrip />
+      <Helmet>
+        <title>Contact Us — House Construction Company in Lucknow | Ghar Banwao</title>
+        <meta name="description" content="Contact Ghar Banwao, a house construction company in Lucknow. Call 09648249999 or WhatsApp 09198059992. Office in Indira Nagar, Lucknow. We respond within 2 hours on business days." />
+        <meta name="keywords" content="construction company Lucknow contact, house building contractor Lucknow, builder in Indira Nagar Lucknow, house construction company Uttar Pradesh, Ghar Banwao contact" />
+        <link rel="canonical" href="https://gharbanwao.com/contact" />
+        <meta property="og:title" content="Contact Ghar Banwao — House Construction in Lucknow" />
+        <meta property="og:description" content="One number, one WhatsApp, one person accountable. We respond within 2 hours on business days." />
+        <meta property="og:url" content="https://gharbanwao.com/contact" />
+        <meta property="og:type" content="website" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "HomeConstructionBusiness",
+            name: "Ghar Banwao",
+            url: "https://gharbanwao.com",
+            telephone: "+91-9648249999",
+            email: "hello@gharbanwao.com",
+            areaServed: "Lucknow, Uttar Pradesh",
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: "16/284, near Munshipulia, next to Ashirwad Bakery",
+              addressLocality: "Indira Nagar, Lucknow",
+              addressRegion: "Uttar Pradesh",
+              postalCode: "226016",
+              addressCountry: "IN",
+            },
+            openingHoursSpecification: {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+              opens: "09:00",
+              closes: "18:00",
+            },
+            hasMap: "https://maps.google.com",
+            contactPoint: {
+              "@type": "ContactPoint",
+              telephone: "+91-9648249999",
+              contactType: "customer service",
+              availableLanguage: ["en", "hi"],
+              areaServed: "Uttar Pradesh",
+            },
+          })}
+        </script>
+      </Helmet>
+      <AnnouncementStrip>
       <Navbar />
       <main>
         <section className="section-gb" data-testid="contact-hero">
