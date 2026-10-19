@@ -37,7 +37,7 @@ export const FAQ = () => (
   <section id="faq" className="section-gb" data-testid="faq-section">
     <Container className="grid lg:grid-cols-5 gap-10">
       <div className="lg:col-span-2">
-        <SectionHeader label="TOP 5 QUESTIONS" title="Things homeowners actually ask us" supporting={`If the answer is "it depends," we say "it depends" and explain the variables.`} />
+        <SectionHeader title="Things homeowners actually ask us" supporting={`If the answer is "it depends," we say "it depends" and explain the variables.`} />
         <Reveal delay={0.1} className="mt-6">
           <Link to="/faq" className="inline-flex items-center gap-1.5 font-bold underline decoration-green decoration-2 underline-offset-4" data-testid="faq-all-link">Read all 15 construction FAQs <ArrowRight className="h-4 w-4" /></Link>
         </Reveal>
@@ -91,7 +91,7 @@ export const FinalCTA = () => {
           </Reveal>
           <Reveal className="mt-10 flex flex-col sm:flex-row gap-3">
             <a href={`tel:${PHONES[0]}`} className="pill-green h-12 px-6 text-[15px]" data-testid="cta-call-link"><Phone className="h-[18px] w-[18px]" strokeWidth={2.5} /> {PHONES[0]}</a>
-            <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="pill-yellow h-12 px-6 text-[15px] border border-ink/10" data-testid="cta-whatsapp-link"><MessageCircle className="h-4 w-4" /> WhatsApp us</a>
+            <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="pill-yellow h-12 px-6 text-[15px] border border-ink/10" data-testid="cta-whatsapp-link"><MessageCircle className="h-4 w-4" /> Get Quote on WhatsApp</a>
           </Reveal>
         </div>
         <Reveal delay={0.1}>

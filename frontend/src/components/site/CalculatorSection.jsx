@@ -75,7 +75,7 @@ export const CalculatorSection = ({ standalone = false }) => {
   return (
     <section id="calculator" className={`section-gb ${standalone ? "" : "border-t border-divider"}`} data-testid="calculator-section">
       <Container>
-        <SectionHeader label="PLANNING TOOL" title="What will your home actually cost?" supporting={`Honest numbers. Phase-wise. No one-page quote with "consultation fee extra." Updated to October 2026 Lucknow rates.`} />
+        <SectionHeader title="What will your home actually cost?" supporting={`Honest numbers. Phase-wise. No one-page quote with "consultation fee extra." Updated to October 2026 Lucknow rates.`} />
 
         <Reveal className="mt-12 rounded-2xl bg-wash-yellow border border-divider p-6 md:p-8" data-testid="calculator-step1">
           <div className="flex items-center justify-between mb-6">

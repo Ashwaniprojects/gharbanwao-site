@@ -5,8 +5,7 @@ import { scrollToId } from "@/lib/scroll";
 
 const LINES = [
   "भूमिपूजन से गृहप्रवेश तक,",
-  "सफ़र आपका।",
-  "साथ हमारा।",
+  "सफ़र आपका। साथ हमारा।",
 ];
 
 export const Hero = () => {
@@ -40,7 +39,7 @@ export const Hero = () => {
                 animate={{ y: 0 }}
                 transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.27 }}
               >
-                {LINES[1]}{" "}<span style={{ color: "#95c726" }}>{LINES[2]}</span>
+                {LINES[1]}
               </motion.span>
             </span>
           </h1>

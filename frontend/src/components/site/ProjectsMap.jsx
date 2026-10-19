@@ -9,6 +9,7 @@ import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import { Container, MonoLabel, Placeholder, Reveal, SectionHeader } from "./shared";
+import { BorderBeam } from "@/components/spectrumui/border-beam";
 import { fetchProjects } from "@/lib/api";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -198,34 +199,34 @@ export const ProjectsMap = () => {
   return (
     <section id="projects" className="section-gb" data-testid="projects-map-section">
       <Container>
-        <SectionHeader label="LIVE / UPDATED WEEKLY" title="Explore Our Completed & Ongoing Projects" supporting={`Discover Ghar Banwao homes near you. Browse by location, project status to explore our work across Lucknow and Uttar Pradesh. ${projects.length || 297} pins and counting.`} />
+        <SectionHeader title="Explore Our Completed & Ongoing Projects" supporting={`Discover Ghar Banwao homes near you. Browse by location, project status to explore our work across Lucknow and Uttar Pradesh. ${projects.length || 297} pins and counting.`} />
 
-        <Reveal className="mt-10 flex gap-1.5 p-1.5 rounded-full bg-wash-yellow border border-divider w-fit" data-testid="map-status-tabs">
+        <Reveal className="mt-6 flex flex-wrap gap-1.5 p-1 rounded-full bg-wash-yellow border border-divider w-fit items-center" data-testid="map-status-tabs">
           {STATUS_TABS.map(([v, l]) => (
             <button
               key={v}
               onClick={() => { setStatus(v); setSelected(null); }}
-              className={`h-11 px-6 rounded-full text-[15px] font-bold transition-colors ${status === v ? "bg-ink text-paper" : "text-ink/60 hover:text-ink"}`}
+              className={`h-9 px-4 rounded-full text-[14px] font-bold transition-colors ${status === v ? "bg-ink text-paper" : "text-ink/60 hover:text-ink"}`}
               data-testid={`map-status-tab-${v}`}
             >
-              {l} <span className="font-mono text-[12px] opacity-70">({counts[v] ?? 0})</span>
+              {l} <span className="font-mono text-[11px] opacity-70">({counts[v] ?? 0})</span>
             </button>
           ))}
         </Reveal>
 
-        <Reveal className="mt-4 flex flex-wrap items-center gap-2" data-testid="map-filter-bar">
+        <Reveal className="mt-3 flex flex-wrap items-center gap-2" data-testid="map-filter-bar">
           <Select value={locality} onValueChange={setLocality}>
-            <SelectTrigger className="h-9 w-[180px] rounded-full border-divider text-[13px] font-semibold" data-testid="map-filter-locality"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-8 w-[150px] rounded-full border-divider text-[13px] font-semibold" data-testid="map-filter-locality"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All localities</SelectItem>
               {localities.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
             </SelectContent>
           </Select>
           <Select value={size} onValueChange={setSize}>
-            <SelectTrigger className="h-9 w-[160px] rounded-full border-divider text-[13px] font-semibold" data-testid="map-filter-size"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-8 w-[140px] rounded-full border-divider text-[13px] font-semibold" data-testid="map-filter-size"><SelectValue /></SelectTrigger>
             <SelectContent>{SIZES.map(([v, l]) => <SelectItem key={v} value={v}>{l}</SelectItem>)}</SelectContent>
           </Select>
-          <div className="flex gap-1.5 flex-wrap">
+          <div className="flex gap-1 flex-wrap">
             {["all", "Silver", "Gold", "Platinum"].map((v) => (
               <Chip key={v} active={pkg === v} onClick={() => setPkg(v)} data-testid={`map-filter-package-${v.toLowerCase()}`}>{v === "all" ? "All packages" : v}</Chip>
             ))}
@@ -233,8 +234,10 @@ export const ProjectsMap = () => {
           <span className="ml-auto font-mono text-[12px] text-ink/60" data-testid="map-result-count">{filtered.length} projects</span>
         </Reveal>
 
-        <div className="mt-6 grid lg:grid-cols-3 gap-6">
-          <Reveal className="lg:col-span-2 gb-map-scope relative rounded-2xl border border-divider bg-paper overflow-hidden min-h-[460px] lg:min-h-[720px]" data-testid="projects-map">
+        <div className="mt-4 grid lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2 gb-map-scope relative rounded-2xl border border-divider bg-paper overflow-hidden">
+            <BorderBeam colorFrom="rgba(147,197,38,0)" colorTo="rgba(147,197,38,0.55)" duration={6} />
+            <Reveal className="relative h-[380px] lg:h-[520px]" data-testid="projects-map">
             {isLoading && <div className="absolute inset-0 z-[1000] grid place-items-center bg-paper font-mono text-[12px] text-ink/50">Loading 297 pins…</div>}
             <MapContainer bounds={LUCKNOW_BOUNDS} scrollWheelZoom={false} className="h-full w-full" style={{ height: "100%", width: "100%" }} data-testid="projects-map-canvas">
               <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -270,9 +273,15 @@ export const ProjectsMap = () => {
               <span className="inline-flex items-center gap-1 font-mono text-[11px] bg-paper/90 px-3 py-2 rounded-lg border border-divider"><MapPin className="h-3 w-3 text-green" /> {filtered.length}</span>
             </div>
             <MapHint engaged={mapEngaged} />
-          </Reveal>
-          <Reveal delay={0.1} className="lg:min-h-[720px]" data-testid="map-project-panel">
-            {active ? <ProjectCard p={active} /> : <div className="card-gb p-6 h-full grid place-items-center text-ink/50">No projects match these filters.</div>}
+            </Reveal>
+          </div>
+          <Reveal delay={0.1} className="lg:min-h-[520px]" data-testid="map-project-panel">
+            <div className="relative rounded-2xl border border-divider overflow-hidden">
+              <BorderBeam colorFrom="rgba(147,197,38,0)" colorTo="rgba(147,197,38,0.45)" duration={7} />
+              <div className="relative z-10">
+                {active ? <ProjectCard p={active} /> : <div className="card-gb p-6 h-full grid place-items-center text-ink/50">No projects match these filters.</div>}
+              </div>
+            </div>
           </Reveal>
         </div>
       </Container>

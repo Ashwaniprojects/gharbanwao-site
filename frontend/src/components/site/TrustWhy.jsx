@@ -161,7 +161,6 @@ export const WhyChoose = () => {
     <section id="why" className="section-gb bg-wash-yellow relative grain overflow-hidden py-20" data-testid="why-choose-section">
       <Container className="relative z-10">
         <SectionHeader
-          label="12 REASONS · NO SUPERLATIVES"
           title="Why homeowners call us the best construction company in Uttar Pradesh"
         />
 

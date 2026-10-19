@@ -22,7 +22,7 @@ const STEP_ICONS = [Search, Phone, KeyRound, Users, PenTool, FileText, Handshake
 export const Services = () => (
   <section id="services" className="section-gb border-t border-divider" data-testid="services-section">
     <Container>
-      <SectionHeader label="04 SERVICES" title="Construction services we deliver across Lucknow" supporting="Four things we do. Nothing we don't." />
+      <SectionHeader title="Construction services we deliver across Lucknow" supporting="Four things we do. Nothing we don't." />
       <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {SERVICES.map((s, i) => (
           <Reveal key={s.title} delay={i * 0.06} className="card-gb p-4 flex flex-col group" data-testid={`service-card-${i + 1}`}>
@@ -50,7 +50,6 @@ export const Process = () => {
     <section id="process" className="section-gb bg-wash-green" data-testid="process-section">
       <Container>
         <SectionHeader
-          label="10 STEPS · START TO FINISH"
           title="Step-by-Step Process to Start Your Dream Home Journey"
           supporting="From the day you search our name to the day we hand you the keys — here is exactly what happens, in order."
         />
