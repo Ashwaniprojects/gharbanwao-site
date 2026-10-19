@@ -38,7 +38,7 @@ export const Reveal = ({ children, delay = 0, className = "", ...rest }) => {
 export const SectionHeader = ({ label, title, supporting, align = "left", testId, className = "" }) => (
   <Reveal className={`${align === "center" ? "mx-auto text-center" : ""} ${className}`} data-testid={testId}>
     {label && <p className="mono-label text-green-700 mb-3">{label}</p>}
-    <h2 className="display text-3xl sm:text-4xl lg:text-5xl max-w-[36ch]">{title}</h2>
+    <h2 className="display text-3xl sm:text-4xl lg:text-5xl">{title}</h2>
     {supporting && (
       <p className={`font-sub mt-5 text-base md:text-lg text-ink/70 max-w-[68ch] ${align === "center" ? "mx-auto" : ""}`}>{supporting}</p>
     )}
