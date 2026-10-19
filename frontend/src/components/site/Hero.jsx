@@ -5,7 +5,8 @@ import { scrollToId } from "@/lib/scroll";
 
 const LINES = [
   "भूमिपूजन से गृहप्रवेश तक,",
-  "सफ़र आपका। साथ हमारा।",
+  "सफ़र आपका।",
+  "साथ हमारा।",
 ];
 
 export const Hero = () => {
@@ -19,7 +20,7 @@ export const Hero = () => {
           <h1
             lang="hi"
             className="display mt-6 leading-[1.4]"
-            style={{ letterSpacing: "normal", fontSize: "clamp(26px, 10cqw, 76px)" }}
+            style={{ letterSpacing: "normal", fontSize: "clamp(22px, 8.5cqw, 58px)" }}
             data-testid="hero-headline"
           >
             <span className="block overflow-hidden pb-[0.4em] -mb-[0.4em] pt-[0.08em] -mt-[0.08em]">
@@ -39,7 +40,7 @@ export const Hero = () => {
                 animate={{ y: 0 }}
                 transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.27 }}
               >
-                {LINES[1]}
+                {LINES[1]}{" "}<span style={{ color: "#95c726" }}>{LINES[2]}</span>
               </motion.span>
             </span>
           </h1>
