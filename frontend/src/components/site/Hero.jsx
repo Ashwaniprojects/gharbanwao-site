@@ -1,18 +1,11 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, BadgeCheck, Building2, Star } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { HeroCalculator } from "./HeroCalculator";
 import { scrollToId } from "@/lib/scroll";
 
 const LINES = [
-  "भूमिपुजन सें गृहपवश तक,",
-  "सफ़र आपक।",
-  "सत हमर।",
-];
-
-const TRUST_CARDS = [
-  { icon: Star, label: "4.8 / 5 on Google", sub: "250+ reviews" },
-  { icon: Building2, label: "260+ Homes Delivered", sub: "across UP since 2017" },
-  { icon: BadgeCheck, label: "25-Year Structural Warranty", sub: "no compromises on quality" },
+  "भूमिपूजन से गृहप्रवेश तक,",
+  "सफ़र आपका। साथ हमारा।",
 ];
 
 export const Hero = () => {
@@ -52,7 +45,7 @@ export const Hero = () => {
                 animate={{ y: 0 }}
                 transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.27 }}
               >
-                {LINES[1]}{" "}<span style={{ color: "#95c726" }}>{LINES[2]}</span>
+                {LINES[1]}
               </motion.span>
             </span>
           </h1>
@@ -77,23 +70,6 @@ export const Hero = () => {
             <button onClick={() => scrollToId("calculator")} className="pill-ghost h-12 px-7 text-[15px] !border-white/40 !text-white hover:!bg-white/15 hover:!text-white" data-testid="hero-cta-calculator">
               Try the Cost Calculator
             </button>
-          </motion.div>
-          <motion.div
-            className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-[520px]"
-            initial={reduce ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.9 }}
-            data-testid="hero-trust-line"
-          >
-            {TRUST_CARDS.map((card, i) => (
-              <div key={i} className="rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-4">
-                <div className="flex items-center gap-2 text-white">
-                  <card.icon className="h-4 w-4 text-yellow" strokeWidth={2.25} />
-                  <span className="text-[14px] font-bold leading-tight">{card.label}</span>
-                </div>
-                <p className="mt-1 text-[12px] text-white/65 leading-snug">{card.sub}</p>
-              </div>
-            ))}
           </motion.div>
         </div>
         <div className="lg:col-span-2 relative">
