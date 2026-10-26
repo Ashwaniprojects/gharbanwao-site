@@ -44,7 +44,7 @@ export const Testimonials = () => {
         )}
       </div>
       <Container className="mt-10">
-        <a href="https://www.google.com/maps" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 font-bold underline decoration-green decoration-2 underline-offset-4" data-testid="testimonials-google-link">See all 180+ Google reviews <ArrowRight className="h-4 w-4" /></a>
+        <a href="https://www.google.com/maps/search/?api=1&query=Ghar+Banwao+Indira+Nagar+Lucknow" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 font-bold underline decoration-green decoration-2 underline-offset-4" data-testid="testimonials-google-link">See all 180+ Google reviews <ArrowRight className="h-4 w-4" /></a>
       </Container>
     </section>
   );

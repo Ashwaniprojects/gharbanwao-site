@@ -32,8 +32,10 @@ const rasterizeLogo = (img, targetHeightMM) => {
   return { dataUrl: canvas.toDataURL("image/png"), wPx, hPx };
 };
 
-export async function downloadEstimatePDF({ estimate, inputs, config }) {
-  const doc = new jsPDF({ unit: "mm", format: "a4" });
+// Rendering is split off from downloadEstimatePDF so the share flow can hand
+// the same document back as a base64 attachment without a second copy of the
+// layout code.
+async function renderEstimatePDF(doc, { estimate, inputs }) {
   const pageW = doc.internal.pageSize.getWidth();
   const marginX = 15;
   let y = 14;
@@ -180,6 +182,19 @@ export async function downloadEstimatePDF({ estimate, inputs, config }) {
     doc.text(`Page ${p} of ${pageCount}`, pageW - marginX, pageH - 8, { align: "right" });
   }
 
+}
+
+export async function downloadEstimatePDF({ estimate, inputs, config }) {
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  await renderEstimatePDF(doc, { estimate, inputs });
   const safeCity = (inputs.city || "Estimate").replace(/\s+/g, "-");
   doc.save(`GharBanwao-Estimate-${safeCity}-${Math.round(estimate.sqft)}sqft.pdf`);
+}
+
+/** Same document, returned as a base64 PDF string so the share flow can attach
+ * it to an email via the lead endpoint. */
+export async function estimatePDFBase64({ estimate, inputs, config }) {
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  await renderEstimatePDF(doc, { estimate, inputs });
+  return doc.output("datauristring").split(",")[1];
 }

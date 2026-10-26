@@ -12,6 +12,18 @@
 
 const SALES_NUMBER = process.env.AISENSY_TARGET || "919648249999";
 
+/**
+ * Keep only the 10 national digits of an Indian phone. Strips spaces, dashes,
+ * and an optional +91 / 91 country prefix. Returns "" when the result is not a
+ * clean 10-digit national number, which is the "invalid" signal the callers use.
+ */
+const normalizePhone = (value) => {
+  if (!value) return "";
+  const digits = String(value).replace(/[\s\-().]/g, "");
+  const stripped = digits.replace(/^(?:\+?91)(?=\d{10}$)/, "");
+  return /^\d{10}$/.test(stripped) ? stripped : "";
+};
+
 const TYPE_LABELS = {
   vendor: "Vendor Registration",
   channel_partner: "Channel Partner",
@@ -71,6 +83,14 @@ export default async function handler(req, res) {
   if (!d.name || !d.phone) {
     return res.status(400).json({ ok: false, error: "Name and phone are required." });
   }
+  const phone = normalizePhone(d.phone);
+  if (!phone) {
+    return res.status(400).json({
+      ok: false,
+      error: "Please enter a valid 10-digit Indian mobile number.",
+    });
+  }
+  d.phone = phone;
 
   const message = buildMessage(d);
   const result = await sendViaAiSensy(message);

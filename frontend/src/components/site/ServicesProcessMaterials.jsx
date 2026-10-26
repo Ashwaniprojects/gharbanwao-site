@@ -97,18 +97,28 @@ export const Services = () => (
     <Container>
       <SectionHeader title="Construction services we deliver across Lucknow" supporting="Four things we do. Nothing we don't." />
       <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {SERVICES.map((s, i) => (
-          <Reveal key={s.title} delay={i * 0.06} className="card-gb p-4 flex flex-col group" data-testid={`service-card-${i + 1}`}>
-            <Image src={s.img} alt={s.title} ratio="aspect-[4/3]" />
-            <div className="p-3 pt-6 flex-1 flex flex-col">
-              <h3 className="text-[20px] font-bold tracking-tight leading-tight">{s.title}</h3>
-              <p className="mt-2 text-[15px] text-ink/65 flex-1">{s.text}</p>
-              <button onClick={() => scrollToId(s.id)} className="mt-6 inline-flex items-center gap-1.5 font-bold text-[15px] self-start underline decoration-green decoration-2 underline-offset-4 group-hover:gap-2.5 transition-[gap]" data-testid={`service-cta-${i + 1}`}>
-                {s.cta} <ArrowRight className="h-4 w-4" />
-              </button>
-            </div>
-          </Reveal>
-        ))}
+        {SERVICES.map((s, i) => {
+          const toDetail = s.slug ? `/services/${s.slug}` : "";
+          const cta = s.external ? (
+            <a href={s.external} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-1.5 font-bold text-[15px] self-start underline decoration-green decoration-2 underline-offset-4 group-hover:gap-2.5 transition-[gap]" data-testid={`service-cta-${i + 1}`}>
+              {s.cta} <ArrowRight className="h-4 w-4" />
+            </a>
+          ) : (
+            <button onClick={() => (toDetail ? (window.location.href = toDetail) : scrollToId(s.id))} className="mt-6 inline-flex items-center gap-1.5 font-bold text-[15px] self-start underline decoration-green decoration-2 underline-offset-4 group-hover:gap-2.5 transition-[gap]" data-testid={`service-cta-${i + 1}`}>
+              {s.cta} <ArrowRight className="h-4 w-4" />
+            </button>
+          );
+          return (
+            <Reveal key={s.title} delay={i * 0.06} className="card-gb p-4 flex flex-col group" data-testid={`service-card-${i + 1}`}>
+              <Image src={s.img} alt={s.title} ratio="aspect-[4/3]" />
+              <div className="p-3 pt-6 flex-1 flex flex-col">
+                <h3 className="text-[20px] font-bold tracking-tight leading-tight">{s.title}</h3>
+                <p className="mt-2 text-[15px] text-ink/65 flex-1">{s.text}</p>
+                {cta}
+              </div>
+            </Reveal>
+          );
+        })}
       </div>
     </Container>
   </section>

@@ -8,6 +8,7 @@ import { Footer } from "@/components/site/FaqCtaFooter";
 import { VIDEOS } from "@/data/content";
 import { TESTIMONIALS } from "@/data/content";
 import { WHATSAPP_URL } from "@/data/content";
+import { GoogleReviews } from "@/components/site/GoogleReviews";
 
 const VIDEO_REVIEWS = VIDEOS;
 
@@ -105,7 +106,10 @@ export default function ReviewsPage() {
           </Container>
         </section>
 
-        {/* Google Reviews Section */}
+        {/* Live Google embed */}
+        <GoogleReviews />
+
+        {/* Curated Google Reviews wall */}
         <section className="section-gb" data-testid="reviews-google-section">
           <Container className="max-w-6xl">
             <SectionHeader
@@ -145,9 +149,9 @@ export default function ReviewsPage() {
             </div>
             <Reveal className="mt-12 text-center">
               <a
-                href="https://www.google.com/maps"
+                href="https://www.google.com/maps/search/?api=1&query=Ghar+Banwao+Indira+Nagar+Lucknow"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="pill-green h-12 px-6 text-[15px]"
                 data-testid="reviews-google-link"
               >

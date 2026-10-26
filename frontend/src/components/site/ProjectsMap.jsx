@@ -168,7 +168,7 @@ const ProjectCard = ({ p }) => (
       )}
     </div>
     <blockquote className="mt-5 text-[15px] text-ink/75 leading-relaxed border-l-2 border-green pl-4">"{p.quote}"<footer className="mt-1 font-semibold not-italic text-ink">— {p.owner}</footer></blockquote>
-    <a href={`/projects/${p.gb_id.toLowerCase()}`} onClick={(e) => e.preventDefault()} className="mt-auto pt-6 inline-flex items-center gap-1 font-bold text-[15px] underline decoration-green decoration-2 underline-offset-4" data-testid="map-project-view-link">
+    <a href={`/projects/${p.gb_id.toLowerCase()}`} className="mt-auto pt-6 inline-flex items-center gap-1 font-bold text-[15px] underline decoration-green decoration-2 underline-offset-4 hover:decoration-4" data-testid="map-project-view-link">
       View full project <ArrowRight className="h-4 w-4" />
     </a>
   </motion.article>

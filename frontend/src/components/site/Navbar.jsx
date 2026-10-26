@@ -53,8 +53,14 @@ export const Navbar = () => {
 
   const goServiceItem = (item) => {
     setServicesOpen(false);
+    setMenuOpen(false);
     if (item.external) {
       window.open(item.href, "_blank", "noopener,noreferrer");
+    } else if (item.href) {
+      // A full route (a service detail page or the services index). A hard
+      // navigation is fine here — Vercel rewrites every non-/api path to the
+      // app, exactly like the About/Reviews links above.
+      window.location.href = item.href;
     } else {
       go(item.id);
     }

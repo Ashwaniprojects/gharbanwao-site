@@ -37,10 +37,11 @@ export const FOOTER_NAV = [
 // Services dropdown under the header nav. Architecture hands off to our sister company's
 // dedicated architecture/design studio.
 export const SERVICES_MENU = [
-  { label: "Construction with Materials", id: "services" },
+  { label: "All services", href: "/services" },
+  { label: "Construction with Materials", href: "/services/construction-with-materials" },
   { label: "Architecture & Floor Plans", href: "https://nakshaabanwao.com/", external: true },
-  { label: "Interior Design", id: "services" },
-  { label: "Renovation & Makeover", id: "services" },
+  { label: "Interior Design", href: "/services/interior-design" },
+  { label: "Renovation & Makeover", href: "/services/renovation-makeover" },
 ];
 
 export const REGISTER_TYPES = [
@@ -80,10 +81,103 @@ export const WHY = [
 ];
 
 export const SERVICES = [
-  { img: "/images/featured/architecture.png", title: "Architecture Services & Planning", text: "Vastu-aligned, approval-ready drawings.", cta: "See floor plans", id: "projects" },
-  { img: "/images/featured/construction.png", title: "Construction with Materials", text: "Plot to key handover, turnkey, brand-verified materials.", cta: "See projects", id: "projects" },
-  { img: "/images/featured/interior.png", title: "Interior Design", text: "Modular kitchen, wardrobes, false ceiling, finishes.", cta: "See interiors", id: "projects" },
-  { img: "/images/featured/renovation.png", title: "Renovation & Makeover", text: "Floor addition, remodeling, structural retrofit.", cta: "See renovations", id: "projects" },
+  {
+    img: "/images/featured/architecture.png",
+    title: "Architecture Services & Planning",
+    text: "Vastu-aligned, approval-ready drawings.",
+    cta: "See floor plans",
+    id: "projects",
+    slug: "architecture-planning",
+    external: "https://nakshaabanwao.com/",
+    tagline: "Vastu-aligned, approval-ready drawings, from the first sketch to a signed building plan.",
+    intro:
+      "Before a single brick moves, the drawings must be right. Our architecture arm turns a plot and a budget into a layout you will love living in — checked against Vastu and ready for LDA approval, so the plan you build is the plan you are permitted to build.",
+    points: [
+      "Vastu-aligned layouts for every orientation",
+      "LDA-ready 2D floor plans and structural drawings",
+      "3D elevations you can walk through before construction",
+      "Handover to our construction team with zero re-work",
+    ],
+    includes: [
+      "Site survey and orientation study",
+      "2D floor plans + 3D elevation",
+      "Structural and finishing drawings",
+      "LDA / local authority approval support",
+      "Design revisions until you are happy",
+    ],
+  },
+  {
+    img: "/images/featured/construction.png",
+    title: "Construction with Materials",
+    text: "Plot to key handover, turnkey, brand-verified materials.",
+    cta: "See projects",
+    id: "projects",
+    slug: "construction-with-materials",
+    tagline: "Plot to key handover, turnkey, with brand-verified materials written into the contract.",
+    intro:
+      "We build the whole home under one roof: foundation to finishing, with every material's brand and grade fixed in the agreement before work starts. You get a single accountable team, weekly photo updates, and a 25-year structural warranty on everything we pour.",
+    points: [
+      "Turnkey build — one team, one agreement, one number",
+      "Brand and grade of every material written in the quote",
+      "Payments released only after each stage is signed off",
+      "25-year structural warranty, transferable on resale",
+    ],
+    includes: [
+      "Foundation, structure and brickwork",
+      "Plumbing, electrical and sanitary work",
+      "Flooring, painting and door & window work",
+      "Stage-wise progress photos on WhatsApp",
+      "Dedicated site + structural + quality engineer",
+    ],
+  },
+  {
+    img: "/images/featured/interior.png",
+    title: "Interior Design",
+    text: "Modular kitchen, wardrobes, false ceiling, finishes.",
+    cta: "See interiors",
+    id: "projects",
+    slug: "interior-design",
+    tagline: "Modular kitchen, wardrobes, false ceiling and the finishing layer that makes a house feel finished.",
+    intro:
+      "The last 20% of a home is what you live in every day. Our interior team delivers the built-in furniture, lighting and finishes that turn a shell into the home you have been picturing — measured to the millimetre and built by the same people who built the house.",
+    points: [
+      "Modular kitchens and built-in wardrobes",
+      "False ceilings, lighting plans and finishes",
+      "Designs matched to the construction you already have",
+      "Supplied and installed by our own team",
+    ],
+    includes: [
+      "Modular kitchen design and fabrication",
+      "Wardrobes, pooja units and storage",
+      "False ceiling + lighting layout",
+      "Paint, flooring and decorative finishes",
+      "On-site supervision through to handover",
+    ],
+  },
+  {
+    img: "/images/featured/renovation.png",
+    title: "Renovation & Makeover",
+    text: "Floor addition, remodeling, structural retrofit.",
+    cta: "See renovations",
+    id: "projects",
+    slug: "renovation-makeover",
+    tagline: "Add a floor, rework a plan, or retrofit the structure — without tearing the house down.",
+    intro:
+      "Not every project starts with a bare plot. We add floors to existing homes, remodel dated layouts, and retrofit structure and systems that have outlived their design life — engineered first, so a renovation is safe and stays true to your original blueprint.",
+    points: [
+      "New floor addition on existing structures",
+      "Room remodelling and space re-planning",
+      "Structural retrofit and strengthening",
+      "Full makeovers, inside and out",
+    ],
+    includes: [
+      "Structural audit before work starts",
+      "Floor addition and roof work",
+      "Demolition and space replanning",
+      "Retrofit of electrical, plumbing and finishes",
+      "Same stage-linked payment protection as new builds",
+    ],
+  },
 ];
 
 export const PROCESS = [
@@ -197,7 +291,7 @@ export const WHY_THEM = [
 ];
 
 export const TEAM = [
-  { img: "IMG-75", name: "Er. Virendra Kumar Nishad", role: "Chairman & Managing Director", years: "14 yrs", specialty: "Has personally handed over 190 of the 260 homes." },
+  { img: "/images/team/virendra-nishad.jpg", name: "Er. Virendra Kumar Nishad", role: "Chairman & Managing Director", years: "14 yrs", specialty: "Has personally handed over 190 of the 260 homes." },
   { img: "IMG-76", name: "Er. Neha Tripathi", role: "Lead Structural Engineer", years: "11 yrs", specialty: "RCC design, soil-bearing analysis, retrofit." },
   { img: "IMG-77", name: "Pallavi Mehrotra", role: "Head of Quality", years: "9 yrs", specialty: "Owns the 150-point checklist. Rejects batches." },
   { img: "IMG-78", name: "Ramesh Kushwaha", role: "Site Supervisor", years: "17 yrs", specialty: "Brickwork and plaster. Plumb line in pocket." },

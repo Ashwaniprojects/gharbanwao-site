@@ -1,7 +1,12 @@
 import { Check, X, Linkedin } from "lucide-react";
 import { BorderBeam } from "@/components/spectrumui/border-beam";
-import { Container, Placeholder, Reveal, SectionHeader } from "./shared";
+import { Container, Image, Placeholder, Reveal, SectionHeader } from "./shared";
 import { TEAM, WHY_US, WHY_THEM } from "@/data/content";
+
+// A value that starts with "/" or "http" is a real asset (path or remote URL);
+// anything else is an IMG-NN placeholder code waiting for a photo.
+const isRealImage = (value) =>
+  typeof value === "string" && (value.startsWith("/") || value.startsWith("http"));
 
 const COMPARE_TITLE = "Why Homeowners Choose Ghar Banwao Over Local Contractors";
 const COMPARE_SUB = "From transparent pricing and professional supervision to quality assurance and post-handover support, discover the difference a professionally managed construction company makes.";
@@ -72,7 +77,11 @@ export const Team = () => (
       <div className="mt-14 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {TEAM.map((m, i) => (
           <Reveal key={m.name} delay={i * 0.05} className="card-gb p-3 bg-paper flex flex-col" data-testid={`team-card-${i + 1}`}>
-            <Placeholder code={m.img} ratio="aspect-square" />
+            {isRealImage(m.img) ? (
+              <Image src={m.img} alt={m.name} ratio="aspect-square" />
+            ) : (
+              <Placeholder code={m.img} ratio="aspect-square" />
+            )}
             <div className="p-2 pt-4 flex-1 flex flex-col">
               <p className="font-bold text-[15px] leading-tight">{m.name}</p>
               <p className="text-[13px] text-green-700 font-semibold mt-0.5">{m.role}</p>

@@ -108,6 +108,32 @@ export const fetchCaseStudy = (slug) =>
     .get(`/api/content/case-studies/${encodeURIComponent(slug)}`)
     .then((r) => r.data);
 
+/* Author profiles power the blog byline. The public site reads the public
+ * list (no token), the admin reads and writes with the stored Bearer token, so
+ * a single fetchAuthors call serves both. */
+export const fetchAuthors = () =>
+  request.get("/api/content/authors", { params: { limit: 100 } }).then((r) => r.data.items || []);
+
+export const saveAuthor = (payload) =>
+  withLock(() => request.post("/api/content/authors", payload).then((r) => r.data));
+
+export const updateAuthor = (slug, payload) =>
+  withLock(() =>
+    request.put(`/api/content/authors/${encodeURIComponent(slug)}`, payload).then((r) => r.data),
+  );
+
+export const deleteAuthor = (slug) =>
+  withLock(() =>
+    request.delete(`/api/content/authors/${encodeURIComponent(slug)}`).then((r) => r.data),
+  );
+
+/* Registrations land in the FastAPI lead store, not the content DB, so the
+ * admin lists them here (no deploy) rather than in the post list. */
+export const fetchRegistrations = (type) =>
+  request
+    .get("/api/registrations", { params: type ? { type } : {} })
+    .then((r) => r.data);
+
 export const saveCaseStudy = (payload) =>
   withLock(() => request.post("/api/content/case-studies", payload).then((r) => r.data));
 

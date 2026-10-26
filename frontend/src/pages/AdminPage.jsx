@@ -26,19 +26,24 @@ import {
   CMS_BASE_URL,
   clearToken,
   dateValue,
+  deleteAuthor,
   deleteCaseStudy,
   deletePost,
   deleteProject,
   errorMessage,
+  fetchAuthors,
   fetchCaseStudies,
   fetchPosts,
   fetchProjects,
+  fetchRegistrations,
   isAuthenticated,
+  saveAuthor,
   saveCaseStudy,
   savePost,
   saveProject,
   slugify,
   triggerDeploy,
+  updateAuthor,
   updateCaseStudy,
   updatePost,
   updateProject,
@@ -95,6 +100,21 @@ const BLANK_CASE_STUDY = {
   photos: "",
   cover_image_url: "",
 };
+
+const BLANK_AUTHOR = {
+  name: "",
+  title: "",
+  bio: "",
+  photo_url: "",
+  social: {},
+};
+
+const SOCIAL_KEYS = [
+  ["linkedin", "LinkedIn"],
+  ["instagram", "Instagram"],
+  ["youtube", "YouTube"],
+  ["website", "Website"],
+];
 
 /** From an empty form, the slug the server will derive; from a real one, its own. */
 const slugFor = (form, original) => original?.slug || slugify(form.title);
@@ -1060,6 +1080,278 @@ const CaseStudyEditor = ({ original, onSaved, onCancel }) => {
 };
 
 /* ------------------------------------------------------------------ */
+/* Authors                                                            */
+/* ------------------------------------------------------------------ */
+
+const AuthorRow = ({ author, onEdit, onDelete, busy }) => (
+  <li
+    className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
+    data-testid={`admin-author-${author.slug}`}
+  >
+    <div className="flex min-w-0 items-center gap-3">
+      {author.photo_url ? (
+        <img
+          src={author.photo_url}
+          alt=""
+          className="h-10 w-10 shrink-0 rounded-full object-cover border border-divider"
+        />
+      ) : (
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-wash-yellow text-[15px] font-bold text-ink/60">
+          {(author.name || "?").charAt(0)}
+        </span>
+      )}
+      <div className="min-w-0">
+        <p className="truncate font-bold">{author.name}</p>
+        <p className="mono-label mt-0.5 text-ink/40 truncate">
+          {author.title || "—"} · /{author.slug}
+        </p>
+      </div>
+    </div>
+    <div className="flex items-center gap-2">
+      <Button variant="ghost" size="sm" onClick={() => onEdit(author)} className="rounded-lg">
+        Edit
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => onDelete(author)}
+        disabled={busy}
+        aria-label={`Delete ${author.name}`}
+        data-testid={`admin-author-delete-${author.slug}`}
+        className="rounded-lg px-2 text-red-600 hover:bg-red-50"
+      >
+        <Trash2 className="h-4 w-4" />
+      </Button>
+    </div>
+  </li>
+);
+
+const AuthorEditor = ({ original, onSaved, onCancel }) => {
+  const [form, setForm] = useState(() =>
+    original
+      ? {
+          ...BLANK_AUTHOR,
+          ...original,
+          social: { ...BLANK_AUTHOR.social, ...(original.social || {}) },
+        }
+      : BLANK_AUTHOR,
+  );
+  const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(null);
+  const fileRef = useRef(null);
+
+  const set = (key) => (value) =>
+    setForm((prev) => ({ ...prev, [key]: value?.target ? value.target.value : value }));
+  const setSocial = (channel) => (value) =>
+    setForm((prev) => ({ ...prev, social: { ...prev.social, [channel]: value.target.value } }));
+
+  const onPickFile = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if (!file) return;
+    setUploading(true);
+    setError(null);
+    try {
+      const { url } = await uploadImage(file);
+      setForm((prev) => ({ ...prev, photo_url: url }));
+    } catch (err) {
+      setError(errorMessage(err, "The image could not be uploaded."));
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    // Blank channel URLs are dropped so the bio page only renders real links.
+    const social = Object.fromEntries(
+      Object.entries(form.social || {})
+        .map(([k, v]) => [k, String(v || "").trim()])
+        .filter(([, v]) => v),
+    );
+    const payload = {
+      ...form,
+      slug: original ? original.slug : slugFor(form, null),
+      social,
+    };
+    try {
+      if (original) {
+        await updateAuthor(original.slug, payload);
+        onSaved("Author updated.");
+      } else {
+        await saveAuthor(payload);
+        onSaved("Author created.");
+      }
+    } catch (err) {
+      setError(errorMessage(err, "The author could not be saved."));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <form onSubmit={submit} className="grid gap-5" data-testid="author-editor">
+      <Field label="Name" hint="Shown in the byline; the slug is derived from it." htmlFor="author-name">
+        <Input
+          id="author-name"
+          required
+          value={form.name}
+          onChange={set("name")}
+          className={inputClass}
+          data-testid="author-name-input"
+          placeholder="Er. Virendra Kumar Nishad"
+        />
+      </Field>
+
+      <Field label="Title" hint="The role or one-liner under the name." htmlFor="author-title">
+        <Input
+          id="author-title"
+          value={form.title}
+          onChange={set("title")}
+          className={inputClass}
+          data-testid="author-title-input"
+          placeholder="Chairman & Managing Director"
+        />
+      </Field>
+
+      <Field label="Bio" htmlFor="author-bio">
+        <Textarea
+          id="author-bio"
+          rows={4}
+          value={form.bio}
+          onChange={set("bio")}
+          className={areaClass}
+          data-testid="author-bio-input"
+        />
+      </Field>
+
+      <Field label="Photo">
+        <div className="flex flex-wrap items-center gap-3">
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            onChange={onPickFile}
+            data-testid="author-photo-file"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => fileRef.current?.click()}
+            disabled={uploading}
+            className="rounded-lg"
+            data-testid="author-photo-upload"
+          >
+            <ImagePlus className="mr-2 h-4 w-4" />
+            {uploading ? "Uploading…" : "Upload"}
+          </Button>
+          <Input
+            value={form.photo_url}
+            onChange={set("photo_url")}
+            placeholder="https://…"
+            className={`${inputClass} flex-1`}
+            data-testid="author-photo-url-input"
+          />
+        </div>
+        {form.photo_url ? (
+          <img
+            src={form.photo_url}
+            alt=""
+            className="mt-3 h-20 w-20 rounded-full border border-divider object-cover"
+          />
+        ) : null}
+      </Field>
+
+      <Field label="Social links" hint="Only filled-in channels appear on the author page.">
+        <div className="grid gap-3">
+          {SOCIAL_KEYS.map(([key, label]) => (
+            <div key={key} className="flex items-center gap-3">
+              <span className="w-20 shrink-0 mono-label text-[13px] text-ink/50">{label}</span>
+              <Input
+                value={form.social[key] || ""}
+                onChange={setSocial(key)}
+                placeholder={key === "website" ? "https://…" : `https://…/${key}`}
+                className={`${inputClass} flex-1`}
+                data-testid={`author-social-${key}-input`}
+              />
+            </div>
+          ))}
+        </div>
+      </Field>
+
+      {error ? (
+        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-[14px] font-medium text-red-700">
+          {error}
+        </p>
+      ) : null}
+
+      <div className="flex flex-wrap gap-3 border-t border-divider pt-5">
+        <Button
+          type="submit"
+          disabled={busy || !form.name}
+          data-testid="author-save"
+          className="rounded-lg bg-green px-8 text-[15px] font-bold text-ink hover:bg-green-600"
+        >
+          {busy ? "Saving…" : original ? "Save changes" : "Create author"}
+        </Button>
+        <Button type="button" variant="ghost" onClick={onCancel} className="rounded-lg px-5">
+          Cancel
+        </Button>
+      </div>
+    </form>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/* Registrations                                                      */
+/* ------------------------------------------------------------------ */
+
+const REG_TYPE_LABELS = {
+  vendor: "Vendor",
+  channel_partner: "Channel partner",
+  hiring: "Hiring",
+};
+
+const RegistrationCard = ({ reg, index }) => {
+  const extra = reg.category
+    ? ` · ${reg.category}`
+    : reg.experience_years
+      ? ` · ${reg.experience_years}`
+      : reg.role
+        ? ` · ${reg.role}`
+        : "";
+  const waLink = reg.whatsapp_fallback
+    ? `https://wa.me/${String(reg.whatsapp || reg.phone || "").replace(/[^0-9]/g, "")}`
+    : null;
+  return (
+    <li className="px-5 py-4" data-testid={`admin-registration-${index}`}>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="font-bold">
+          {reg.name}
+          <span className="ml-2 rounded-full bg-wash-yellow px-2 py-0.5 text-[11px] font-bold text-ink/60">
+            {REG_TYPE_LABELS[reg.type] || reg.type}
+          </span>
+        </p>
+        <span className="font-mono text-[11px] text-ink/40">{reg.created_at?.slice(0, 10)}</span>
+      </div>
+      <p className="mono-label mt-1.5 text-[12px] text-ink/50">
+        {[reg.city, reg.phone, reg.email].filter(Boolean).join(" · ")}
+        {reg.company_name ? ` · ${reg.company_name}` : ""}
+        {extra}
+      </p>
+      {reg.message ? (
+        <p className="mt-2 text-[13px] text-ink/70">{reg.message}</p>
+      ) : null}
+    </li>
+  );
+};
+
+/* ------------------------------------------------------------------ */
 /* Page                                                               */
 /* ------------------------------------------------------------------ */
 
@@ -1081,6 +1373,8 @@ export default function AdminPage() {
   const [posts, setPosts] = useState([]);
   const [projects, setProjects] = useState([]);
   const [caseStudies, setCaseStudies] = useState([]);
+  const [authors, setAuthors] = useState([]);
+  const [registrations, setRegistrations] = useState([]);
   const [editing, setEditing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -1109,6 +1403,15 @@ export default function AdminPage() {
       setPosts(postItems);
       setProjects(projectItems);
       setCaseStudies(studyItems);
+      // Authors and registrations are best-effort: the backend may not have
+      // those endpoints yet on an older deploy, and that should not log the
+      // admin out or blank the rest of the screen.
+      fetchAuthors()
+        .then(setAuthors)
+        .catch(() => setAuthors([]));
+      fetchRegistrations()
+        .then(setRegistrations)
+        .catch(() => setRegistrations([]));
     } catch (err) {
       setError(errorMessage(err, "Could not load content."));
       if (!isAuthenticated()) setAuthed(false);
@@ -1150,6 +1453,20 @@ export default function AdminPage() {
       say("Case study deleted.");
     } catch (err) {
       setError(errorMessage(err, "The case study could not be deleted."));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const removeAuthor = async (author) => {
+    if (!window.confirm(`Delete “${author.name}”? This cannot be undone.`)) return;
+    setBusy(true);
+    try {
+      await deleteAuthor(author.slug);
+      setAuthors((prev) => prev.filter((a) => a.slug !== author.slug));
+      say("Author deleted.");
+    } catch (err) {
+      setError(errorMessage(err, "The author could not be deleted."));
     } finally {
       setBusy(false);
     }
@@ -1199,9 +1516,12 @@ export default function AdminPage() {
     study.slug.includes(q) ||
     (study.gb_id || "").toLowerCase().includes(q) ||
     (study.locality || "").toLowerCase().includes(q);
+  const matchAuthor = (author) =>
+    !q || author.name.toLowerCase().includes(q) || author.slug.includes(q);
   const visiblePosts = posts.filter(match);
   const visibleProjects = projects.filter(matchProject);
   const visibleCaseStudies = caseStudies.filter(matchCaseStudy);
+  const visibleAuthors = authors.filter(matchAuthor);
 
   if (editing) {
     const Editor =
@@ -1209,7 +1529,9 @@ export default function AdminPage() {
         ? CaseStudyEditor
         : editing.kind === "projects"
           ? ProjectEditor
-          : PostEditor;
+          : editing.kind === "authors"
+            ? AuthorEditor
+            : PostEditor;
     return (
       <div className="min-h-screen bg-paper">
         <AdminHeader onSignOut={signOut} />
@@ -1231,14 +1553,18 @@ export default function AdminPage() {
                       ? "case study"
                       : editing.kind === "projects"
                         ? "project"
-                        : "post"
+                        : editing.kind === "authors"
+                          ? "author"
+                          : "post"
                   }`
                 : `New ${
                     editing.kind === "case-studies"
                       ? "case study"
                       : editing.kind === "projects"
                         ? "project"
-                        : "post"
+                        : editing.kind === "authors"
+                          ? "author"
+                          : "post"
                   }`}
             </h1>
             <Editor
@@ -1409,12 +1735,61 @@ export default function AdminPage() {
               </ul>
             )}
           </section>
+
+          <section className="card-gb overflow-hidden" data-testid="admin-authors">
+            <SectionHead
+              title="Authors"
+              count={visibleAuthors.length}
+              action={
+                <Button
+                  onClick={() => setEditing({ kind: "authors", item: null })}
+                  className="h-9 rounded-lg bg-green px-4 text-[13px] font-bold text-ink hover:bg-green-600"
+                  data-testid="admin-author-new"
+                >
+                  <Plus className="mr-1.5 h-4 w-4" strokeWidth={2.5} />
+                  New author
+                </Button>
+              }
+            />
+            {visibleAuthors.length === 0 ? (
+              <Empty>No authors yet. Create the first one.</Empty>
+            ) : (
+              <ul className="divide-y divide-divider" data-testid="admin-author-list">
+                {visibleAuthors.map((author) => (
+                  <AuthorRow
+                    key={author.slug}
+                    author={author}
+                    busy={busy}
+                    onEdit={(item) => setEditing({ kind: "authors", item })}
+                    onDelete={removeAuthor}
+                  />
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <section className="card-gb overflow-hidden" data-testid="admin-registrations">
+            <SectionHead
+              title="Registrations"
+              count={registrations.length}
+            />
+            {registrations.length === 0 ? (
+              <Empty>No registrations yet.</Empty>
+            ) : (
+              <ul className="divide-y divide-divider" data-testid="admin-registration-list">
+                {registrations.map((reg, i) => (
+                  <RegistrationCard key={reg.id || i} reg={reg} index={i} />
+                ))}
+              </ul>
+            )}
+          </section>
         </div>
 
         <p className="mono-label mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 text-ink/40">
           <span className="inline-flex items-center gap-1.5">
             <CalendarDays className="h-3.5 w-3.5" /> {posts.length} posts ·{" "}
-            {projects.length} projects · {caseStudies.length} case studies
+            {projects.length} projects · {caseStudies.length} case studies ·{" "}
+            {authors.length} authors · {registrations.length} registrations
           </span>
           <a
             href={CMS_BASE_URL.replace(/\/api.*$/, "") + "/docs"}

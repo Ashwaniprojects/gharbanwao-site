@@ -7,6 +7,7 @@ import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
 import { ArrowRight, CalendarDays, Clock, Feather } from "lucide-react";
 import { BLOGS, BLOG_UPDATED } from "@/data/blogs";
+import { fetchAuthors } from "@/lib/cmsAdmin";
 
 const SITE = "https://gharbanwao.com";
 const BY_SLUG = Object.fromEntries(BLOGS.map((p) => [p.slug, p]));
@@ -300,9 +301,18 @@ function NotFound({ slug }) {
 export function BlogDetail() {
   const { slug } = useParams();
   const post = BY_SLUG[slug];
+  const [author, setAuthor] = useState(null);
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [slug]);
+    // The byline links to a named author profile when the post credits one by
+    // name; a post with no author (or an unknown name) stays the team label.
+    fetchAuthors()
+      .then((items) => {
+        const name = post?.author || "";
+        setAuthor(name ? items.find((a) => a.name === name) || null : null);
+      })
+      .catch(() => setAuthor(null));
+  }, [post]);
   const minutes = post ? readingTime(post.body) : 0;
   // Rendered once for the layout and once inside <script> for the JSON-LD
   // body, so keep the markup as a string rather than duplicating it.
@@ -350,7 +360,17 @@ export function BlogDetail() {
               </MonoLabel>
               <h1 className="mt-3 text-[34px] font-bold leading-[1.1] tracking-tight">{post.title}</h1>
               <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[14px] text-ink/60">
-                <span className="font-semibold text-ink/75">Ghar Banwao Editorial Team</span>
+                {author ? (
+                  <Link
+                    to={`/author/${author.slug}`}
+                    className="font-semibold text-green-700 hover:underline"
+                    data-testid="blog-detail-author-link"
+                  >
+                    {author.name}
+                  </Link>
+                ) : (
+                  <span className="font-semibold text-ink/75">Ghar Banwao Editorial Team</span>
+                )}
                 <span className="flex items-center gap-1.5">
                   <CalendarDays className="h-4 w-4" /> Updated {new Date(BLOG_UPDATED).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
                 </span>

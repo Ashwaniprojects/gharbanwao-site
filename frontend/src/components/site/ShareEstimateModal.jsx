@@ -5,10 +5,11 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { createLead } from "@/lib/api";
 import { useCalc } from "@/lib/calcContext";
 import { formatINR } from "@/lib/calc";
+import { estimatePDFBase64 } from "@/lib/pdf";
 
 export const ShareEstimateModal = ({ open, onClose }) => {
-  const { estimate, inputs } = useCalc();
-  const [form, setForm] = useState({ name: "", phone: "", whatsapp_ok: true });
+  const { estimate, inputs, config } = useCalc();
+  const [form, setForm] = useState({ name: "", phone: "", whatsapp_ok: true, attach_pdf: true });
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
 
   const mutation = useMutation({
@@ -20,21 +21,32 @@ export const ShareEstimateModal = ({ open, onClose }) => {
       if (res && res.whatsapp_fallback) {
         window.open(res.whatsapp_fallback, "_blank", "noopener");
       }
-      setForm({ name: "", phone: "", whatsapp_ok: true });
+      setForm({ name: "", phone: "", whatsapp_ok: true, attach_pdf: true });
       onClose();
     },
     onError: () => toast.error("Could not send. Please try again or WhatsApp us at 09648249999."),
   });
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    mutation.mutate({
+    if (mutation.isPending) return;
+    const payload = {
       ...form,
       city: inputs.city,
       plot_size: `${inputs.area} ${inputs.unit}`,
       source: "share_estimate",
       estimate: estimate && { total: estimate.total, per_sqft: estimate.perSqft, sqft: Math.round(estimate.sqft), city: inputs.city, qualities: Object.fromEntries(estimate.rows.map((r) => [r.key, r.quality])) },
-    });
+    };
+    // Hand the generated PDF to the server so the email mirror can attach it;
+    // it never lands on the WhatsApp channel (binary), only in the inbox.
+    if (form.attach_pdf) {
+      try {
+        payload.pdf_base64 = await estimatePDFBase64({ estimate, inputs, config });
+      } catch {
+        // PDF rendering is best-effort; drop the attachment rather than the lead.
+      }
+    }
+    mutation.mutate(payload);
   };
 
   return (
@@ -52,6 +64,10 @@ export const ShareEstimateModal = ({ open, onClose }) => {
           <label className="flex items-center gap-3 text-[15px] font-medium">
             <input type="checkbox" checked={form.whatsapp_ok} onChange={set("whatsapp_ok")} className="h-5 w-5 accent-[#93C526]" data-testid="share-whatsapp-checkbox" />
             WhatsApp OK? Send the PDF there.
+          </label>
+          <label className="flex items-center gap-3 text-[15px] font-medium">
+            <input type="checkbox" checked={form.attach_pdf} onChange={set("attach_pdf")} className="h-5 w-5 accent-[#93C526]" data-testid="share-attach-pdf-checkbox" />
+            Also email our team the full estimate PDF.
           </label>
           <button type="submit" disabled={mutation.isPending} className="pill-green h-12 disabled:opacity-60" data-testid="share-submit-button">
             {mutation.isPending ? "Sending…" : "Send my estimate"}
