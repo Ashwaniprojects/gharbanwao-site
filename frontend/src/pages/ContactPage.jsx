@@ -25,7 +25,7 @@ export default function ContactPage() {
             name: "Ghar Banwao",
             url: "https://gharbanwao.com",
             telephone: "+91-9648249999",
-            email: "hello@gharbanwao.com",
+            email: "support@gharbanwao.com",
             areaServed: "Lucknow, Uttar Pradesh",
             address: {
               "@type": "PostalAddress",
@@ -74,7 +74,7 @@ export default function ContactPage() {
               {[
                 { icon: Phone, label: "Call us", value: "09648249999", href: "tel:09648249999" },
                 { icon: MessageCircle, label: "WhatsApp", value: "09198059992", href: WHATSAPP_URL },
-                { icon: Mail, label: "Email", value: "hello@gharbanwao.com", href: "mailto:hello@gharbanwao.com" },
+                { icon: Mail, label: "Email", value: "support@gharbanwao.com", href: "mailto:support@gharbanwao.com" },
                 { icon: MapPin, label: "Visit us", value: "Indira Nagar, Lucknow", href: "https://maps.google.com" },
               ].map((c, i) => (
                 <Reveal key={c.label} delay={i * 0.06}>

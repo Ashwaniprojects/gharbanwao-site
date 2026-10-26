@@ -32,7 +32,7 @@ export default function TermsPage() {
               { title: "Cancellation and refund", body: "Either party may cancel with 30 days written notice. If you cancel after work has begun, you will be billed for all completed stages plus materials already procured. Any advance payment beyond billed stages is refunded within 15 working days." },
               { title: "Dispute resolution", body: "Any dispute arising from these terms or the project agreement shall first be attempted to resolve through mutual discussion. If unresolved within 30 days, the dispute shall be referred to arbitration under the Arbitration and Conciliation Act, 1996, with the seat of arbitration in Lucknow." },
               { title: "Governing law", body: "These terms are governed by the laws of India. Courts in Lucknow shall have exclusive jurisdiction over any matter not resolved by arbitration." },
-              { title: "Contact", body: "For questions about these terms, contact us at hello@gharbanwao.com or call 09648249999. Office address: 16/284, near Munshipulia, Indira Nagar, Lucknow 226016." },
+              { title: "Contact", body: "For questions about these terms, contact us at support@gharbanwao.com or call 09648249999. Office address: 16/284, near Munshipulia, Indira Nagar, Lucknow 226016." },
             ].map((s, i) => (
               <Reveal key={s.title} delay={i * 0.05}>
                 <div className="card-gb p-6 md:p-8 bg-paper">

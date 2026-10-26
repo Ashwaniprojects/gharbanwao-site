@@ -312,7 +312,7 @@ export const Footer = () => (
             <p>
               <a href={WHATSAPP_URL} className="transition-colors hover:text-ink">WhatsApp</a>
               <span className="mx-2 text-ink/30">·</span>
-              <a href="mailto:hello@gharbanwao.com" className="transition-colors hover:text-ink">hello@gharbanwao.com</a>
+              <a href="mailto:support@gharbanwao.com" className="transition-colors hover:text-ink">support@gharbanwao.com</a>
             </p>
           </address>
         </div>
