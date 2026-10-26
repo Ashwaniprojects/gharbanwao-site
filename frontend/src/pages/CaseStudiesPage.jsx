@@ -94,7 +94,7 @@ export default function CaseStudiesPage() {
                         {study.cover_image_url ? (
                           <img
                             src={study.cover_image_url}
-                            alt=""
+                            alt={study.title}
                             loading="lazy"
                             className="h-48 w-full object-cover md:h-full"
                           />

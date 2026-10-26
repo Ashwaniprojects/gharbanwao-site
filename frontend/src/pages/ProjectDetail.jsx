@@ -16,10 +16,39 @@ import {
   Ruler,
 } from "lucide-react";
 import { fetchProjects } from "@/lib/api";
+import { fetchProjects as fetchCmsProjects } from "@/lib/cmsAdmin";
 import { PHONES, WHATSAPP_URL } from "@/data/content";
+import { Image as CmsImage } from "@/components/site/shared";
 
 const STAGES = ["Design", "Foundation", "Structure", "Brickwork", "Finishing", "Handover"];
 const SITE = "https://gharbanwao.com";
+
+/*
+ * Two project sources: the CMS (admin-managed, with real photos) and the
+ * static map seed (297 pins). The CMS wins — an admin-published project is
+ * the freshest record — and the map record fills any field the CMS project
+ * left empty (plot, size, stage, quote).
+ */
+function normalizeCms(p) {
+  const photos = Array.isArray(p.photos) ? p.photos : [];
+  return {
+    ...p,
+    from_cms: true,
+    status: p.status === "handed_over" ? "handed_over" : "ongoing",
+    gb_id: p.gb_id || "",
+    photos,
+    cover_image_url: p.cover_image_url || photos[0] || null,
+    plot: p.plot_dimensions || "",
+    size_sqft: p.size_sqft || p.area_sqft || null,
+    stage: p.stage ? Math.min(Number(p.stage), STAGES.length) : 6,
+    stage_name: p.stage_name || (p.status === "handed_over" ? "Handed over" : ""),
+    handover: p.handover || (p.status === "handed_over" ? String(p.handover_date || "").slice(0, 4) : ""),
+    owner: p.owner || "",
+    quote: p.quote || p.summary || "",
+    lat: p.lat ?? null,
+    lng: p.lng ?? null,
+  };
+}
 
 export default function ProjectDetail() {
   const { gbId } = useParams();
@@ -30,14 +59,36 @@ export default function ProjectDetail() {
   useEffect(() => {
     window.scrollTo(0, 0);
     setLoading(true);
-    fetchProjects({ limit: 500 })
-      .then((all) => {
-        const found = all.find((p) => p.gb_id.toLowerCase() === gbId.toLowerCase());
-        setProject(found || null);
-        setSiblings(all.filter((p) => p.locality === found?.locality && p.gb_id !== found?.gb_id).slice(0, 3));
-      })
-      .catch(() => setProject(null))
-      .finally(() => setLoading(false));
+    const cmsPromise = fetchCmsProjects()
+      .then((cms) =>
+        cms.find((p) => p.slug.toLowerCase() === gbId.toLowerCase()) ||
+        cms.find((p) => p.gb_id && p.gb_id.toLowerCase() === gbId.toLowerCase()) ||
+        null,
+      )
+      .catch(() => null);
+
+    cmsPromise.then((cmsMatch) => {
+      fetchProjects({ limit: 500 })
+        .then((all) => {
+          const byCode = all.find((p) => p.gb_id.toLowerCase() === gbId.toLowerCase()) || null;
+          const base = cmsMatch ? normalizeCms(cmsMatch) : byCode;
+          if (!base) {
+            setProject(null);
+            return;
+          }
+          // Merge: CMS fields win, map seed fills the gaps it knows.
+          const merged = { ...(byCode || {}), ...base };
+          merged.size_sqft = base.size_sqft || byCode?.size_sqft || null;
+          merged.plot = base.plot || byCode?.plot || "";
+          merged.stage = base.from_cms ? merged.stage : base.stage;
+          setProject(merged);
+          setSiblings(
+            all.filter((p) => p.locality === merged.locality && p.gb_id !== merged.gb_id).slice(0, 3),
+          );
+        })
+        .catch(() => setProject(cmsMatch ? normalizeCms(cmsMatch) : null))
+        .finally(() => setLoading(false));
+    });
   }, [gbId]);
 
   if (loading) {
@@ -140,25 +191,36 @@ export default function ProjectDetail() {
                   {project.locality}, <span className="text-green-700">{project.city}</span>
                 </h1>
                 <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3 text-[15px] text-ink/70">
-                  <span className="inline-flex items-center gap-2">
-                    <Ruler className="h-4 w-4 text-green-700" /> {project.plot} · {project.size_sqft.toLocaleString("en-IN")} sqft
-                  </span>
-                  <span className="inline-flex items-center gap-2">
-                    <Building2 className="h-4 w-4 text-green-700" /> {project.package} package
-                  </span>
+                  {project.size_sqft || project.plot ? (
+                    <span className="inline-flex items-center gap-2">
+                      <Ruler className="h-4 w-4 text-green-700" />
+                      {[project.plot, project.size_sqft ? `${Number(project.size_sqft).toLocaleString("en-IN")} sqft` : ""]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </span>
+                  ) : null}
+                  {project.package ? (
+                    <span className="inline-flex items-center gap-2">
+                      <Building2 className="h-4 w-4 text-green-700" /> {project.package} package
+                    </span>
+                  ) : null}
                   <span className="inline-flex items-center gap-2">
                     {ongoing ? <Hammer className="h-4 w-4 text-green-700" /> : <CheckCircle2 className="h-4 w-4 text-green-700" />}
-                    {ongoing ? `${project.stage_name || "In progress"}` : `Handed over ${project.handover}`}
+                    {ongoing ? `${project.stage_name || "In progress"}` : `Handed over ${project.handover || ""}`.trim()}
                   </span>
                 </div>
               </Reveal>
               <Reveal delay={0.1}>
-                <div className="overflow-hidden rounded-2xl border border-divider">
-                  <Placeholder
-                    code={`IMG-${project.gb_id.slice(3)}`}
-                    ratio="aspect-[16/10]"
-                    label={project.locality}
-                  />
+                <div className="overflow-hidden rounded-2xl border border-divider" data-testid="project-detail-hero">
+                  {project.cover_image_url ? (
+                    <CmsImage src={project.cover_image_url} alt={project.title || project.gb_id} ratio="aspect-[16/10]" />
+                  ) : (
+                    <Placeholder
+                      code={`IMG-${(project.gb_id || "000").slice(3)}`}
+                      ratio="aspect-[16/10]"
+                      label={project.locality}
+                    />
+                  )}
                 </div>
               </Reveal>
             </div>
@@ -170,13 +232,34 @@ export default function ProjectDetail() {
           <Container className="grid gap-12 lg:grid-cols-3">
             <div className="lg:col-span-2">
               <SectionHeader title="The build" />
-              <p className="mt-6 text-[16px] leading-relaxed text-ink/80" data-testid="project-summary">
-                A {project.size_sqft.toLocaleString("en-IN")} square foot{" "}
-                {project.package}-package home in {project.locality}, {project.city}. The plot is{" "}
-                {project.plot.toLowerCase()}, finished to the {project.package} specification with{" "}
-                {ongoing ? "construction underway" : "work completed and handed over"}{" "}
-                {ongoing ? "" : `in ${project.handover}`}.
-              </p>
+              {project.summary ? (
+                <p className="mt-6 text-[16px] leading-relaxed text-ink/80" data-testid="project-summary">{project.summary}</p>
+              ) : (
+                <p className="mt-6 text-[16px] leading-relaxed text-ink/80" data-testid="project-summary">
+                  A {project.size_sqft ? `${Number(project.size_sqft).toLocaleString("en-IN")} square foot ` : ""}
+                  {project.package ? `${project.package}-package ` : ""}home in {project.locality}, {project.city}.{" "}
+                  {project.plot ? `The plot is ${project.plot.toLowerCase()}, ` : ""}
+                  {ongoing ? "construction is underway" : "the work was completed and handed over"}
+                  {!ongoing && project.handover ? ` in ${project.handover}` : ""}.
+                </p>
+              )}
+
+              {Array.isArray(project.photos) && project.photos.length > 0 ? (
+                <div className="mt-8" data-testid="project-photo-gallery">
+                  <MonoLabel>PROJECT PHOTOS</MonoLabel>
+                  <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3">
+                    {project.photos.map((src, i) => (
+                      <CmsImage
+                        key={i}
+                        src={src}
+                        alt={`${project.gb_id} photo ${i + 1}`}
+                        ratio={project.photos.length === 1 ? "aspect-[16/10]" : "aspect-[4/3]"}
+                        className={project.photos.length === 1 ? "md:col-span-3" : ""}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ) : null}
 
               <div className="mt-8 card-gb p-6 bg-wash-yellow">
                 <div className="flex items-center gap-2">

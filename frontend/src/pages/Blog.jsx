@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { AnnouncementStrip } from "@/components/site/AnnouncementStrip";
 import { Navbar } from "@/components/site/Navbar";
 import { FinalCTA, Footer, MobileBar } from "@/components/site/FaqCtaFooter";
-import { Container, MonoLabel, Placeholder, Reveal, SectionHeader, Stars } from "@/components/site/shared";
+import { Container, MonoLabel, Placeholder, Reveal, SectionHeader, Stars, Image } from "@/components/site/shared";
 import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
 import { ArrowRight, CalendarDays, Clock, Feather } from "lucide-react";
 import { BLOGS, BLOG_UPDATED } from "@/data/blogs";
-import { fetchAuthors } from "@/lib/cmsAdmin";
+import { fetchAuthors, fetchPosts } from "@/lib/cmsAdmin";
 
 const SITE = "https://gharbanwao.com";
 const BY_SLUG = Object.fromEntries(BLOGS.map((p) => [p.slug, p]));
@@ -301,6 +302,16 @@ function NotFound({ slug }) {
 export function BlogDetail() {
   const { slug } = useParams();
   const post = BY_SLUG[slug];
+  const [cmsPost, setCmsPost] = useState(null);
+  // CMS posts are fetched only for slugs the static field manual doesn't
+  // know about; the two datasets never collide on a slug.
+  useEffect(() => {
+    setCmsPost(null);
+    if (BY_SLUG[slug]) return;
+    fetchPosts()
+      .then((items) => setCmsPost(items.find((p) => p.slug === slug) || null))
+      .catch(() => setCmsPost(null));
+  }, [slug]);
   const [author, setAuthor] = useState(null);
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -326,6 +337,69 @@ export function BlogDetail() {
         : null,
     [post]
   );
+  // A CMS post published from the admin: rendered from the backend, with the
+  // same chrome. Shown only once the lookup finished and no static match.
+  if (!post && cmsPost) {
+    return (
+      <div className="min-h-screen bg-paper text-ink" data-testid="cms-blog-detail">
+        <Head post={{ ...cmsPost, title: cmsPost.title, seoTitle: cmsPost.meta_title || undefined }} />
+        <AnnouncementStrip />
+        <Navbar />
+        <main>
+          <section className="section-gb bg-wash-yellow">
+            <Container>
+              <div className="flex items-center gap-2 text-[13px] text-ink/55">
+                <Link to="/blog" className="hover:text-green-700">Blog</Link>
+                <span>›</span>
+                <span>{cmsPost.category || "From the Ghar Banwao desk"}</span>
+              </div>
+              <div className="mt-5 max-w-3xl">
+                <MonoLabel className="flex items-center gap-2">
+                  <Feather className="h-3.5 w-3.5 text-green-700" /> FIELD NOTE
+                </MonoLabel>
+                <h1 className="mt-3 text-[34px] font-bold leading-[1.1] tracking-tight">{cmsPost.title}</h1>
+                <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[14px] text-ink/60">
+                  <span className="font-semibold text-ink/75">{cmsPost.author || "Ghar Banwao Editorial Team"}</span>
+                  {cmsPost.published_at ? (
+                    <span className="flex items-center gap-1.5">
+                      <CalendarDays className="h-4 w-4" />
+                      {new Date(cmsPost.published_at).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+            </Container>
+          </section>
+          <article className="section-gb">
+            <Container>
+              <div className="mx-auto max-w-3xl text-[16px] text-ink/80">
+                {cmsPost.cover_image_url ? (
+                  <div className="mb-8 overflow-hidden rounded-2xl border border-divider">
+                    <Image src={cmsPost.cover_image_url} alt={cmsPost.title} ratio="aspect-[16/9]" />
+                  </div>
+                ) : null}
+                {cmsPost.excerpt ? (
+                  <p className="text-[18px] font-medium leading-relaxed text-ink">{cmsPost.excerpt}</p>
+                ) : null}
+                {String(cmsPost.body || "")
+                  .split(/\n{2,}/)
+                  .map((para, i) => (
+                    <p key={i} className="mt-5 leading-relaxed">
+                      {para.trim()}
+                    </p>
+                  ))}
+              </div>
+            </Container>
+          </article>
+          <Related from={post || { category: "", slug }} />
+          <FinalCTA />
+        </main>
+        <Footer />
+        <MobileBar />
+      </div>
+    );
+  }
+
   if (!post) {
     return (
       <div className="min-h-screen bg-paper text-ink">
@@ -429,6 +503,14 @@ function Related({ from }) {
 export function BlogIndex() {
   const [filter, setFilter] = useState("all");
   const onFilter = setFilter;
+  // Fresh posts published from the admin CMS — shown above the field manual.
+  // A fetch failure just means no CMS cards; the manual always renders.
+  const { data: cmsPosts = [] } = useQuery({
+    queryKey: ["cms-blog-posts"],
+    queryFn: () => fetchPosts().catch(() => []),
+  });
+  const seen = new Set(BLOGS.map((p) => p.slug));
+  const fresh = cmsPosts.filter((p) => p.status === "published" && !seen.has(p.slug));
   return (
     <div className="min-h-screen bg-paper text-ink">
       <Head post={LIST_HEAD} list={BLOGS} />
@@ -447,6 +529,43 @@ export function BlogIndex() {
             </Reveal>
           </Container>
         </section>
+        {fresh.length > 0 ? (
+          <section className="section-gb">
+            <Container>
+              <SectionHeader label="FRESH FROM THE DESK" title="Latest notes" />
+              <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-testid="cms-blog-cards">
+                {fresh.map((p, i) => (
+                  <Reveal key={`cms-${p.slug}`} delay={(i % 3) * 0.05}>
+                    <Link to={`/blog/${p.slug}`} className="card-gb overflow-hidden bg-paper h-full flex flex-col group">
+                      {p.cover_image_url ? (
+                        <div className="overflow-hidden">
+                          <Image src={p.cover_image_url} alt={p.title} ratio="aspect-[16/9]" />
+                        </div>
+                      ) : null}
+                      <div className="p-6 flex flex-col h-full">
+                        <div className="flex items-center justify-between gap-3">
+                          <MonoLabel>{p.category || "Field note"}</MonoLabel>
+                          {p.published_at ? (
+                            <span className="text-[12px] text-ink/45 flex items-center gap-1">
+                              <CalendarDays className="h-3.5 w-3.5" />
+                              {new Date(p.published_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                            </span>
+                          ) : null}
+                        </div>
+                        <p className="mt-3 text-[17px] font-bold leading-snug group-hover:text-green-700 transition-colors">{p.title}</p>
+                        {p.excerpt ? <p className="mt-3 text-[14px] leading-relaxed text-ink/65 flex-1">{p.excerpt}</p> : <span className="flex-1" />}
+                        <span className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-bold text-green-700">
+                          Read post <ArrowRight className="h-4 w-4" />
+                        </span>
+                      </div>
+                    </Link>
+                  </Reveal>
+                ))}
+              </div>
+            </Container>
+          </section>
+        ) : null}
+
         <section className="section-gb">
           <Container>
             <div className="mt-2 flex flex-wrap items-center justify-center gap-2">

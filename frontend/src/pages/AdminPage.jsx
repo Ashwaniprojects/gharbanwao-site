@@ -318,7 +318,7 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
         {form.cover_image_url ? (
           <img
             src={form.cover_image_url}
-            alt=""
+            alt={`Cover preview for ${form.title || "this post"}`}
             className="mt-3 h-32 w-auto rounded-lg border border-divider object-cover"
           />
         ) : null}
@@ -1092,7 +1092,7 @@ const AuthorRow = ({ author, onEdit, onDelete, busy }) => (
       {author.photo_url ? (
         <img
           src={author.photo_url}
-          alt=""
+          alt={author.name}
           className="h-10 w-10 shrink-0 rounded-full object-cover border border-divider"
         />
       ) : (
@@ -1261,7 +1261,7 @@ const AuthorEditor = ({ original, onSaved, onCancel }) => {
         {form.photo_url ? (
           <img
             src={form.photo_url}
-            alt=""
+            alt={`Photo preview for ${form.name || "this author"}`}
             className="mt-3 h-20 w-20 rounded-full border border-divider object-cover"
           />
         ) : null}

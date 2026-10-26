@@ -17,6 +17,7 @@ import { BlogIndex, BlogDetail } from "@/pages/Blog";
 import AuthorPage from "@/pages/AuthorPage";
 import { ServicesIndexPage, ServiceDetailPage } from "@/pages/ServicesPage";
 import ProjectDetail from "@/pages/ProjectDetail";
+import ProjectsPage from "@/pages/ProjectsPage";
 import AdminPage from "@/pages/AdminPage";
 import { CalcProvider } from "@/lib/calcContext";
 import { useLenis } from "@/hooks/useLenis";
@@ -47,6 +48,7 @@ function App() {
             <Route path="/faq" element={<FaqPage />} />
             <Route path="/case-studies" element={<CaseStudiesPage />} />
             <Route path="/case-studies/:slug" element={<CaseStudyDetail />} />
+            <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/projects/:gbId" element={<ProjectDetail />} />
             <Route path="/blog" element={<BlogIndex />} />
             <Route path="/blog/:slug" element={<BlogDetail />} />

@@ -66,6 +66,23 @@ export const Navbar = () => {
     }
   };
 
+  // A nav item either names a homepage section (`id`, scroll there) or a full
+  // page (`href`, e.g. Projects → /projects). On the target page, scroll to
+  // top instead of reloading; otherwise hard-navigate so the route renders.
+  const goNav = (n) => {
+    setServicesOpen(false);
+    setMenuOpen(false);
+    if (n.href) {
+      if (window.location.pathname === n.href) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        window.location.href = n.href;
+      }
+      return;
+    }
+    go(n.id);
+  };
+
   return (
     <>
       <header className="sticky top-0 z-40 h-[84px] md:h-[92px] bg-paper/90 backdrop-blur-xl border-b border-divider no-print" data-testid="navbar">
@@ -110,10 +127,10 @@ export const Navbar = () => {
                 </div>
               ) : (
                 <button
-                  key={n.id}
-                  onClick={() => go(n.id)}
+                  key={n.id || n.href}
+                  onClick={() => goNav(n)}
                   className="px-3 py-2 text-[15px] font-semibold rounded-full hover:bg-wash-green transition-colors"
-                  data-testid={`nav-link-${n.id}`}
+                  data-testid={`nav-link-${n.id || n.href.replace(/[^a-z0-9]/gi, "").toLowerCase()}`}
                 >
                   {n.label}
                 </button>
@@ -167,7 +184,7 @@ export const Navbar = () => {
                     ))}
                   </div>
                 ) : (
-                  <button key={n.id} onClick={() => go(n.id)} className="text-left px-3 py-3 text-[17px] font-semibold rounded-lg hover:bg-wash-green" data-testid={`nav-mobile-link-${n.id}`}>
+                  <button key={n.id || n.href} onClick={() => goNav(n)} className="text-left px-3 py-3 text-[17px] font-semibold rounded-lg hover:bg-wash-green" data-testid={`nav-mobile-link-${n.id || n.href.replace(/[^a-z0-9]/gi, "").toLowerCase()}`}>
                     {n.label}
                   </button>
                 )

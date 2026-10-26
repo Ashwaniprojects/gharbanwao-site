@@ -12,12 +12,13 @@ export const WHATSAPP_URL = `https://api.whatsapp.com/send/?phone=${WHATSAPP_NUM
   WHATSAPP_DEFAULT_MESSAGE
 )}&type=phone_number&app_absent=0`;
 
-// Primary header nav (lean — Calculator and Contact live elsewhere: Calculator is inside Services, Contact moved to footer)
+// Primary header nav (lean — Calculator and Contact live elsewhere: Calculator is inside Services, Contact moved to footer).
+// `href` items are full pages (Projects, Blog); `id` items scroll to a homepage section.
 export const NAV = [
   { label: "Home", id: "home" },
   { label: "About Us", id: "about" },
   { label: "Services", id: "services" },
-  { label: "Projects", id: "projects" },
+  { label: "Projects", href: "/projects" },
   { label: "Reviews", id: "reviews" },
 ];
 

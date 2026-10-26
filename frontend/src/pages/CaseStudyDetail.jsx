@@ -148,7 +148,7 @@ export default function CaseStudyDetail() {
               </Container>
             </section>
 
-            <Gallery photos={photos} cover={study.cover_image_url} />
+            <Gallery photos={photos} cover={study.cover_image_url} title={study.title} />
 
             <section className="section-gb" data-testid="case-study-story">
               <Container className="max-w-3xl">
@@ -232,7 +232,7 @@ const Chip = ({ icon, text }) => (
   </span>
 );
 
-const Gallery = ({ photos, cover }) => {
+const Gallery = ({ photos, cover, title }) => {
   const sources = Array.from(new Set([cover, ...photos].filter(Boolean)));
   if (sources.length === 0) return null;
   return (
@@ -244,7 +244,7 @@ const Gallery = ({ photos, cover }) => {
               <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-divider bg-[#E9E9E6]">
                 <img
                   src={src}
-                  alt=""
+                  alt={`${title} — site photo ${i + 1}`}
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover"
                   onError={(e) => {
