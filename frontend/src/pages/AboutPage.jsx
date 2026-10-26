@@ -1,4 +1,4 @@
-import { ArrowRight, Phone, ClipboardList, HardHat, MessageSquare, ShieldCheck } from "lucide-react";
+import { ArrowRight, Phone, ClipboardList, HardHat, MessageSquare, ShieldCheck, Eye, Target } from "lucide-react";
 import { AnnouncementStrip } from "@/components/site/AnnouncementStrip";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer, MobileBar } from "@/components/site/FaqCtaFooter";
@@ -22,11 +22,23 @@ const CMD_MESSAGE = [
 ];
 
 const CEO_MESSAGE = [
-  "At Ghar Banwao, my vision is to redefine the home-building experience by placing our customers at the centre of every decision we make. I believe that building a home should be an exciting and fulfilling journey, not a complicated or stressful process.",
-  "As CEO, my priority is to build an organization that earns customer trust through transparency, delivers value through quality, and creates lasting relationships through accountability. We strive to understand every customer's unique vision, requirements, and budget, translating them into thoughtfully planned homes with a seamless experience from concept to completion.",
-  "I believe the future of home construction lies in making reliable services more accessible, organized, and customer-friendly. Our goal is to bring architecture, construction, and interior design together through a single, dependable platform that empowers customers to make informed decisions with confidence.",
-  "At Ghar Banwao, success is not measured merely by the homes we build, but by the trust we earn and the satisfaction we deliver. As we grow, our commitment remains unwavering: to continuously improve, innovate, and make the dream of owning a well-built home simpler for every customer.",
-  "Our ambition is to make Ghar Banwao India's most trusted, customer-centric home construction services platform — where every dream matters and every customer comes first.",
+  "At Ghar Banwao, we believe building your dream home should be exciting, transparent, and well-managed — not complicated or stressful.",
+  "Our journey in the construction industry began in 2016, and Ghar Banwao was officially launched in November 2018, with its head office in Lucknow, Uttar Pradesh. Since then, our focus has been to provide homeowners with a professional and dependable one-stop solution for complete home construction.",
+  "From architectural planning, 2D floor plans and 3D designs to structural engineering, construction, finishing, interiors, site supervision, and final handover, we bring every stage of your home-building journey together under one experienced team.",
+  "For you, this means no hassle of coordinating with multiple architects, engineers, contractors, vendors, and different agencies. With Ghar Banwao, you have one team, one streamlined process, and clear accountability from concept to completion.",
+  "Our approach is built around what matters most to a homeowner — transparent pricing, clearly defined specifications, professional supervision, quality-focused execution, stage-wise payments, regular project updates, and dependable after-construction support.",
+  "With 260+ homes successfully handed over and 51+ ongoing projects, we continue to earn the trust of homeowners looking for a more organized and reliable way to build.",
+  "Whether you are building your first home or managing construction while living in another city, our goal is simple — to make your journey from plot to dream home seamless, transparent, and hassle-free.",
+];
+
+const MISSION_TEXT = [
+  "To simplify the entire home-building journey by bringing architects, engineers, designers, construction professionals, skilled teams, and allied construction services together on one reliable platform.",
+  "Through Ghar Banwao, we aim to provide customers with professional expertise, transparent processes, quality-focused execution, clear accountability, and end-to-end support — eliminating the complexity of coordinating with multiple service providers.",
+];
+
+const VISION_TEXT = [
+  "To become a trusted and comprehensive construction service portal, providing homeowners with a seamless one-stop solution for all their home construction needs — from planning and design to construction, interiors, renovation, and project completion.",
+  "Our vision is to make professional construction services more organized, transparent, accessible, and dependable, so every homeowner can build with greater confidence and peace of mind.",
 ];
 
 const COMMITMENTS = [
@@ -360,6 +372,53 @@ export default function AboutPage() {
                 alt="Sujata, Chief Executive Officer and Interior Designer, Ghar Banwao"
                 paragraphs={CEO_MESSAGE}
               />
+            </div>
+
+            {/* Mission & Vision */}
+            <Reveal className="mt-12">
+              <span className="mono-label text-green">WHAT DRIVES US</span>
+              <h2 className="display mt-4 text-3xl sm:text-4xl lg:text-[44px] max-w-[22ch]">
+                Mission &amp; Vision.
+              </h2>
+            </Reveal>
+            <div className="mt-10 grid gap-6 lg:grid-cols-2" data-testid="about-mission-vision">
+              {[
+                {
+                  key: "mission",
+                  Icon: Target,
+                  label: "OUR MISSION",
+                  title: "One reliable platform for the whole build.",
+                  paras: MISSION_TEXT,
+                },
+                {
+                  key: "vision",
+                  Icon: Eye,
+                  label: "OUR VISION",
+                  title: "A trusted one-stop construction portal.",
+                  paras: VISION_TEXT,
+                },
+              ].map(({ key, Icon, label, title, paras }, i) => (
+                <Reveal key={key} delay={i * 0.08} className="h-full">
+                  <article
+                    className="relative h-full overflow-hidden rounded-2xl bg-ink p-8 md:p-10 text-paper"
+                    data-testid={`about-${key}-card`}
+                  >
+                    <div className="absolute -top-16 -right-16 h-56 w-56 rounded-full bg-green/25 blur-3xl" aria-hidden="true" />
+                    <div className="relative flex items-center gap-3">
+                      <span className="grid h-12 w-12 place-items-center rounded-xl bg-green text-ink">
+                        <Icon className="h-6 w-6" strokeWidth={2.25} />
+                      </span>
+                      <span className="mono-label text-green">{label}</span>
+                    </div>
+                    <h3 className="display relative mt-5 text-[24px] md:text-[30px] leading-tight">{title}</h3>
+                    <div className="relative mt-4 space-y-4 text-[15px] leading-relaxed text-paper/75">
+                      {paras.map((p, j) => (
+                        <p key={j}>{p}</p>
+                      ))}
+                    </div>
+                  </article>
+                </Reveal>
+              ))}
             </div>
           </Container>
         </section>
