@@ -23,6 +23,54 @@ import { Image as CmsImage } from "@/components/site/shared";
 const STAGES = ["Design", "Foundation", "Structure", "Brickwork", "Finishing", "Handover"];
 const SITE = "https://gharbanwao.com";
 
+// Turn a pasted YouTube / Instagram link into something we can embed inline.
+// Anything else falls through to a plain "watch on X" link rather than a guess.
+const toEmbed = (raw) => {
+  const url = String(raw || "").trim();
+  if (!url) return null;
+  let m = url.match(/(?:youtu\.be\/|[?&]v=|youtube\.com\/(?:embed|shorts)\/)([\w-]{11})/);
+  if (m) return { kind: "youtube", id: m[1], src: `https://www.youtube-nocookie.com/embed/${m[1]}?rel=0` };
+  m = url.match(/instagram\.com\/(?:reel|p|tv)\/([\w.-]+)/);
+  if (m) return { kind: "instagram", id: m[1], src: `https://www.instagram.com/p/${m[1]}/embed/` };
+  return { kind: "external", src: url };
+};
+
+const ReviewVideo = ({ url }) => {
+  const embed = toEmbed(url);
+  if (!embed) return null;
+  if (embed.kind === "youtube") {
+    return (
+      <div className="mt-4 overflow-hidden rounded-2xl border border-divider bg-black" data-testid="project-review-video">
+        <iframe
+          className="aspect-video w-full"
+          src={embed.src}
+          title="Project review video"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </div>
+    );
+  }
+  if (embed.kind === "instagram") {
+    return (
+      <div className="mt-4 overflow-hidden rounded-2xl border border-divider" data-testid="project-review-video">
+        <iframe className="w-full" style={{ height: 500 }} src={embed.src} title="Project review video" allow="encrypted-media" />
+      </div>
+    );
+  }
+  return (
+    <a
+      href={embed.src}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="mt-4 inline-flex items-center gap-2 rounded-full border border-divider px-4 h-10 text-[14px] font-bold hover:border-green-700 hover:text-green-700"
+      data-testid="project-review-video"
+    >
+      ▶ Watch the review video
+    </a>
+  );
+};
+
 /*
  * Two project sources: the CMS (admin-managed, with real photos) and the
  * static map seed (297 pins). The CMS wins — an admin-published project is
@@ -271,6 +319,19 @@ export default function ProjectDetail() {
                 </blockquote>
                 <p className="mt-3 text-[14px] text-ink/60">— {project.owner}</p>
               </div>
+
+              {(project.review_text || project.review_video_url) ? (
+                <div className="mt-8 card-gb p-6" data-testid="project-review">
+                  <div className="flex items-center gap-2">
+                    <Quote className="h-5 w-5 text-green-700" />
+                    <span className="mono-label text-green-700">CLIENT REVIEW</span>
+                  </div>
+                  {project.review_text ? (
+                    <p className="mt-3 text-[16px] leading-relaxed text-ink/85">{project.review_text}</p>
+                  ) : null}
+                  {project.review_video_url ? <ReviewVideo url={project.review_video_url} /> : null}
+                </div>
+              ) : null}
 
               {/* Stage progress */}
               <div className="mt-10">

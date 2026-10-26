@@ -1,37 +1,25 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { animate, useInView, useReducedMotion } from "framer-motion";
-import Marquee from "react-fast-marquee";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
-import { ArrowRight, Phone, Star, MessageCircle } from "lucide-react";
-import { FaFacebook, FaInstagram, FaPinterest, FaThreads, FaWhatsapp, FaYoutube } from "react-icons/fa6";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Bot,
+  Home,
+  MessageCircle,
+  Phone,
+  ShieldCheck,
+  Star,
+  Users,
+} from "lucide-react";
+import { FaFacebook, FaInstagram, FaLinkedin, FaWhatsapp, FaYoutube } from "react-icons/fa6";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Container, Reveal, SectionHeader } from "./shared";
-import { Logo } from "./Logo";
-import { CITIES, FOOTER_NAV, PHONES, WHATSAPP_URL, HOME_FAQS } from "@/data/content";
+import { CITIES, PHONES, WHATSAPP_URL, HOME_FAQS } from "@/data/content";
 import { createLead } from "@/lib/api";
 import { scrollToId } from "@/lib/scroll";
-
-const PAGE_ROUTES = ["about", "reviews", "contact", "privacy", "terms", "faq"];
-
-const footerGo = (id) => {
-  if (id === "home") {
-    if (window.location.pathname !== "/") { window.location.href = "/"; }
-    else { window.scrollTo({ top: 0, behavior: "smooth" }); }
-    return;
-  }
-  if (PAGE_ROUTES.includes(id)) {
-    if (window.location.pathname !== `/${id}`) { window.location.href = `/${id}`; }
-    return;
-  }
-  if (window.location.pathname !== "/") {
-    window.location.href = `/#${id}`;
-    return;
-  }
-  scrollToId(id);
-};
 
 export const FAQ = () => (
   <section id="faq" className="section-gb" data-testid="faq-section">
@@ -126,238 +114,274 @@ export const FinalCTA = () => {
   );
 };
 
-const FOOTER_EXPLORE = [
-  ...FOOTER_NAV.slice(0, 5),
-  { label: "Register with us", href: "/register" },
-  ...FOOTER_NAV.slice(5),
-];
-
-const FOOTER_TRUST = [
-  { label: "Google reviews ↗", href: "https://www.google.com/maps", external: true },
-  { label: "Warranty PDF", href: "/warranty.pdf", preventDefault: true },
-  { label: "Privacy", href: "/privacy" },
-  { label: "Terms", href: "/terms" },
-  { label: "Login", href: "/admin" },
+// The dark footer's link columns, matching the site's live footer. `href` is
+// a route, `external` leaves the site, and `comingSoon` renders a muted,
+// non-clickable entry.
+const FOOTER_COLUMNS = [
+  {
+    title: "Company",
+    links: [
+      { label: "About Us", href: "/about" },
+      { label: "Our Team", href: "/about" },
+      { label: "Careers", href: "/register" },
+      { label: "Blogs / News", href: "/blog" },
+      { label: "Contact Us", href: "/contact" },
+    ],
+  },
+  {
+    title: "Services",
+    links: [
+      { label: "Residential Construction", href: "/services/construction-with-materials" },
+      { label: "Architectural Planning", href: "https://nakshaabanwao.com/", external: true },
+      { label: "2D & 3D Design", href: "/services/architecture-planning" },
+      { label: "Structural Engineering", href: "/services/construction-with-materials" },
+      { label: "Interiors & Finishing", href: "/services/interior-design" },
+      { label: "Renovation", href: "/services/renovation-makeover" },
+      { label: "Site Supervision", href: "/services/construction-with-materials" },
+      { label: "Turnkey Construction", href: "/services/construction-with-materials" },
+    ],
+  },
+  {
+    title: "Projects",
+    links: [
+      { label: "Residential Projects", href: "/projects" },
+      { label: "Commercial Projects", href: "/projects" },
+      { label: "Naksha Banwao", href: "https://nakshaabanwao.com/", external: true },
+      { label: "Project Gallery", href: "/projects" },
+    ],
+  },
+  {
+    title: "Tools",
+    links: [
+      { label: "Construction Cost Calculator", href: "/calculator" },
+      { label: "Floor Plan Estimator", href: "/calculator" },
+      { label: "Material Guide", href: "/services/construction-with-materials" },
+      { label: "GB AI (Coming Soon)", comingSoon: true },
+    ],
+  },
+  {
+    title: "Partner With Us",
+    links: [
+      { label: "Channel Partner", href: "/register" },
+      { label: "Join as Professional", href: "/register" },
+      { label: "Material Suppliers", href: "/register" },
+      { label: "Vendors", href: "/register" },
+      { label: "Franchise / Business Partner", href: "/register" },
+    ],
+  },
+  {
+    title: "Trust",
+    links: [
+      { label: "FAQ", href: "/faq" },
+      { label: "Reviews", href: "/reviews" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms & Conditions", href: "/terms" },
+      { label: "Refund Policy", href: "/terms" },
+      { label: "Login", href: "/admin" },
+    ],
+  },
 ];
 
 const FOOTER_SOCIALS = [
-  { Icon: FaFacebook, label: "Facebook", href: "https://www.facebook.com/gharbanwao/", bg: "#1877F2" },
-  { Icon: FaInstagram, label: "Instagram", href: "https://www.instagram.com/gharbanwao/", bg: "linear-gradient(45deg, #FEDA75, #FA7E1E, #D62976, #962FBF, #4F5BD5)" },
-  { Icon: FaThreads, label: "Threads", href: "https://www.threads.com/@gharbanwao", bg: "#000000" },
-  { Icon: FaYoutube, label: "YouTube", href: "https://www.youtube.com/@gharbanwao", bg: "#FF0000" },
-  { Icon: FaPinterest, label: "Pinterest", href: "https://in.pinterest.com/gharbanwao/", bg: "#E60023" },
+  { Icon: FaFacebook, label: "Facebook", href: "https://www.facebook.com/gharbanwao/" },
+  { Icon: FaInstagram, label: "Instagram", href: "https://www.instagram.com/gharbanwao/" },
+  { Icon: FaYoutube, label: "YouTube", href: "https://www.youtube.com/@gharbanwao" },
+  { Icon: FaLinkedin, label: "LinkedIn", href: "https://www.linkedin.com/" },
+  { Icon: FaWhatsapp, label: "WhatsApp", href: WHATSAPP_URL },
 ];
-
-const FooterLink = ({ item }) => {
-  if (item.preventDefault) {
-    return (
-      <a
-        href={item.href}
-        onClick={(e) => e.preventDefault()}
-        className="hover:underline decoration-green decoration-2 underline-offset-4"
-        data-testid={`footer-link-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
-      >
-        {item.label}
-      </a>
-    );
-  }
-  if (item.external) {
-    return (
-      <a
-        href={item.href}
-        target="_blank"
-        rel="noreferrer"
-        className="hover:underline decoration-green decoration-2 underline-offset-4"
-        data-testid={`footer-link-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
-      >
-        {item.label}
-      </a>
-    );
-  }
-  if (item.href) {
-    return (
-      <Link
-        to={item.href}
-        className="hover:underline decoration-green decoration-2 underline-offset-4"
-        data-testid={`footer-link-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
-      >
-        {item.label}
-      </Link>
-    );
-  }
-  return (
-    <button
-      type="button"
-      onClick={() => footerGo(item.id)}
-      className="hover:underline decoration-green decoration-2 underline-offset-4"
-      data-testid={`footer-link-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
-    >
-      {item.label}
-    </button>
-  );
-};
-
-const FooterLinkList = ({ items }) => (
-  <ul className="space-y-3 text-[15px] font-medium text-ink/70">
-    {items.map((item) => (
-      <li key={item.label}>
-        <FooterLink item={item} />
-      </li>
-    ))}
-  </ul>
-);
 
 const FOOTER_STATS = [
-  { value: 263, suffix: "+", label: "Homes delivered", note: "Across UP since 2017" },
-  { value: 52, suffix: "", label: "Sites live", note: "On the ground this week" },
-  { value: 4.8, suffix: "/5", decimals: 1, label: "Google rating", note: "From 180+ reviews" },
+  { Icon: Home, value: "260+", label: "Homes Handed Over", note: "Across Lucknow" },
+  { Icon: Users, value: "51+", label: "Ongoing Projects", note: "Currently in Progress" },
+  { Icon: Star, value: "4.8/5", label: "Google Rating", note: "250+ genuine reviews" },
+  { Icon: ShieldCheck, value: "25-Year", label: "Structural Warranty", note: "Built to last generations" },
+  { Icon: BadgeCheck, value: "ISO 9001:2015", small: true, label: "Quality Management", note: "Certified" },
 ];
 
-const FooterStat = ({ value, suffix = "", decimals = 0, label, note, delay = 0 }) => {
-  const reduce = useReducedMotion();
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
-
-  useEffect(() => {
-    const node = ref.current?.querySelector("[data-count]");
-    if (!node) return;
-    const write = (v) => { node.textContent = v.toFixed(decimals); };
-    if (reduce) {
-      write(value);
-      return;
-    }
-    if (!inView) {
-      write(0);
-      return;
-    }
-    const ctrl = animate(0, value, {
-      duration: 1.2,
-      delay,
-      ease: [0.22, 1, 0.36, 1],
-      onUpdate: write,
-    });
-    return ctrl.stop;
-  }, [inView, reduce, value, decimals, delay]);
-
+function FooterCol({ title, links }) {
   return (
-    <div ref={ref} className="group relative border-t border-divider pt-5" data-testid={`footer-stat-${label.toLowerCase().replace(/\s+/g, "-")}`}>
-      <span
-        aria-hidden
-        className="absolute -top-px left-0 h-[2px] w-10 origin-left bg-green transition-transform duration-500 ease-out group-hover:scale-x-[1.8]"
-      />
-      <p className="display text-3xl tabular-nums text-ink sm:text-4xl">
-        <span data-count>{value.toFixed(decimals)}</span>
-        {suffix && <span className="text-green">{suffix}</span>}
-      </p>
-      <p className="mt-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-ink/60">{label}</p>
-      <p className="mt-1 text-[13px] text-ink/55">{note}</p>
+    <div className="min-w-[150px] flex-1">
+      <p className="text-[15px] font-extrabold text-white">{title}</p>
+      <ul className="mt-4 space-y-2.5 text-[14px]">
+        {links.map((item) =>
+          item.comingSoon ? (
+            <li key={item.label} className="text-white/40">
+              {item.label}
+            </li>
+          ) : item.external ? (
+            <li key={item.label}>
+              <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/75 transition-colors hover:text-white"
+                data-testid={`footer-link-${item.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
+              >
+                {item.label}
+              </a>
+            </li>
+          ) : (
+            <li key={item.label}>
+              <Link
+                to={item.href}
+                className="text-white/75 transition-colors hover:text-white"
+                data-testid={`footer-link-${item.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
+              >
+                {item.label}
+              </Link>
+            </li>
+          )
+        )}
+      </ul>
     </div>
   );
-};
+}
 
-const FooterCities = () => {
-  const reduce = useReducedMotion();
-  const items = CITIES.map((city) => (
-    <span key={city} className="inline-flex items-center whitespace-nowrap">
-      <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-ink/70">{city}</span>
-      <span aria-hidden className="mx-4 text-green">▪</span>
-    </span>
-  ));
-
-  if (reduce) {
-    return (
-      <Container className="py-5">
-        <p className="mono-label text-ink/55">Serving · {CITIES.join(" · ")}</p>
-      </Container>
-    );
-  }
-
-  return (
-    <div className="border-t border-divider py-5" data-testid="footer-cities">
-      <Marquee speed={26} gradient gradientColor="#F4FADF" gradientWidth={70} autoFill>
-        {items}
-      </Marquee>
-    </div>
-  );
-};
+/* The light "Get a Free Consultation" band that sits above the dark footer,
+   with the architectural sketch as the panel's backdrop art. */
+const PreFooterCTA = () => (
+  <div className="relative overflow-hidden bg-[#eaf4dc]" data-testid="pre-footer-cta">
+    <img
+      src="/images/footer-sketch.webp"
+      alt=""
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-y-0 right-0 hidden w-[45%] object-cover object-left opacity-60 md:block"
+    />
+    <Container className="relative z-10 flex flex-col gap-8 py-8 lg:flex-row lg:items-center lg:gap-12">
+      <div className="relative shrink-0">
+        <img
+          src="/images/about/warm-modern-house.webp"
+          alt="A completed Ghar Banwao home"
+          width="320"
+          height="220"
+          loading="lazy"
+          decoding="async"
+          className="h-[150px] w-[220px] rounded-2xl border border-ink/10 object-cover shadow-lg sm:h-[180px] sm:w-[260px]"
+        />
+      </div>
+      <div className="max-w-[46ch] flex-1">
+        <p className="text-[12px] font-extrabold uppercase tracking-[0.14em] text-[#0c352a]">
+          Ready to build your dream home?
+        </p>
+        <h2 className="mt-2 text-[30px] font-extrabold leading-tight tracking-tight text-[#0c352a] sm:text-[38px]">
+          Get a <span className="text-green">Free Consultation</span>
+        </h2>
+        <p className="mt-2 text-[15px] text-ink/70">
+          Discuss your plot, requirements and budget with our expert team.
+        </p>
+      </div>
+      <div className="flex flex-col items-start gap-4 lg:items-end">
+        <div className="flex items-center gap-3">
+          <span className="grid h-12 w-12 place-items-center rounded-full bg-[#d8ebc0]">
+            <Phone className="h-5 w-5 text-[#0c352a]" strokeWidth={2.25} />
+          </span>
+          <div>
+            <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-ink/50">Call Us Now</p>
+            <a href={`tel:${PHONES[0]}`} className="text-[19px] font-extrabold tabular-nums text-[#0c352a]" data-testid="pre-footer-call">
+              {PHONES[0]}
+            </a>
+          </div>
+        </div>
+        <button
+          onClick={() => scrollToId("contact")}
+          className="inline-flex items-center gap-2 rounded-full bg-[#0c352a] px-6 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-[#0a2b22]"
+          data-testid="pre-footer-book"
+        >
+          Book Free Consultation <ArrowRight className="h-[18px] w-[18px]" />
+        </button>
+      </div>
+    </Container>
+  </div>
+);
 
 export const Footer = () => (
-  <footer className="bg-wash-green border-t border-divider pb-24 md:pb-0" data-testid="footer">
-    <div className="border-b border-divider">
-      <Container className="py-12">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-10">
-          {FOOTER_STATS.map((stat, i) => (
-            <FooterStat key={stat.label} {...stat} delay={i * 0.12} />
-          ))}
-        </div>
-      </Container>
-    </div>
+  <>
+    <PreFooterCTA />
+    <footer className="relative overflow-hidden bg-[#0c352a] pb-24 md:pb-10 text-white no-print" data-testid="footer">
+      {/* Architectural sketch backdrop, right side, faded into the green */}
+      <img
+        src="/images/footer-sketch.webp"
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-0 right-0 h-full w-[55%] max-w-[820px] object-cover object-right opacity-[0.14] mix-blend-luminosity"
+      />
 
-    <Container className="py-16">
-      <div className="grid grid-cols-2 gap-x-10 gap-y-12 md:grid-cols-12 md:gap-x-8 md:gap-y-0">
-        <div className="col-span-2 md:col-span-4">
-          <Logo size="h-16" />
-          <p className="mt-5 max-w-[38ch] text-[15px] leading-relaxed text-ink/70">
-            Lucknow's #1 construction company — 260+ homes delivered across Uttar Pradesh since 2017.
-          </p>
-          <address className="mt-7 space-y-2 text-[14px] leading-relaxed text-ink/70 not-italic">
-            <p className="max-w-[44ch]">
-              16/284, near Munshipulia, next to Ashirwad Bakery, Indira Nagar, Lucknow, Uttar Pradesh 226016
+      <Container className="relative z-10">
+        {/* Brand + socials */}
+        <div className="flex flex-col gap-10 border-b border-white/10 py-10 lg:flex-row lg:items-start lg:gap-16">
+          <div className="max-w-[380px]">
+            <div className="inline-flex rounded-2xl bg-paper p-2.5 shadow-md">
+              <img src="/logo.png" alt="Ghar Banwao" className="h-12 w-auto object-contain" />
+            </div>
+            <p className="mt-5 text-[15px] leading-relaxed text-white/80">
+              Your one-stop solution for complete home construction — from planning and design to
+              construction, interiors and final handover.
             </p>
-            <p>
-              <a href={`tel:${PHONES[0]}`} className="tabular-nums transition-colors hover:text-ink">{PHONES[0]}</a>
-              <span className="mx-2 text-ink/30">·</span>
-              <a href={`tel:${PHONES[1]}`} className="tabular-nums transition-colors hover:text-ink">{PHONES[1]}</a>
-            </p>
-            <p>
-              <a href={WHATSAPP_URL} className="transition-colors hover:text-ink">WhatsApp</a>
-              <span className="mx-2 text-ink/30">·</span>
-              <a href="mailto:support@gharbanwao.com" className="transition-colors hover:text-ink">support@gharbanwao.com</a>
-            </p>
-          </address>
-        </div>
-
-        <div className="col-span-1 md:col-span-3 md:border-t md:border-divider md:pt-5 md:pl-6">
-          <p className="mono-label text-ink/50 mb-4">Explore</p>
-          <FooterLinkList items={FOOTER_EXPLORE} />
-        </div>
-
-        <div className="col-span-1 md:col-span-2 md:border-t md:border-divider md:pt-5 md:pl-6">
-          <p className="mono-label text-ink/50 mb-4">Trust</p>
-          <FooterLinkList items={FOOTER_TRUST} />
-        </div>
-
-        <div className="col-span-2 md:col-span-3 md:border-t md:border-divider md:pt-5 md:pl-6">
-          <p className="mono-label text-ink/50 mb-4">Follow us</p>
-          <ul className="flex flex-wrap gap-2.5">
-            {FOOTER_SOCIALS.map(({ Icon, label, href, bg }) => (
-              <li key={label}>
+            <div className="mt-6 flex flex-wrap gap-2.5" data-testid="footer-socials">
+              {FOOTER_SOCIALS.map(({ Icon, label, href }) => (
                 <a
+                  key={label}
                   href={href}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   aria-label={label}
-                  style={{ background: bg }}
-                  className="grid size-9 place-items-center rounded-full text-white ring-1 ring-black/5 transition-[transform,box-shadow] duration-200 hover:scale-105 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
+                  className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-white ring-1 ring-white/15 transition-colors hover:bg-white/20"
                   data-testid={`footer-social-${label.toLowerCase()}`}
                 >
                   <Icon className="h-4 w-4" />
                 </a>
-              </li>
+              ))}
+            </div>
+            <div
+              className="mt-6 inline-flex items-center gap-3 rounded-xl bg-yellow px-4 py-2.5 text-ink"
+              data-testid="footer-gbai"
+            >
+              <Bot className="h-5 w-5" />
+              <div className="leading-tight">
+                <p className="text-[13px] font-extrabold">GB AI</p>
+                <p className="text-[11px] font-semibold opacity-70">Coming Soon</p>
+              </div>
+              <ArrowRight className="h-4 w-4" />
+            </div>
+          </div>
+
+          <div className="flex flex-1 flex-wrap justify-start gap-x-10 gap-y-8 lg:justify-between">
+            {FOOTER_COLUMNS.map((col) => (
+              <FooterCol key={col.title} {...col} />
             ))}
-          </ul>
+          </div>
         </div>
-      </div>
-    </Container>
 
-    <FooterCities />
+        {/* Trust + certification stats */}
+        <div className="grid grid-cols-2 divide-x divide-white/10 border-b border-white/10 py-8 md:grid-cols-5">
+          {FOOTER_STATS.map(({ Icon, value, label, note, small }) => (
+            <div key={label} className="flex items-start gap-3 px-4 py-2 first:pl-0" data-testid={`footer-stat-${label.toLowerCase().replace(/\s+/g, "-")}`}>
+              <Icon className={`mt-0.5 h-6 w-6 shrink-0 text-white/85 ${small ? "h-7 w-7" : ""}`} strokeWidth={1.75} />
+              <div>
+                <p className={`font-extrabold leading-tight ${small ? "text-[13px]" : "text-[17px]"} tabular-nums`}>{value}</p>
+                <p className="text-[13px] font-bold text-white/85">{label}</p>
+                <p className="text-[12px] text-white/55">{note}</p>
+              </div>
+            </div>
+          ))}
+        </div>
 
-    <div className="border-t border-divider">
-      <Container className="py-6">
-        <p className="mono-label text-ink/55">© 2026 GharBanwao.com®. Lucknow, Kanpur &amp; 6 more UP cities</p>
+        {/* Bottom bar */}
+        <div className="flex flex-col gap-3 py-6 text-[13px] text-white/60 md:flex-row md:items-center md:justify-between">
+          <p data-testid="footer-copyright">
+            © 2026 Ghar Banwao. All rights reserved. <span className="mx-2 text-white/25">|</span>
+            Building Better Homes Since 2016.
+          </p>
+          <p>
+            Designed &amp; Developed by{" "}
+            <a href="https://clicknify.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-white/85 hover:text-white" data-testid="footer-clicknify">
+              Clicknify
+            </a>
+          </p>
+        </div>
       </Container>
-    </div>
-  </footer>
+    </footer>
+  </>
 );
 
 export const MobileBar = () => (

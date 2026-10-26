@@ -79,6 +79,8 @@ const BLANK_PROJECT = {
   summary: "",
   photos: "",
   cover_image_url: "",
+  review_text: "",
+  review_video_url: "",
 };
 
 const BLANK_CASE_STUDY = {
@@ -693,6 +695,37 @@ const ProjectEditor = ({ original, onSaved, onCancel }) => {
           placeholder="https://…"
           className={inputClass}
           data-testid="project-cover-input"
+        />
+      </Field>
+
+      <Field
+        label="Review"
+        hint="The owner's words about this build, shown on the public project page. Leave empty if there is none."
+        htmlFor="project-review"
+      >
+        <Textarea
+          id="project-review"
+          rows={3}
+          value={form.review_text || ""}
+          onChange={set("review_text")}
+          className={areaClass}
+          placeholder="“They delivered exactly what the quote promised…”"
+          data-testid="project-review-text-input"
+        />
+      </Field>
+
+      <Field
+        label="Review video link"
+        hint="A YouTube or Instagram link to a review / walkthrough video for this project. Leave empty if none."
+        htmlFor="project-review-video"
+      >
+        <Input
+          id="project-review-video"
+          value={form.review_video_url || ""}
+          onChange={set("review_video_url")}
+          placeholder="https://youtube.com/… or https://instagram.com/reel/…"
+          className={inputClass}
+          data-testid="project-review-video-input"
         />
       </Field>
 
