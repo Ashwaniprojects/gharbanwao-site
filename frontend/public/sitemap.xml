@@ -1,64 +1,134 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<!-- /contact is a standalone page with its own Head and LocalBusiness schema. -->
-<!-- src/data/blogs.js holds 30 finished posts with 150 image briefs. They are not listed here -->
-<!-- because no /blog route renders them yet: /blog/* currently serves the home page, which Google -->
-<!-- records as soft-404s and treats as duplicate content. Add them once a blog renderer exists. -->
-<!-- Excluded on purpose: /admin (authenticated CMS), /packages (route removed), /projects. -->
+<!-- Keep this in step with the routes in src/App.js. Anything that is a real,
+     publicly reachable page belongs here so Google Search Console can submit
+     and index it. /admin and /api are blocked in robots.txt, so never list them. -->
+<!-- Per-project detail pages (/projects/GB-NNN) are intentionally NOT listed:
+     they are generated from live CMS data and number in the hundreds; Google
+     discovers them through the internal links on the projects map. -->
   <url>
     <loc>https://gharbanwao.com/</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://gharbanwao.com/about</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://gharbanwao.com/calculator</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gharbanwao.com/register</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gharbanwao.com/reviews</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://gharbanwao.com/faq</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gharbanwao.com/contact</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+
+  <!-- Services: one index + one page per service. -->
   <url>
-    <loc>https://gharbanwao.com/case-studies</loc>
-    <lastmod>2026-10-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
+    <loc>https://gharbanwao.com/services</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gharbanwao.com/case-studies/gb-216-gomti-nagar-villa</loc>
-    <lastmod>2026-10-18</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://gharbanwao.com/services/architecture-planning</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
+  <url>
+    <loc>https://gharbanwao.com/services/construction-with-materials</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gharbanwao.com/services/interior-design</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gharbanwao.com/services/renovation-makeover</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Case studies: index only. Detail stories are managed in the CMS and
+       discovered via internal links, so only the landing page is listed. -->
+  <url>
+    <loc>https://gharbanwao.com/case-studies</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog: index + every published post. -->
+  <url>
+    <loc>https://gharbanwao.com/blog</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url><loc>https://gharbanwao.com/blog/cost-to-build-a-house-in-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/what-is-the-cost-per-sq-ft-to-build-a-house-in-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/1000-vs-1500-sqft-house-which-is-better-value</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/hidden-charges-in-house-construction-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/what-does-a-25-year-structural-warranty-cover</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/how-payment-stages-work-in-house-construction</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/pre-approval-and-city-engineer-inspection-in-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/monsoon-construction-in-lucknow-what-changes</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/how-long-does-house-construction-take-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/turnkey-construction-vs-contractor-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/best-house-construction-materials-in-lucknow-by-stage</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/carpet-area-vs-built-up-area</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/what-to-inspect-during-every-site-visit-construction</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/material-and-labour-breakdown-by-construction-stage-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/how-to-interpret-a-construction-quote-like-a-professional</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/red-flags-in-local-contractor-quotes-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/renovation-vs-new-construction-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/how-to-choose-the-right-construction-company-in-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/30x50-vs-40x60-house-plan-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/how-much-to-budget-for-a-3bhk-house-in-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/best-construction-company-in-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/best-architecture-company-in-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/best-home-builders-in-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/best-commercial-construction-company-in-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/best-turnkey-home-builders-in-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/best-architects-in-lucknow-for-residential-projects</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/best-architecture-and-interior-design-firms-in-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/best-contract-construction-in-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/best-construction-company-near-me-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://gharbanwao.com/blog/best-architecture-company-near-me-lucknow</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+
+  <!-- Legal -->
   <url>
     <loc>https://gharbanwao.com/privacy</loc>
     <lastmod>2026-08-01</lastmod>

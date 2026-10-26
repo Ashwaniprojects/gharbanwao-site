@@ -1368,6 +1368,52 @@ const Empty = ({ children }) => (
   <p className="px-5 py-10 text-center text-[14px] text-ink/45">{children}</p>
 );
 
+// Tells the owner what the current state of one section actually is: still
+// loading, ready with N items, or unavailable (a missing endpoint on a not-
+// yet deployed backend). Shown above the list so "0" can no longer be mistaken
+// for "we haven't done anything here" when the data just hasn't loaded.
+const StatusBanner = ({ meta, noun, onRetry }) => {
+  if (meta.status === "loading") {
+    return (
+      <p className="px-5 py-3 text-[13px] font-mono text-ink/50" role="status">
+        Loading {noun}…
+      </p>
+    );
+  }
+  if (meta.status === "error") {
+    return (
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-divider bg-red-50/60 px-5 py-3">
+        <p className="text-[13px] font-medium text-red-700" role="alert">
+          {meta.error || "This section could not be loaded."}{" "}
+          <span className="text-red-600/80">
+            The content service may not have this endpoint deployed yet.
+          </span>
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onRetry}
+          className="h-8 rounded-lg px-3 text-[12px]"
+          data-testid={`admin-retry-${noun}`}
+        >
+          <RefreshCw className="mr-1.5 h-3.5 w-3.5" /> Retry
+        </Button>
+      </div>
+    );
+  }
+  return null;
+};
+
+// One dashboard tab per kind of work. Registrations and Authors are read-only
+// views (their create/edit happens in the other tabs or on the site itself).
+const TABS = [
+  { key: "posts", label: "Blog posts", noun: "posts", testid: "admin-tab-posts" },
+  { key: "projects", label: "Projects", noun: "projects", testid: "admin-tab-projects" },
+  { key: "caseStudies", label: "Case studies", noun: "case studies", testid: "admin-tab-case-studies" },
+  { key: "authors", label: "Authors", noun: "authors", testid: "admin-tab-authors" },
+  { key: "registrations", label: "Registrations", noun: "registrations", testid: "admin-tab-registrations" },
+];
+
 export default function AdminPage() {
   const [authed, setAuthed] = useState(isAuthenticated);
   const [posts, setPosts] = useState([]);
@@ -1375,12 +1421,24 @@ export default function AdminPage() {
   const [caseStudies, setCaseStudies] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [registrations, setRegistrations] = useState([]);
+  // Per-section load status so one missing endpoint on a stale backend can
+  // show "this section is unavailable" instead of blanking every list to 0.
+  const [listMeta, setListMeta] = useState({
+    posts: { status: "idle", error: "" },
+    projects: { status: "idle", error: "" },
+    caseStudies: { status: "idle", error: "" },
+    authors: { status: "idle", error: "" },
+    registrations: { status: "idle", error: "" },
+  });
   const [editing, setEditing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
   const [toast, setToast] = useState(null);
   const [query, setQuery] = useState("");
+  // The dashboard is one tab per content type — review / edit / delete /
+  // add-photos-later for each kind of work, as the owner asked.
+  const [tab, setTab] = useState("posts");
 
   useEffect(() => {
     document.title = "Admin — Ghar Banwao";
@@ -1391,34 +1449,48 @@ export default function AdminPage() {
     window.setTimeout(() => setToast(null), 4000);
   }, []);
 
+  // Each section is fetched on its own so a missing endpoint on a not-yet
+  // deployed backend (a 404 "Not Found") degrades that one section to a
+  // status message instead of rejecting the whole Promise.all and blanking
+  // every list to 0 — the bug that hid Projects, which had real data.
+  const loadSection = useCallback(
+    async (key, fetcher, setter) => {
+      setListMeta((m) => ({ ...m, [key]: { status: "loading", error: "" } }));
+      try {
+        setter(await fetcher());
+        setListMeta((m) => ({ ...m, [key]: { status: "ready", error: "" } }));
+      } catch (err) {
+        const message = errorMessage(err, "This section could not be loaded.");
+        setListMeta((m) => ({ ...m, [key]: { status: "error", error: message } }));
+        // Only a 401 (expired token) signs the admin out; anything else — a
+        // missing endpoint, a network blip — is reported per-section instead.
+        if (err.response && err.response.status === 401) {
+          if (!isAuthenticated()) setAuthed(false);
+        }
+      }
+    },
+    []
+  );
+
   const refresh = useCallback(async () => {
     setLoading(true);
     setError(null);
-    try {
-      const [postItems, projectItems, studyItems] = await Promise.all([
-        fetchPosts(true),
-        fetchProjects(),
-        fetchCaseStudies(true),
-      ]);
-      setPosts(postItems);
-      setProjects(projectItems);
-      setCaseStudies(studyItems);
-      // Authors and registrations are best-effort: the backend may not have
-      // those endpoints yet on an older deploy, and that should not log the
-      // admin out or blank the rest of the screen.
-      fetchAuthors()
-        .then(setAuthors)
-        .catch(() => setAuthors([]));
-      fetchRegistrations()
-        .then(setRegistrations)
-        .catch(() => setRegistrations([]));
-    } catch (err) {
-      setError(errorMessage(err, "Could not load content."));
-      if (!isAuthenticated()) setAuthed(false);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    setListMeta({
+      posts: { status: "loading", error: "" },
+      projects: { status: "loading", error: "" },
+      caseStudies: { status: "loading", error: "" },
+      authors: { status: "loading", error: "" },
+      registrations: { status: "loading", error: "" },
+    });
+    await Promise.allSettled([
+      loadSection("posts", () => fetchPosts(true), setPosts),
+      loadSection("projects", () => fetchProjects(), setProjects),
+      loadSection("caseStudies", () => fetchCaseStudies(true), setCaseStudies),
+      loadSection("authors", () => fetchAuthors(), setAuthors),
+      loadSection("registrations", () => fetchRegistrations(), setRegistrations),
+    ]);
+    setLoading(false);
+  }, [loadSection]);
 
   useEffect(() => {
     if (authed) refresh();
@@ -1518,10 +1590,24 @@ export default function AdminPage() {
     (study.locality || "").toLowerCase().includes(q);
   const matchAuthor = (author) =>
     !q || author.name.toLowerCase().includes(q) || author.slug.includes(q);
+  const matchRegistration = (reg) =>
+    !q ||
+    reg.name.toLowerCase().includes(q) ||
+    String(reg.type || "").toLowerCase().includes(q) ||
+    (reg.city || "").toLowerCase().includes(q);
   const visiblePosts = posts.filter(match);
   const visibleProjects = projects.filter(matchProject);
   const visibleCaseStudies = caseStudies.filter(matchCaseStudy);
   const visibleAuthors = authors.filter(matchAuthor);
+  const visibleRegistrations = registrations.filter(matchRegistration);
+
+  const counts = {
+    posts: posts.length,
+    projects: projects.length,
+    caseStudies: caseStudies.length,
+    authors: authors.length,
+    registrations: registrations.length,
+  };
 
   if (editing) {
     const Editor =
@@ -1590,9 +1676,10 @@ export default function AdminPage() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="display text-[34px] md:text-[42px]">Content</h1>
-            <p className="mt-2 max-w-[52ch] text-[15px] text-ink/65">
-              Posts and projects are written to the database immediately. The public
-              site picks up changes when you publish a rebuild.
+            <p className="mt-2 max-w-[58ch] text-[15px] text-ink/65">
+              Manage each kind of work from its own tab — review what's already
+              there, edit, delete, or add photos later. Changes hit the database
+              immediately; the public site updates when you publish a rebuild.
             </p>
           </div>
           <div className="flex flex-wrap gap-2.5">
@@ -1606,6 +1693,16 @@ export default function AdminPage() {
               <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
               Refresh
             </Button>
+            <a
+              href="https://search.google.com/search-console"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="h-11 rounded-lg border border-divider bg-paper px-4 text-[14px] font-semibold text-ink hover:bg-wash-yellow inline-flex items-center gap-2"
+              data-testid="admin-search-console"
+            >
+              <ExternalLink className="h-4 w-4 text-ink/50" />
+              Google Search Console
+            </a>
             <Button
               onClick={deploy}
               disabled={busy}
@@ -1617,6 +1714,24 @@ export default function AdminPage() {
             </Button>
           </div>
         </div>
+
+        {/* Deploy config — only shown so a missing hook surfaces here, not as
+            a mystery 503. "Publish site" is the action; this explains state. */}
+        <p className="mono-label mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-ink/50">
+          <span className="inline-flex items-center gap-1.5">
+            <CalendarDays className="h-3.5 w-3.5" />
+            {posts.length} posts · {projects.length} projects · {caseStudies.length} case
+            studies · {authors.length} authors · {registrations.length} registrations
+          </span>
+          <a
+            href={CMS_BASE_URL.replace(/\/api.*$/, "") + "/docs"}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 hover:text-ink"
+          >
+            <ExternalLink className="h-3.5 w-3.5" /> API docs
+          </a>
+        </p>
 
         {error ? (
           <p
@@ -1632,174 +1747,202 @@ export default function AdminPage() {
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Filter by title or slug"
+            placeholder="Filter by title, slug or name"
             aria-label="Filter content"
             className={`${inputClass} h-11 pl-9`}
             data-testid="admin-filter"
           />
         </div>
 
-        <div className="mt-8 grid gap-8">
-          <section className="card-gb overflow-hidden" data-testid="admin-posts">
-            <SectionHead
-              title="Posts"
-              count={visiblePosts.length}
-              action={
-                <Button
-                  onClick={() => setEditing({ kind: "posts", item: null })}
-                  className="h-9 rounded-lg bg-green px-4 text-[13px] font-bold text-ink hover:bg-green-600"
-                  data-testid="admin-post-new"
-                >
-                  <Plus className="mr-1.5 h-4 w-4" strokeWidth={2.5} />
-                  New post
-                </Button>
-              }
-            />
-            {visiblePosts.length === 0 ? (
-              <Empty>No posts yet. Create the first one.</Empty>
-            ) : (
-              <ul className="divide-y divide-divider" data-testid="admin-post-list">
-                {visiblePosts.map((post) => (
-                  <PostRow
-                    key={post.slug}
-                    post={post}
-                    busy={busy}
-                    onEdit={(item) => setEditing({ kind: "posts", item })}
-                    onDelete={removePost}
-                  />
-                ))}
-              </ul>
-            )}
-          </section>
-
-          <section className="card-gb overflow-hidden" data-testid="admin-projects">
-            <SectionHead
-              title="Projects"
-              count={visibleProjects.length}
-              action={
-                <Button
-                  onClick={() => setEditing({ kind: "projects", item: null })}
-                  className="h-9 rounded-lg bg-green px-4 text-[13px] font-bold text-ink hover:bg-green-600"
-                  data-testid="admin-project-new"
-                >
-                  <Plus className="mr-1.5 h-4 w-4" strokeWidth={2.5} />
-                  New project
-                </Button>
-              }
-            />
-            {visibleProjects.length === 0 ? (
-              <Empty>No projects yet. Create the first one.</Empty>
-            ) : (
-              <ul className="divide-y divide-divider" data-testid="admin-project-list">
-                {visibleProjects.map((project) => (
-                  <ProjectRow
-                    key={project.slug}
-                    project={project}
-                    busy={busy}
-                    onEdit={(item) => setEditing({ kind: "projects", item })}
-                    onDelete={removeProject}
-                  />
-                ))}
-              </ul>
-            )}
-          </section>
-
-          <section className="card-gb overflow-hidden" data-testid="admin-case-studies">
-            <SectionHead
-              title="Case studies"
-              count={visibleCaseStudies.length}
-              action={
-                <Button
-                  onClick={() => setEditing({ kind: "case-studies", item: null })}
-                  className="h-9 rounded-lg bg-green px-4 text-[13px] font-bold text-ink hover:bg-green-600"
-                  data-testid="admin-case-study-new"
-                >
-                  <Plus className="mr-1.5 h-4 w-4" strokeWidth={2.5} />
-                  New case study
-                </Button>
-              }
-            />
-            {visibleCaseStudies.length === 0 ? (
-              <Empty>No case studies yet. Create the first one.</Empty>
-            ) : (
-              <ul className="divide-y divide-divider" data-testid="admin-case-study-list">
-                {visibleCaseStudies.map((study) => (
-                  <CaseStudyRow
-                    key={study.slug}
-                    study={study}
-                    busy={busy}
-                    onEdit={(item) => setEditing({ kind: "case-studies", item })}
-                    onDelete={removeCaseStudy}
-                  />
-                ))}
-              </ul>
-            )}
-          </section>
-
-          <section className="card-gb overflow-hidden" data-testid="admin-authors">
-            <SectionHead
-              title="Authors"
-              count={visibleAuthors.length}
-              action={
-                <Button
-                  onClick={() => setEditing({ kind: "authors", item: null })}
-                  className="h-9 rounded-lg bg-green px-4 text-[13px] font-bold text-ink hover:bg-green-600"
-                  data-testid="admin-author-new"
-                >
-                  <Plus className="mr-1.5 h-4 w-4" strokeWidth={2.5} />
-                  New author
-                </Button>
-              }
-            />
-            {visibleAuthors.length === 0 ? (
-              <Empty>No authors yet. Create the first one.</Empty>
-            ) : (
-              <ul className="divide-y divide-divider" data-testid="admin-author-list">
-                {visibleAuthors.map((author) => (
-                  <AuthorRow
-                    key={author.slug}
-                    author={author}
-                    busy={busy}
-                    onEdit={(item) => setEditing({ kind: "authors", item })}
-                    onDelete={removeAuthor}
-                  />
-                ))}
-              </ul>
-            )}
-          </section>
-
-          <section className="card-gb overflow-hidden" data-testid="admin-registrations">
-            <SectionHead
-              title="Registrations"
-              count={registrations.length}
-            />
-            {registrations.length === 0 ? (
-              <Empty>No registrations yet.</Empty>
-            ) : (
-              <ul className="divide-y divide-divider" data-testid="admin-registration-list">
-                {registrations.map((reg, i) => (
-                  <RegistrationCard key={reg.id || i} reg={reg} index={i} />
-                ))}
-              </ul>
-            )}
-          </section>
+        {/* Per-type dashboard tabs */}
+        <div className="mt-6 flex flex-wrap gap-1.5 border-b border-divider pb-px" role="tablist" data-testid="admin-tabs">
+          {TABS.map((t) => {
+            const active = tab === t.key;
+            return (
+              <button
+                key={t.key}
+                role="tab"
+                aria-selected={active}
+                onClick={() => setTab(t.key)}
+                className={`h-10 rounded-t-lg px-4 text-[14px] font-bold transition-colors border border-b-0 ${
+                  active
+                    ? "border-divider bg-paper text-ink"
+                    : "border-transparent text-ink/50 hover:text-ink"
+                }`}
+                data-testid={t.testid}
+              >
+                {t.label}
+                <span className={`ml-1.5 font-mono text-[12px] ${active ? "text-green-700" : "text-ink/40"}`}>
+                  {counts[t.key]}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
-        <p className="mono-label mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 text-ink/40">
-          <span className="inline-flex items-center gap-1.5">
-            <CalendarDays className="h-3.5 w-3.5" /> {posts.length} posts ·{" "}
-            {projects.length} projects · {caseStudies.length} case studies ·{" "}
-            {authors.length} authors · {registrations.length} registrations
-          </span>
-          <a
-            href={CMS_BASE_URL.replace(/\/api.*$/, "") + "/docs"}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1.5 hover:text-ink"
-          >
-            <ExternalLink className="h-3.5 w-3.5" /> API docs
-          </a>
-        </p>
+        {/* Active content type */}
+        <div className="grid gap-8" data-testid={`admin-active-panel-${tab}`}>
+          {tab === "posts" && (
+            <section className="card-gb overflow-hidden" data-testid="admin-posts">
+              <SectionHead
+                title="Blog posts"
+                count={visiblePosts.length}
+                action={
+                  <Button
+                    onClick={() => setEditing({ kind: "posts", item: null })}
+                    className="h-9 rounded-lg bg-green px-4 text-[13px] font-bold text-ink hover:bg-green-600"
+                    data-testid="admin-post-new"
+                  >
+                    <Plus className="mr-1.5 h-4 w-4" strokeWidth={2.5} />
+                    New post
+                  </Button>
+                }
+              />
+              <StatusBanner meta={listMeta.posts} noun="posts" onRetry={() => loadSection("posts", () => fetchPosts(true), setPosts)} />
+              {listMeta.posts.status === "ready" &&
+                (visiblePosts.length === 0 ? (
+                  <Empty>No posts yet. Create the first one.</Empty>
+                ) : (
+                  <ul className="divide-y divide-divider" data-testid="admin-post-list">
+                    {visiblePosts.map((post) => (
+                      <PostRow
+                        key={post.slug}
+                        post={post}
+                        busy={busy}
+                        onEdit={(item) => setEditing({ kind: "posts", item })}
+                        onDelete={removePost}
+                      />
+                    ))}
+                  </ul>
+                ))}
+            </section>
+          )}
+
+          {tab === "projects" && (
+            <section className="card-gb overflow-hidden" data-testid="admin-projects">
+              <SectionHead
+                title="Projects"
+                count={visibleProjects.length}
+                action={
+                  <Button
+                    onClick={() => setEditing({ kind: "projects", item: null })}
+                    className="h-9 rounded-lg bg-green px-4 text-[13px] font-bold text-ink hover:bg-green-600"
+                    data-testid="admin-project-new"
+                  >
+                    <Plus className="mr-1.5 h-4 w-4" strokeWidth={2.5} />
+                    New project
+                  </Button>
+                }
+              />
+              <StatusBanner meta={listMeta.projects} noun="projects" onRetry={() => loadSection("projects", () => fetchProjects(), setProjects)} />
+              {listMeta.projects.status === "ready" &&
+                (visibleProjects.length === 0 ? (
+                  <Empty>No projects yet. Create the first one.</Empty>
+                ) : (
+                  <ul className="divide-y divide-divider" data-testid="admin-project-list">
+                    {visibleProjects.map((project) => (
+                      <ProjectRow
+                        key={project.slug}
+                        project={project}
+                        busy={busy}
+                        onEdit={(item) => setEditing({ kind: "projects", item })}
+                        onDelete={removeProject}
+                      />
+                    ))}
+                  </ul>
+                ))}
+            </section>
+          )}
+
+          {tab === "caseStudies" && (
+            <section className="card-gb overflow-hidden" data-testid="admin-case-studies">
+              <SectionHead
+                title="Case studies"
+                count={visibleCaseStudies.length}
+                action={
+                  <Button
+                    onClick={() => setEditing({ kind: "case-studies", item: null })}
+                    className="h-9 rounded-lg bg-green px-4 text-[13px] font-bold text-ink hover:bg-green-600"
+                    data-testid="admin-case-study-new"
+                  >
+                    <Plus className="mr-1.5 h-4 w-4" strokeWidth={2.5} />
+                    New case study
+                  </Button>
+                }
+              />
+              <StatusBanner meta={listMeta.caseStudies} noun="case studies" onRetry={() => loadSection("caseStudies", () => fetchCaseStudies(true), setCaseStudies)} />
+              {listMeta.caseStudies.status === "ready" &&
+                (visibleCaseStudies.length === 0 ? (
+                  <Empty>No case studies yet. Create the first one.</Empty>
+                ) : (
+                  <ul className="divide-y divide-divider" data-testid="admin-case-study-list">
+                    {visibleCaseStudies.map((study) => (
+                      <CaseStudyRow
+                        key={study.slug}
+                        study={study}
+                        busy={busy}
+                        onEdit={(item) => setEditing({ kind: "case-studies", item })}
+                        onDelete={removeCaseStudy}
+                      />
+                    ))}
+                  </ul>
+                ))}
+            </section>
+          )}
+
+          {tab === "authors" && (
+            <section className="card-gb overflow-hidden" data-testid="admin-authors">
+              <SectionHead
+                title="Authors"
+                count={visibleAuthors.length}
+                action={
+                  <Button
+                    onClick={() => setEditing({ kind: "authors", item: null })}
+                    className="h-9 rounded-lg bg-green px-4 text-[13px] font-bold text-ink hover:bg-green-600"
+                    data-testid="admin-author-new"
+                  >
+                    <Plus className="mr-1.5 h-4 w-4" strokeWidth={2.5} />
+                    New author
+                  </Button>
+                }
+              />
+              <StatusBanner meta={listMeta.authors} noun="authors" onRetry={() => loadSection("authors", () => fetchAuthors(), setAuthors)} />
+              {listMeta.authors.status === "ready" &&
+                (visibleAuthors.length === 0 ? (
+                  <Empty>No authors yet. Create the first one.</Empty>
+                ) : (
+                  <ul className="divide-y divide-divider" data-testid="admin-author-list">
+                    {visibleAuthors.map((author) => (
+                      <AuthorRow
+                        key={author.slug}
+                        author={author}
+                        busy={busy}
+                        onEdit={(item) => setEditing({ kind: "authors", item })}
+                        onDelete={removeAuthor}
+                      />
+                    ))}
+                  </ul>
+                ))}
+            </section>
+          )}
+
+          {tab === "registrations" && (
+            <section className="card-gb overflow-hidden" data-testid="admin-registrations">
+              <SectionHead title="Registrations" count={visibleRegistrations.length} />
+              <StatusBanner meta={listMeta.registrations} noun="registrations" onRetry={() => loadSection("registrations", () => fetchRegistrations(), setRegistrations)} />
+              {listMeta.registrations.status === "ready" &&
+                (visibleRegistrations.length === 0 ? (
+                  <Empty>No registrations yet.</Empty>
+                ) : (
+                  <ul className="divide-y divide-divider" data-testid="admin-registration-list">
+                    {visibleRegistrations.map((reg, i) => (
+                      <RegistrationCard key={reg.id || i} reg={reg} index={i} />
+                    ))}
+                  </ul>
+                ))}
+            </section>
+          )}
+        </div>
       </Container>
 
       {toast ? (
