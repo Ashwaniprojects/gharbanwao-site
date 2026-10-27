@@ -154,12 +154,29 @@ export default function AboutPage() {
               <h1 className="display mt-5 text-[38px] sm:text-5xl lg:text-[58px] xl:text-[64px] max-w-[20ch] leading-[1.05]">
                 Your One-Stop Solution for <span className="text-green">Home Construction.</span>
               </h1>
-              <div className="mt-7 space-y-5 text-base md:text-[17px] leading-relaxed text-ink/75 max-w-[72ch]">
-                {ONE_STOP_PARAS.map((p, i) => (
-                  <p key={i}>{p}</p>
-                ))}
-              </div>
             </Reveal>
+            <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:gap-12 items-start">
+              <Reveal className="lg:col-span-7">
+                <div className="space-y-5 text-base md:text-[17px] leading-relaxed text-ink/75">
+                  {ONE_STOP_PARAS.map((p, i) => (
+                    <p key={i}>{p}</p>
+                  ))}
+                </div>
+              </Reveal>
+              <Reveal delay={0.08} className="lg:col-span-5">
+                <figure className="relative overflow-hidden rounded-2xl border border-divider shadow-[0_18px_40px_-24px_rgba(0,0,0,0.25)]" data-testid="about-one-stop-image">
+                  <img
+                    src="/images/about/one-stop-collage.webp"
+                    alt="A collage of modern Indian homes and interiors built by Ghar Banwao — facades, living rooms, a construction site with engineers, and a landscaped courtyard"
+                    width={1200}
+                    height={800}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-auto object-cover"
+                  />
+                </figure>
+              </Reveal>
+            </div>
             <div className="mt-14 grid gap-6 lg:grid-cols-2" data-testid="about-vision-mission-block">
               {[
                 { key: "vision", Icon: Eye, label: "OUR VISION", paras: VISION_BLOCK },
