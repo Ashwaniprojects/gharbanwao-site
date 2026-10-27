@@ -123,7 +123,6 @@ const FOOTER_COLUMNS = [
     links: [
       { label: "About Us", href: "/about" },
       { label: "Our Team", href: "/about" },
-      { label: "Careers", href: "/register" },
       { label: "Blogs / News", href: "/blog" },
       { label: "Contact Us", href: "/contact" },
     ],
@@ -132,22 +131,16 @@ const FOOTER_COLUMNS = [
     title: "Services",
     links: [
       { label: "Residential Construction", href: "/services/construction-with-materials" },
-      { label: "Architectural Planning", href: "https://nakshaabanwao.com/", external: true },
-      { label: "2D & 3D Design", href: "/services/architecture-planning" },
-      { label: "Structural Engineering", href: "/services/construction-with-materials" },
+      { label: "Architectural Planning", href: "/services/architecture-planning" },
       { label: "Interiors & Finishing", href: "/services/interior-design" },
       { label: "Renovation", href: "/services/renovation-makeover" },
-      { label: "Site Supervision", href: "/services/construction-with-materials" },
-      { label: "Turnkey Construction", href: "/services/construction-with-materials" },
     ],
   },
   {
     title: "Projects",
     links: [
       { label: "Residential Projects", href: "/projects" },
-      { label: "Commercial Projects", href: "/projects" },
       { label: "Naksha Banwao", href: "https://nakshaabanwao.com/", external: true },
-      { label: "Project Gallery", href: "/projects" },
     ],
   },
   {
@@ -155,8 +148,6 @@ const FOOTER_COLUMNS = [
     links: [
       { label: "Construction Cost Calculator", href: "/calculator" },
       { label: "Floor Plan Estimator", href: "/calculator" },
-      { label: "Material Guide", href: "/services/construction-with-materials" },
-      { label: "GB AI (Coming Soon)", comingSoon: true },
     ],
   },
   {
@@ -176,7 +167,6 @@ const FOOTER_COLUMNS = [
       { label: "Reviews", href: "/reviews" },
       { label: "Privacy Policy", href: "/privacy" },
       { label: "Terms & Conditions", href: "/terms" },
-      { label: "Refund Policy", href: "/terms" },
       { label: "Login", href: "/admin" },
     ],
   },
@@ -237,17 +227,19 @@ function FooterCol({ title, links }) {
   );
 }
 
-/* The light "Get a Free Consultation" band that sits above the dark footer,
-   with the architectural sketch as the panel's backdrop art. */
+/* The light "Get a Free Consultation" band that sits above the dark footer. */
 const PreFooterCTA = () => (
   <div className="relative overflow-hidden bg-[#eaf4dc]" data-testid="pre-footer-cta">
-    <img
-      src="/images/footer-sketch.webp"
-      alt=""
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-y-0 right-0 hidden w-[45%] object-cover object-left opacity-60 md:block"
-    />
     <Container className="relative z-10 flex flex-col gap-8 py-8 lg:flex-row lg:items-center lg:gap-12">
+      <div className="shrink-0" data-testid="pre-footer-sketch">
+        <img
+          src="/images/footer-sketch.webp"
+          alt="Architectural sketch of a Ghar Banwao home"
+          loading="lazy"
+          decoding="async"
+          className="h-24 w-auto rounded-xl border border-ink/10 bg-paper object-contain p-1 shadow-sm sm:h-32 lg:h-36"
+        />
+      </div>
       <div className="relative shrink-0">
         <img
           src="/images/about/warm-modern-house.webp"
@@ -298,14 +290,6 @@ export const Footer = () => (
   <>
     <PreFooterCTA />
     <footer className="relative overflow-hidden bg-[#0c352a] pb-24 md:pb-10 text-white no-print" data-testid="footer">
-      {/* Architectural sketch backdrop, right side, faded into the green */}
-      <img
-        src="/images/footer-sketch.webp"
-        alt=""
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 right-0 h-full w-[55%] max-w-[820px] object-cover object-right opacity-[0.14] mix-blend-luminosity"
-      />
-
       <Container className="relative z-10">
         {/* Brand + socials */}
         <div className="flex flex-col gap-10 border-b border-white/10 py-10 lg:flex-row lg:items-start lg:gap-16">
