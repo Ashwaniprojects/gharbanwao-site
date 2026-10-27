@@ -129,7 +129,7 @@ const Dock = ({ offer, onOpen }) => (
     onClick={onOpen}
     aria-label="Show current offers"
     data-testid="offers-dock"
-    className="group no-print fixed left-0 top-1/2 z-40 -translate-y-1/2 rounded-r-xl bg-green shadow-lg lg:left-6"
+    className="group no-print fixed left-0 top-1/2 z-40 -translate-y-1/2 rounded-r-xl bg-yellow text-ink shadow-lg lg:left-6"
     style={{ writingMode: "vertical-rl" }}
   >
     <span className="flex items-center gap-2 px-2 py-4 text-[13px] font-bold tracking-[0.2em] text-ink">
