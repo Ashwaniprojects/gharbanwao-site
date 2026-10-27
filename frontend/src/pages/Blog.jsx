@@ -213,11 +213,14 @@ export function renderBody(body, images) {
 function Head({ post, list }) {
   const img = post.images && post.images[0];
   const imgMeta = img && BLOG_IMAGES[img.code];
+  // CMS posts carry meta_title/meta_description but no keywords array, so
+  // guard the join: a missing field must omit the meta, not crash the tree.
+  const keywordString = post.keywords ? post.keywords.join(", ") : "";
   return (
     <Helmet>
       <title>{post.seoTitle || `${post.title} | Ghar Banwao`}</title>
       <meta name="description" content={post.seoDescription || ""} />
-      <meta name="keywords" content={post.keywords.join(", ")} />
+      <meta name="keywords" content={keywordString} />
       <link rel="canonical" href={`${SITE}/blog${list ? "" : `/${post.slug}`}`} />
       <meta property="og:title" content={list ? "Ghar Banwao Field Manual — House Construction in Lucknow" : post.title} />
       <meta property="og:description" content={post.seoDescription || ""} />
@@ -254,7 +257,7 @@ function Head({ post, list }) {
           description: post.seoDescription,
           datePublished: BLOG_UPDATED,
           dateModified: BLOG_UPDATED,
-          keywords: post.keywords.join(", "),
+          keywords: keywordString,
           articleSection: post.category,
           mainEntityOfPage: `${SITE}/blog/${post.slug}`,
           author: { "@type": "Organization", name: "Ghar Banwao" },
@@ -303,14 +306,27 @@ export function BlogDetail() {
   const { slug } = useParams();
   const post = BY_SLUG[slug];
   const [cmsPost, setCmsPost] = useState(null);
+  const [cmsLoading, setCmsLoading] = useState(false);
   // CMS posts are fetched only for slugs the static field manual doesn't
-  // know about; the two datasets never collide on a slug.
+  // know about; the two datasets never collide on a slug. cmsLoading is true
+  // until the content service answers (or fails), so a fresh CMS post shows a
+  // skeleton instead of flashing "not found" for the first render.
   useEffect(() => {
     setCmsPost(null);
-    if (BY_SLUG[slug]) return;
+    if (BY_SLUG[slug]) {
+      setCmsLoading(false);
+      return;
+    }
+    setCmsLoading(true);
     fetchPosts()
-      .then((items) => setCmsPost(items.find((p) => p.slug === slug) || null))
-      .catch(() => setCmsPost(null));
+      .then((items) => {
+        setCmsPost(items.find((p) => p.slug === slug) || null);
+        setCmsLoading(false);
+      })
+      .catch(() => {
+        setCmsPost(null);
+        setCmsLoading(false);
+      });
   }, [slug]);
   const [author, setAuthor] = useState(null);
   useEffect(() => {
@@ -393,6 +409,28 @@ export function BlogDetail() {
           </article>
           <Related from={post || { category: "", slug }} />
           <FinalCTA />
+        </main>
+        <Footer />
+        <MobileBar />
+      </div>
+    );
+  }
+
+  // While the content service is still answering, hold the chrome open and
+  // show a skeleton instead of the "not found" page.
+  if (!post && cmsLoading) {
+    return (
+      <div className="min-h-screen bg-paper text-ink" data-testid="cms-blog-loading">
+        <AnnouncementStrip />
+        <Navbar />
+        <main>
+          <section className="section-gb">
+            <Container>
+              <div className="h-4 w-24 animate-pulse rounded bg-ink/10" />
+              <div className="mt-5 h-12 w-full animate-pulse rounded bg-ink/10" />
+              <div className="mt-3 h-12 w-3/4 animate-pulse rounded bg-ink/10" />
+            </Container>
+          </section>
         </main>
         <Footer />
         <MobileBar />
