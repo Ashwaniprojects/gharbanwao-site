@@ -309,17 +309,6 @@ export default function ProjectDetail() {
                 </div>
               ) : null}
 
-              <div className="mt-8 card-gb p-6 bg-wash-yellow">
-                <div className="flex items-center gap-2">
-                  <Quote className="h-5 w-5 text-green-700" />
-                  <span className="mono-label text-green-700">OWNER SAYS</span>
-                </div>
-                <blockquote className="mt-3 text-[18px] font-medium leading-relaxed text-ink">
-                  “{project.quote}”
-                </blockquote>
-                <p className="mt-3 text-[14px] text-ink/60">— {project.owner}</p>
-              </div>
-
               {(project.review_text || project.review_video_url) ? (
                 <div className="mt-8 card-gb p-6" data-testid="project-review">
                   <div className="flex items-center gap-2">

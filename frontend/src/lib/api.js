@@ -11,7 +11,7 @@ export const fetchCalculatorConfig = async () => calculatorConfig;
 // of truth going forward — the map panel reads from here, not from the
 // static file. Right now only GB-216 is published; more will be added on the
 // backend and this fetch picks them up automatically.
-export const fetchLiveProjects = async (limit = 500) => {
+export const fetchLiveProjects = async (limit = 50) => {
   const base =
     process.env.CMS_BACKEND_URL ||
     process.env.REACT_APP_CMS_BACKEND_URL ||
