@@ -227,45 +227,44 @@ function FooterCol({ title, links }) {
   );
 }
 
-/* The light "Get a Free Consultation" band that sits above the dark footer. */
+/* The "Get a Free Consultation" band, styled in the same dark green as the
+   footer so it reads as one piece. The sketch sits as a faint right-side
+   backdrop, matching the footer's treatment. */
 const PreFooterCTA = () => (
-  <div className="relative overflow-hidden bg-[#eaf4dc]" data-testid="pre-footer-cta">
-    <Container className="relative z-10 flex flex-col gap-8 py-8 lg:flex-row lg:items-center lg:gap-12">
-      <div className="shrink-0" data-testid="pre-footer-sketch">
-        <img
-          src="/images/footer-sketch.webp"
-          alt="Architectural sketch of a Ghar Banwao home"
-          loading="lazy"
-          decoding="async"
-          className="h-24 w-auto rounded-xl border border-ink/10 bg-paper object-contain p-1 shadow-sm sm:h-32 lg:h-36"
-        />
-      </div>
-      <div className="max-w-[46ch] flex-1">
-        <p className="text-[12px] font-extrabold uppercase tracking-[0.14em] text-[#0c352a]">
+  <div className="relative overflow-hidden bg-[#0c352a] text-white no-print" data-testid="pre-footer-cta">
+    <img
+      src="/images/footer-sketch.webp"
+      alt=""
+      aria-hidden="true"
+      className="pointer-events-none absolute right-0 top-0 h-full w-[40%] max-w-[560px] object-cover object-right opacity-[0.12] mix-blend-luminosity"
+    />
+    <Container className="relative z-10 flex flex-col gap-8 py-9 lg:flex-row lg:items-center lg:gap-12">
+      <div className="max-w-[44ch] flex-1">
+        <p className="text-[12px] font-extrabold uppercase tracking-[0.14em] text-white/70">
           Ready to build your dream home?
         </p>
-        <h2 className="mt-2 text-[30px] font-extrabold leading-tight tracking-tight text-[#0c352a] sm:text-[38px]">
-          Get a <span className="text-green">Free Consultation</span>
+        <h2 className="mt-2 text-[30px] font-extrabold leading-tight tracking-tight sm:text-[38px]">
+          Get a <span className="text-yellow">Free Consultation</span>
         </h2>
-        <p className="mt-2 text-[15px] text-ink/70">
+        <p className="mt-2 text-[15px] text-white/75">
           Discuss your plot, requirements and budget with our expert team.
         </p>
       </div>
       <div className="flex flex-col items-start gap-4 lg:items-end">
         <div className="flex items-center gap-3">
-          <span className="grid h-12 w-12 place-items-center rounded-full bg-[#d8ebc0]">
-            <Phone className="h-5 w-5 text-[#0c352a]" strokeWidth={2.25} />
+          <span className="grid h-12 w-12 place-items-center rounded-full bg-white/10 ring-1 ring-white/15">
+            <Phone className="h-5 w-5 text-white" strokeWidth={2.25} />
           </span>
           <div>
-            <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-ink/50">Call Us Now</p>
-            <a href={`tel:${PHONES[0]}`} className="text-[19px] font-extrabold tabular-nums text-[#0c352a]" data-testid="pre-footer-call">
+            <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-white/55">Call Us Now</p>
+            <a href={`tel:${PHONES[0]}`} className="text-[19px] font-extrabold tabular-nums" data-testid="pre-footer-call">
               {PHONES[0]}
             </a>
           </div>
         </div>
         <button
           onClick={() => scrollToId("contact")}
-          className="inline-flex items-center gap-2 rounded-full bg-[#0c352a] px-6 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-[#0a2b22]"
+          className="inline-flex items-center gap-2 rounded-full bg-yellow px-6 py-3.5 text-[15px] font-bold text-ink transition-colors hover:brightness-95"
           data-testid="pre-footer-book"
         >
           Book Free Consultation <ArrowRight className="h-[18px] w-[18px]" />
