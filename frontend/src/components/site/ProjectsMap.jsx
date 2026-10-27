@@ -178,29 +178,38 @@ const ProjectCard = ({ p }) => (
 // Field names differ from the static pins (summary / cover_image_url / slug),
 // so it gets its own card. As more projects are published on the backend this
 // panel fills up automatically.
-const LiveProjectCard = ({ p }) => (
-  <motion.article key={p.gb_id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-6 h-full flex flex-col" data-testid="live-project-card">
-    {p.cover_image_url ? (
-      <div className="overflow-hidden rounded-xl border border-divider aspect-[16/10] bg-divider">
-        <img src={p.cover_image_url} alt={p.title} width={800} height={500} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+// Live rows use different (and sparser) field names than the static pins, so
+// every accessor here is guarded: gb_id / size_sqft / owner can be null on
+// live data (size lives in area_sqft). A null that reaches toLocaleString /
+// .slice / .toLowerCase would throw and blank the whole page.
+const LiveProjectCard = ({ p }) => {
+  const gbId = p.gb_id || (p.slug ? p.slug.split("-")[0].toUpperCase() : "");
+  const size = p.size_sqft ?? p.area_sqft;
+  const slug = p.slug || (gbId ? gbId.toLowerCase() : "");
+  return (
+    <motion.article initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-6 h-full flex flex-col" data-testid="live-project-card">
+      {p.cover_image_url ? (
+        <div className="overflow-hidden rounded-xl border border-divider aspect-[16/10] bg-divider">
+          <img src={p.cover_image_url} alt={p.title || p.locality} width={800} height={500} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+        </div>
+      ) : (
+        <Placeholder code={`IMG-${gbId.slice(3)}`} ratio="aspect-[16/10]" label={p.locality} />
+      )}
+      <div className="mt-5 flex items-center justify-between">
+        <span className="font-mono text-[13px] font-medium" data-testid="live-project-gbid">{gbId}</span>
+        <span className={`font-mono text-[10px] uppercase tracking-[0.08em] px-2 py-1 rounded ${p.status === "ongoing" ? "bg-yellow" : "bg-green"}`}>{p.status === "ongoing" ? "Ongoing" : "Handed over"}</span>
       </div>
-    ) : (
-      <Placeholder code={`IMG-${p.gb_id.slice(3)}`} ratio="aspect-[16/10]" label={p.locality} />
-    )}
-    <div className="mt-5 flex items-center justify-between">
-      <span className="font-mono text-[13px] font-medium" data-testid="live-project-gbid">{p.gb_id}</span>
-      <span className={`font-mono text-[10px] uppercase tracking-[0.08em] px-2 py-1 rounded ${p.status === "ongoing" ? "bg-yellow" : "bg-green"}`}>{p.status === "ongoing" ? "Ongoing" : "Handed over"}</span>
-    </div>
-    <h3 className="mt-2 text-xl font-bold leading-snug">{p.locality}, {p.city}</h3>
-    <p className="font-mono text-[12px] text-ink/60 uppercase tracking-[0.08em] mt-1">{p.size_sqft.toLocaleString("en-IN")} sqft</p>
-    {p.summary && (
-      <p className="mt-4 text-[14px] text-ink/70 leading-relaxed line-clamp-5">{p.summary}</p>
-    )}
-    <a href={`/projects/${p.slug || p.gb_id.toLowerCase()}`} className="mt-auto pt-6 inline-flex items-center gap-1 font-bold text-[15px] underline decoration-green decoration-2 underline-offset-4 hover:decoration-4" data-testid="live-project-view-link">
-      View full project <ArrowRight className="h-4 w-4" />
-    </a>
-  </motion.article>
-);
+      <h3 className="mt-2 text-xl font-bold leading-snug">{p.locality}, {p.city}</h3>
+      <p className="font-mono text-[12px] text-ink/60 uppercase tracking-[0.08em] mt-1">{size ? `${Number(size).toLocaleString("en-IN")} sqft` : ""}</p>
+      {p.summary && (
+        <p className="mt-4 text-[14px] text-ink/70 leading-relaxed line-clamp-5">{p.summary}</p>
+      )}
+      <a href={`/projects/${slug}`} className="mt-auto pt-6 inline-flex items-center gap-1 font-bold text-[15px] underline decoration-green decoration-2 underline-offset-4 hover:decoration-4" data-testid="live-project-view-link">
+        View full project <ArrowRight className="h-4 w-4" />
+      </a>
+    </motion.article>
+  );
+};
 
 export const ProjectsMap = () => {
   const { data: projects = [], isLoading } = useQuery({ queryKey: ["projects-all"], queryFn: () => fetchProjects({ limit: 500 }) });
