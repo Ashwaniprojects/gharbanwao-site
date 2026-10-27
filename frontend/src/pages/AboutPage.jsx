@@ -144,8 +144,20 @@ export default function AboutPage() {
       <Navbar />
       <main>
         {/* 1. One-stop solution */}
-        <section className="section-gb" data-testid="about-one-stop">
-          <Container>
+        <section className="section-gb relative overflow-hidden" data-testid="about-one-stop">
+          {/* Full-bleed collage with a white blurred wash so the text reads on top */}
+          <div className="absolute inset-0" aria-hidden="true">
+            <img
+              src="/images/about/one-stop-collage.webp"
+              alt=""
+              width={1200}
+              height={800}
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-white/80 backdrop-blur-[2px]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/10 to-white/70" />
+          </div>
+          <Container className="relative z-10">
             <Reveal>
               <div className="flex items-center gap-3">
                 <span className="h-px w-10 bg-green" aria-hidden="true" />
@@ -155,27 +167,10 @@ export default function AboutPage() {
                 Your One-Stop Solution for <span className="text-green">Home Construction.</span>
               </h1>
             </Reveal>
-            <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:gap-12 items-start">
-              <Reveal className="lg:col-span-7">
-                <div className="space-y-5 text-base md:text-[17px] leading-relaxed text-ink/75">
-                  {ONE_STOP_PARAS.map((p, i) => (
-                    <p key={i}>{p}</p>
-                  ))}
-                </div>
-              </Reveal>
-              <Reveal delay={0.08} className="lg:col-span-5">
-                <figure className="relative overflow-hidden rounded-2xl border border-divider shadow-[0_18px_40px_-24px_rgba(0,0,0,0.25)]" data-testid="about-one-stop-image">
-                  <img
-                    src="/images/about/one-stop-collage.webp"
-                    alt="A collage of modern Indian homes and interiors built by Ghar Banwao — facades, living rooms, a construction site with engineers, and a landscaped courtyard"
-                    width={1200}
-                    height={800}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-auto object-cover"
-                  />
-                </figure>
-              </Reveal>
+            <div className="mt-8 space-y-5 text-base md:text-[17px] leading-relaxed text-ink/80 max-w-[76ch]">
+              {ONE_STOP_PARAS.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
             </div>
             <div className="mt-14 grid gap-6 lg:grid-cols-2" data-testid="about-vision-mission-block">
               {[
@@ -184,7 +179,7 @@ export default function AboutPage() {
               ].map(({ key, Icon, label, paras }, i) => (
                 <Reveal key={key} delay={i * 0.08} className="h-full">
                   <article
-                    className="relative h-full overflow-hidden rounded-2xl bg-ink p-8 md:p-10 text-paper border border-divider/40"
+                    className="relative h-full overflow-hidden rounded-2xl bg-wash-yellow p-8 md:p-10 text-ink border border-green/30"
                     data-testid={`about-${key}-block`}
                   >
                     <BorderBeam
@@ -194,14 +189,14 @@ export default function AboutPage() {
                       colorFrom="rgba(147, 197, 38, 0)"
                       colorTo="rgba(147, 197, 38, 0.5)"
                     />
-                    <div className="absolute -top-16 -right-16 h-56 w-56 rounded-full bg-green/25 blur-3xl" aria-hidden="true" />
+                    <div className="absolute -top-16 -right-16 h-56 w-56 rounded-full bg-green/20 blur-3xl" aria-hidden="true" />
                     <div className="relative flex items-center gap-3">
                       <span className="grid h-12 w-12 place-items-center rounded-xl bg-green text-ink shadow-[0_8px_24px_rgba(147,197,38,0.35)]">
                         <Icon className="h-6 w-6" strokeWidth={2.25} />
                       </span>
-                      <span className="mono-label text-green">{label}</span>
+                      <span className="mono-label text-green-700">{label}</span>
                     </div>
-                    <div className="relative mt-5 space-y-4 text-[15px] leading-relaxed text-paper/80">
+                    <div className="relative mt-5 space-y-4 text-[15px] leading-relaxed text-ink/80">
                       {paras.map((p, j) => (
                         <p key={j}>{p}</p>
                       ))}
