@@ -24,11 +24,11 @@ export const Hero = () => {
         <div className="lg:col-span-3 lg:pr-8 text-paper" style={{ containerType: "inline-size" }}>
           <h1
             lang="hi"
-            className="display mt-2 leading-[1.15]"
+            className="display mt-2 leading-[1.35]"
             style={{ letterSpacing: "normal", fontSize: "clamp(24px, 7cqw, 54px)", color: "#FFFFFF" }}
             data-testid="hero-headline"
           >
-            <span className="block whitespace-nowrap overflow-hidden pb-[0.4em] -mb-[0.4em] pt-[0.08em] -mt-[0.08em]">
+            <span className="block whitespace-nowrap overflow-hidden pb-[0.4em] -mb-[0.4em] pt-[0.35em] -mt-[0.35em]">
               <motion.span
                 className="block"
                 initial={reduce ? false : { y: "110%" }}
@@ -38,7 +38,7 @@ export const Hero = () => {
                 {LINES[0]}
               </motion.span>
             </span>
-            <span className="block whitespace-nowrap overflow-hidden pb-[0.4em] -mb-[0.4em] pt-[0.08em] -mt-[0.08em]">
+            <span className="block whitespace-nowrap overflow-hidden pb-[0.4em] -mb-[0.4em] pt-[0.35em] -mt-[0.35em]">
               <motion.span
                 className="block"
                 initial={reduce ? false : { y: "110%" }}
