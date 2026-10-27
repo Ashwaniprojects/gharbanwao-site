@@ -3,6 +3,7 @@ import { AnnouncementStrip } from "@/components/site/AnnouncementStrip";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer, MobileBar } from "@/components/site/FaqCtaFooter";
 import { Container, Reveal } from "@/components/site/shared";
+import { BorderBeam } from "@/components/spectrumui/border-beam";
 import { PHONES, WHATSAPP_URL } from "@/data/content";
 import { Helmet } from "react-helmet-async";
 
@@ -86,13 +87,29 @@ function CtaLink({ href, children, variant = "green", external = false, ...rest 
 function LeaderBlock({ label, title, name, role, portrait, alt, paragraphs }) {
   return (
     <Reveal className="h-full">
-      <article className="card-gb flex h-full flex-col bg-paper p-7 md:p-9" data-testid={`about-${label.toLowerCase().replace(/[^a-z]/g, "")}`}>
-        <span className="mono-label text-green">{label}</span>
-        <h3 className="display mt-3 text-2xl md:text-[28px]">{title}</h3>
-        <div className="mt-5 space-y-4 text-[16px] leading-relaxed text-ink/80">
-          {paragraphs.map((p, i) => (
-            <p key={i}>{p}</p>
-          ))}
+      <article className="relative card-gb flex h-full flex-col overflow-hidden bg-paper p-7 md:p-9" data-testid={`about-${label.toLowerCase().replace(/[^a-z]/g, "")}`}>
+        <BorderBeam
+          className="rounded-2xl"
+          duration={8}
+          borderWidth={1.25}
+          colorFrom="rgba(147, 197, 38, 0)"
+          colorTo="rgba(147, 197, 38, 0.4)"
+        />
+        <div className="relative">
+          <div className="flex items-center gap-3">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-wash-green text-green">
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+                <path d="M7 6h10v2H7zm0 4h10v2H7zm0 4h7v2H7z" />
+              </svg>
+            </span>
+            <span className="mono-label text-green">{label}</span>
+          </div>
+          <h3 className="display mt-4 text-2xl md:text-[28px]">{title}</h3>
+          <div className="mt-5 space-y-4 text-[16px] leading-relaxed text-ink/80">
+            {paragraphs.map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+          </div>
         </div>
         <div className="mt-auto pt-7 flex items-center gap-4 border-t border-divider">
           <img
@@ -102,7 +119,7 @@ function LeaderBlock({ label, title, name, role, portrait, alt, paragraphs }) {
             height={88}
             loading="lazy"
             decoding="async"
-            className="h-[88px] w-[88px] shrink-0 rounded-full object-cover object-top border border-divider"
+            className="h-[88px] w-[88px] shrink-0 rounded-full object-cover object-top border-2 border-green/30 shadow-[0_6px_20px_rgba(0,0,0,0.12)]"
           />
           <div>
             <p className="font-bold text-[15px]">{name}</p>
@@ -136,9 +153,12 @@ export default function AboutPage() {
         <section className="section-gb" data-testid="about-one-stop">
           <Container>
             <Reveal>
-              <span className="mono-label text-green">GHAR BANWAO</span>
-              <h1 className="display mt-4 text-[38px] sm:text-5xl lg:text-[58px] xl:text-[64px] max-w-[22ch]">
-                Your One-Stop Solution for Home Construction.
+              <div className="flex items-center gap-3">
+                <span className="h-px w-10 bg-green" aria-hidden="true" />
+                <span className="mono-label text-green">GHAR BANWAO</span>
+              </div>
+              <h1 className="display mt-5 text-[38px] sm:text-5xl lg:text-[58px] xl:text-[64px] max-w-[20ch] leading-[1.05]">
+                Your One-Stop Solution for <span className="text-green">Home Construction.</span>
               </h1>
               <div className="mt-7 space-y-5 text-base md:text-[17px] leading-relaxed text-ink/75 max-w-[72ch]">
                 {ONE_STOP_PARAS.map((p, i) => (
@@ -153,12 +173,19 @@ export default function AboutPage() {
               ].map(({ key, Icon, label, paras }, i) => (
                 <Reveal key={key} delay={i * 0.08} className="h-full">
                   <article
-                    className="relative h-full overflow-hidden rounded-2xl bg-ink p-8 md:p-10 text-paper"
+                    className="relative h-full overflow-hidden rounded-2xl bg-ink p-8 md:p-10 text-paper border border-divider/40"
                     data-testid={`about-${key}-block`}
                   >
+                    <BorderBeam
+                      className="rounded-2xl"
+                      duration={7}
+                      borderWidth={1.25}
+                      colorFrom="rgba(147, 197, 38, 0)"
+                      colorTo="rgba(147, 197, 38, 0.5)"
+                    />
                     <div className="absolute -top-16 -right-16 h-56 w-56 rounded-full bg-green/25 blur-3xl" aria-hidden="true" />
                     <div className="relative flex items-center gap-3">
-                      <span className="grid h-12 w-12 place-items-center rounded-xl bg-green text-ink">
+                      <span className="grid h-12 w-12 place-items-center rounded-xl bg-green text-ink shadow-[0_8px_24px_rgba(147,197,38,0.35)]">
                         <Icon className="h-6 w-6" strokeWidth={2.25} />
                       </span>
                       <span className="mono-label text-green">{label}</span>
@@ -179,9 +206,12 @@ export default function AboutPage() {
         <section className="section-gb" data-testid="about-leadership">
           <Container>
             <Reveal>
-              <span className="mono-label text-green">THE PEOPLE BEHIND THE WORK</span>
-              <h2 className="display mt-4 text-3xl sm:text-4xl lg:text-[44px] max-w-[26ch]">
-                Led by people who build for the long term.
+              <div className="flex items-center gap-3">
+                <span className="h-px w-10 bg-green" aria-hidden="true" />
+                <span className="mono-label text-green">THE PEOPLE BEHIND THE WORK</span>
+              </div>
+              <h2 className="display mt-5 text-3xl sm:text-4xl lg:text-[44px] max-w-[26ch]">
+                Led by people who build for the <span className="text-green">long term.</span>
               </h2>
             </Reveal>
             <div className="mt-12 grid gap-6 lg:grid-cols-2">
@@ -211,22 +241,34 @@ export default function AboutPage() {
         <section className="section-gb bg-wash-green" data-testid="about-testimonials">
           <Container>
             <Reveal>
-              <span className="mono-label text-green">CUSTOMER PROOF</span>
-              <h2 className="display mt-4 text-3xl sm:text-4xl lg:text-[44px] max-w-[24ch]">
-                In their own words.
+              <div className="flex items-center gap-3">
+                <span className="h-px w-10 bg-green" aria-hidden="true" />
+                <span className="mono-label text-green">CUSTOMER PROOF</span>
+              </div>
+              <h2 className="display mt-5 text-3xl sm:text-4xl lg:text-[44px] max-w-[24ch]">
+                In their <span className="text-green">own words.</span>
               </h2>
             </Reveal>
             <div className="mt-12 grid gap-5 md:grid-cols-3 md:gap-6">
               {FEATURED_TESTIMONIALS.map((t, i) => (
                 <Reveal key={t.name} delay={i * 0.05} className="h-full">
-                  <figure className="card-gb flex h-full flex-col bg-paper p-7" data-testid="about-testimonial-card">
-                    <span className="text-green tracking-tight text-lg leading-none" aria-label="5 star rating">
-                      ★★★★★
-                    </span>
-                    <blockquote className="mt-4 text-[15px] leading-relaxed text-ink/80">
-                      &ldquo;{t.quote}&rdquo;
-                    </blockquote>
-                    <figcaption className="mt-auto pt-6 border-t border-divider">
+                  <figure className="relative card-gb flex h-full flex-col overflow-hidden bg-paper p-7" data-testid="about-testimonial-card">
+                    <BorderBeam
+                      className="rounded-2xl"
+                      duration={6 + i}
+                      borderWidth={1}
+                      colorFrom="rgba(147, 197, 38, 0)"
+                      colorTo={`rgba(147, 197, 38, ${0.3 + 0.1 * i})`}
+                    />
+                    <div className="relative">
+                      <span className="text-green tracking-tight text-lg leading-none" aria-label="5 star rating">
+                        ★★★★★
+                      </span>
+                      <blockquote className="mt-4 text-[15px] leading-relaxed text-ink/80">
+                        &ldquo;{t.quote}&rdquo;
+                      </blockquote>
+                    </div>
+                    <figcaption className="relative mt-auto pt-6 border-t border-divider">
                       <p className="font-bold text-[15px] leading-tight">{t.name}</p>
                       <p className="mt-1 text-[13px] text-ink/60">
                         {t.locality} · {t.year}

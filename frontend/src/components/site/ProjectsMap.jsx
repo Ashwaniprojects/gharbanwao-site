@@ -197,7 +197,7 @@ export const ProjectsMap = () => {
   const points = useMemo(() => filtered.map((p) => [p.lat, p.lng]), [filtered]);
 
   return (
-    <section id="projects" className="section-gb" data-testid="projects-map-section">
+    <section id="projects" className="section-gb !py-6 md:!py-8" data-testid="projects-map-section">
       <Container>
         <SectionHeader title="Explore Our Completed & Ongoing Projects" supporting={`Discover Ghar Banwao homes near you. Browse by location, project status to explore our work across Lucknow and Uttar Pradesh. ${projects.length || 297} pins and counting.`} />
 
@@ -237,7 +237,7 @@ export const ProjectsMap = () => {
         <div className="mt-4 grid lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2 gb-map-scope relative rounded-2xl border border-divider bg-paper overflow-hidden">
             <BorderBeam colorFrom="rgba(147,197,38,0)" colorTo="rgba(147,197,38,0.55)" duration={6} />
-            <Reveal className="relative h-[380px] lg:h-[520px]" data-testid="projects-map">
+            <Reveal className="relative h-[300px] lg:h-[400px]" data-testid="projects-map">
             {isLoading && <div className="absolute inset-0 z-[1000] grid place-items-center bg-paper font-mono text-[12px] text-ink/50">Loading 297 pins…</div>}
             <MapContainer bounds={LUCKNOW_BOUNDS} scrollWheelZoom={false} className="h-full w-full" style={{ height: "100%", width: "100%" }} data-testid="projects-map-canvas">
               <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -275,7 +275,7 @@ export const ProjectsMap = () => {
             <MapHint engaged={mapEngaged} />
             </Reveal>
           </div>
-          <Reveal delay={0.1} className="lg:min-h-[520px]" data-testid="map-project-panel">
+          <Reveal delay={0.1} className="lg:min-h-[400px]" data-testid="map-project-panel">
             <div className="relative rounded-2xl border border-divider overflow-hidden">
               <BorderBeam colorFrom="rgba(147,197,38,0)" colorTo="rgba(147,197,38,0.45)" duration={7} />
               <div className="relative z-10">
