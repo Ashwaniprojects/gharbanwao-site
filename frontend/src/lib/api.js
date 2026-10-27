@@ -7,6 +7,21 @@ export const CALCULATOR_CONFIG = calculatorConfig;
 
 export const fetchCalculatorConfig = async () => calculatorConfig;
 
+// Live projects come straight from the content backend. This is the source
+// of truth going forward — the map panel reads from here, not from the
+// static file. Right now only GB-216 is published; more will be added on the
+// backend and this fetch picks them up automatically.
+export const fetchLiveProjects = async (limit = 500) => {
+  const base =
+    process.env.CMS_BACKEND_URL ||
+    process.env.REACT_APP_CMS_BACKEND_URL ||
+    "https://backend-production-07ed.up.railway.app";
+  const res = await fetch(`${base}/api/content/projects?limit=${limit}`);
+  if (!res.ok) throw new Error(`Failed to fetch live projects (${res.status})`);
+  const data = await res.json();
+  return data.items || [];
+};
+
 // Project pins load from a static file bundled at build time.
 export const fetchProjects = async (params = {}) => {
   const res = await fetch(`${process.env.PUBLIC_URL || ""}/projects.json`);

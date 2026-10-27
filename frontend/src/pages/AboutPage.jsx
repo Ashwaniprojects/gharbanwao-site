@@ -87,14 +87,8 @@ function CtaLink({ href, children, variant = "green", external = false, ...rest 
 function LeaderBlock({ label, title, name, role, portrait, alt, paragraphs }) {
   return (
     <Reveal className="h-full">
-      <article className="relative card-gb flex h-full flex-col overflow-hidden bg-paper p-7 md:p-9" data-testid={`about-${label.toLowerCase().replace(/[^a-z]/g, "")}`}>
-        <BorderBeam
-          className="rounded-2xl"
-          duration={8}
-          borderWidth={1.25}
-          colorFrom="rgba(147, 197, 38, 0)"
-          colorTo="rgba(147, 197, 38, 0.4)"
-        />
+      <article className="group relative card-gb flex h-full flex-col overflow-hidden bg-paper p-7 md:p-9 transition-all duration-300 hover:-translate-y-0.5 hover:border-green/40" data-testid={`about-${label.toLowerCase().replace(/[^a-z]/g, "")}`}>
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-green via-green/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" aria-hidden="true" />
         <div className="relative">
           <div className="flex items-center gap-3">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-wash-green text-green">
@@ -252,14 +246,8 @@ export default function AboutPage() {
             <div className="mt-12 grid gap-5 md:grid-cols-3 md:gap-6">
               {FEATURED_TESTIMONIALS.map((t, i) => (
                 <Reveal key={t.name} delay={i * 0.05} className="h-full">
-                  <figure className="relative card-gb flex h-full flex-col overflow-hidden bg-paper p-7" data-testid="about-testimonial-card">
-                    <BorderBeam
-                      className="rounded-2xl"
-                      duration={6 + i}
-                      borderWidth={1}
-                      colorFrom="rgba(147, 197, 38, 0)"
-                      colorTo={`rgba(147, 197, 38, ${0.3 + 0.1 * i})`}
-                    />
+                  <figure className="group relative card-gb flex h-full flex-col overflow-hidden bg-paper p-7 transition-all duration-300 hover:-translate-y-1 hover:border-green/40" data-testid="about-testimonial-card">
+                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-green via-green/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" aria-hidden="true" />
                     <div className="relative">
                       <span className="text-green tracking-tight text-lg leading-none" aria-label="5 star rating">
                         ★★★★★

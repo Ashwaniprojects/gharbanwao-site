@@ -13,7 +13,6 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Container, Image, Placeholder, Reveal, SectionHeader } from "./shared";
-import { BorderBeam } from "@/components/spectrumui/border-beam";
 import { BRANDS, PROCESS, SERVICES } from "@/data/content";
 import { scrollToId } from "@/lib/scroll";
 
@@ -63,14 +62,8 @@ const ProcessStep = ({ p, i, Icon }) => {
           </div>
         </div>
         {/* Card */}
-        <article className="relative flex-1 overflow-hidden rounded-2xl border border-divider bg-paper p-4 shadow-[0_6px_24px_-14px_rgba(0,0,0,0.25)]">
-          <BorderBeam
-            className="rounded-2xl"
-            duration={5 + (i % 3)}
-            borderWidth={1}
-            colorFrom="rgba(147,197,38,0)"
-            colorTo={`rgba(147,197,38,${0.3 + 0.1 * (i % 3)})`}
-          />
+        <article className="group relative flex-1 overflow-hidden rounded-2xl border border-divider bg-paper p-4 shadow-[0_6px_24px_-14px_rgba(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-0.5 hover:border-green/40 hover:shadow-[0_12px_36px_-12px_rgba(147,197,38,0.3)]">
+          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-green via-green/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" aria-hidden="true" />
           <div className="relative flex items-start gap-3">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">

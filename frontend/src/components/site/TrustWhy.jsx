@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as Icons from "lucide-react";
 import { Container, Reveal, SectionHeader } from "./shared";
-import { BorderBeam } from "@/components/spectrumui/border-beam";
 import { WHY } from "@/data/content";
 
 const CountDial = ({ to, step = 1, suffix = "+", duration = 1600 }) => {
@@ -54,14 +53,7 @@ function WhyCard({ item, i }) {
   const Icon = Icons[item.icon] || Icons.Check;
   return (
     <Reveal delay={(i % 4) * 0.05} className="h-full" data-testid={`why-card-${i + 1}`}>
-      <article className="group relative flex h-full flex-col gap-3 overflow-hidden rounded-2xl border border-green/20 bg-[rgba(245,250,240,0.72)] p-5 backdrop-blur-xl shadow-[0_4px_24px_rgba(34,139,34,0.08)] transition-all duration-300 hover:shadow-[0_8px_40px_rgba(34,139,34,0.2)]">
-        <BorderBeam
-          className="rounded-2xl"
-          duration={5 + (i % 4)}
-          borderWidth={1}
-          colorFrom="rgba(147, 197, 38, 0)"
-          colorTo={`rgba(147, 197, 38, ${0.28 + 0.07 * (i % 4)})`}
-        />
+      <article className="group relative flex h-full flex-col gap-3 overflow-hidden rounded-2xl border border-green/25 bg-[rgba(245,250,240,0.72)] p-5 backdrop-blur-xl shadow-[0_4px_24px_rgba(34,139,34,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-green hover:shadow-[0_8px_40px_rgba(34,139,34,0.2)]">
         <span className="absolute -top-4 left-1/2 h-20 w-20 -translate-x-1/2 rounded-full bg-green/25 blur-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" aria-hidden="true" />
         <div className="relative flex items-center gap-3">
           <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-green/15 bg-[rgba(34,139,34,0.1)] transition-transform duration-300 group-hover:scale-110">

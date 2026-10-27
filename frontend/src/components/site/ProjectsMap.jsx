@@ -10,7 +10,7 @@ import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import { Container, MonoLabel, Placeholder, Reveal, SectionHeader } from "./shared";
 import { BorderBeam } from "@/components/spectrumui/border-beam";
-import { fetchProjects } from "@/lib/api";
+import { fetchProjects, fetchLiveProjects } from "@/lib/api";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const SIZES = [
@@ -174,8 +174,40 @@ const ProjectCard = ({ p }) => (
   </motion.article>
 );
 
+// The side panel is fed from the live content backend, not the static file.
+// Field names differ from the static pins (summary / cover_image_url / slug),
+// so it gets its own card. As more projects are published on the backend this
+// panel fills up automatically.
+const LiveProjectCard = ({ p }) => (
+  <motion.article key={p.gb_id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-6 h-full flex flex-col" data-testid="live-project-card">
+    {p.cover_image_url ? (
+      <div className="overflow-hidden rounded-xl border border-divider aspect-[16/10] bg-divider">
+        <img src={p.cover_image_url} alt={p.title} width={800} height={500} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+      </div>
+    ) : (
+      <Placeholder code={`IMG-${p.gb_id.slice(3)}`} ratio="aspect-[16/10]" label={p.locality} />
+    )}
+    <div className="mt-5 flex items-center justify-between">
+      <span className="font-mono text-[13px] font-medium" data-testid="live-project-gbid">{p.gb_id}</span>
+      <span className={`font-mono text-[10px] uppercase tracking-[0.08em] px-2 py-1 rounded ${p.status === "ongoing" ? "bg-yellow" : "bg-green"}`}>{p.status === "ongoing" ? "Ongoing" : "Handed over"}</span>
+    </div>
+    <h3 className="mt-2 text-xl font-bold leading-snug">{p.locality}, {p.city}</h3>
+    <p className="font-mono text-[12px] text-ink/60 uppercase tracking-[0.08em] mt-1">{p.size_sqft.toLocaleString("en-IN")} sqft</p>
+    {p.summary && (
+      <p className="mt-4 text-[14px] text-ink/70 leading-relaxed line-clamp-5">{p.summary}</p>
+    )}
+    <a href={`/projects/${p.slug || p.gb_id.toLowerCase()}`} className="mt-auto pt-6 inline-flex items-center gap-1 font-bold text-[15px] underline decoration-green decoration-2 underline-offset-4 hover:decoration-4" data-testid="live-project-view-link">
+      View full project <ArrowRight className="h-4 w-4" />
+    </a>
+  </motion.article>
+);
+
 export const ProjectsMap = () => {
   const { data: projects = [], isLoading } = useQuery({ queryKey: ["projects-all"], queryFn: () => fetchProjects({ limit: 500 }) });
+  const { data: liveProjects = [], isLoading: liveLoading, isError: liveError } = useQuery({
+    queryKey: ["projects-live"],
+    queryFn: () => fetchLiveProjects(),
+  });
   const [status, setStatus] = useState("all");
   const [locality, setLocality] = useState("all");
   const [size, setSize] = useState("all");
@@ -275,11 +307,23 @@ export const ProjectsMap = () => {
             <MapHint engaged={mapEngaged} />
             </Reveal>
           </div>
-          <Reveal delay={0.1} className="lg:min-h-[400px]" data-testid="map-project-panel">
-            <div className="relative rounded-2xl border border-divider overflow-hidden">
+          <Reveal delay={0.1} className="lg:self-start" data-testid="map-project-panel">
+            <div className="relative h-[300px] lg:h-[400px] rounded-2xl border border-divider overflow-hidden flex flex-col">
               <BorderBeam colorFrom="rgba(147,197,38,0)" colorTo="rgba(147,197,38,0.45)" duration={7} />
-              <div className="relative z-10">
-                {active ? <ProjectCard p={active} /> : <div className="card-gb p-6 h-full grid place-items-center text-ink/50">No projects match these filters.</div>}
+              <div className="relative z-10 flex-1 overflow-y-auto scrollbar-thin">
+                {liveLoading ? (
+                  <div className="p-6 h-full grid place-items-center font-mono text-[12px] text-ink/50">Loading live project…</div>
+                ) : liveError ? (
+                  <div className="p-6 h-full grid place-items-center text-center text-[13px] text-ink/60">
+                    Live projects unavailable right now. Try again shortly.
+                  </div>
+                ) : liveProjects.length ? (
+                  <LiveProjectCard p={liveProjects[0]} />
+                ) : (
+                  <div className="p-6 h-full grid place-items-center text-[13px] text-ink/60">
+                    Live projects are coming soon — the map on the left is where we are today.
+                  </div>
+                )}
               </div>
             </div>
           </Reveal>
