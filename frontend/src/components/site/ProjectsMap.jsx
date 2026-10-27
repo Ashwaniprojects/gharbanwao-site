@@ -178,37 +178,67 @@ const ProjectCard = ({ p }) => (
 // Field names differ from the static pins (summary / cover_image_url / slug),
 // so it gets its own card. As more projects are published on the backend this
 // panel fills up automatically.
-// Live rows use different (and sparser) field names than the static pins, so
-// every accessor here is guarded: gb_id / size_sqft / owner can be null on
-// live data (size lives in area_sqft). A null that reaches toLocaleString /
-// .slice / .toLowerCase would throw and blank the whole page.
+//
+// Live rows are sparse: gb_id, size_sqft, owner and quote can all be null
+// (size is stored under area_sqft). Every accessor below is guarded so a
+// null never reaches .toLocaleString / .slice / .toLowerCase and blanks the
+// whole page.
 const LiveProjectCard = ({ p }) => {
   // gb_id is null on live rows, so derive the display code (e.g. "GB-216")
   // from the title ("GB-216 | …") or the slug ("gb-216-…").
   const gbId = p.gb_id || (String(p.title || "").match(/GB-\d+/i) || String(p.slug || "").match(/gb-\d+/i) || [""])[0].toUpperCase() || "";
   const size = p.size_sqft ?? p.area_sqft;
   const slug = p.slug || (gbId ? gbId.toLowerCase() : "");
+  const shortTitle = p.title ? p.title.split("|").slice(1).join("|").trim() : "";
+  const summaryFirst = p.summary ? p.summary.split("\n\n")[0] : "";
+  const ongoing = p.status === "ongoing";
   return (
-    <motion.article initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-6 h-full flex flex-col" data-testid="live-project-card">
-      {p.cover_image_url ? (
-        <div className="overflow-hidden rounded-xl border border-divider aspect-[16/10] bg-divider">
-          <img src={p.cover_image_url} alt={p.title || p.locality} width={800} height={500} loading="lazy" decoding="async" className="h-full w-full object-cover" />
-        </div>
-      ) : (
-        <Placeholder code={`IMG-${gbId.slice(3)}`} ratio="aspect-[16/10]" label={p.locality} />
-      )}
-      <div className="mt-5 flex items-center justify-between">
-        <span className="font-mono text-[13px] font-medium" data-testid="live-project-gbid">{gbId}</span>
-        <span className={`font-mono text-[10px] uppercase tracking-[0.08em] px-2 py-1 rounded ${p.status === "ongoing" ? "bg-yellow" : "bg-green"}`}>{p.status === "ongoing" ? "Ongoing" : "Handed over"}</span>
+    <motion.article initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="card-gb flex h-full flex-col overflow-hidden" data-testid="live-project-card">
+      {/* Cover with status pill */}
+      <div className="relative aspect-[16/10] overflow-hidden bg-divider">
+        {p.cover_image_url ? (
+          <img src={p.cover_image_url} alt={shortTitle || `${p.locality}, ${p.city}`} width={800} height={500} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+        ) : (
+          <div className="grid h-full place-items-center bg-gradient-to-br from-wash-green to-wash-yellow">
+            <span className="display text-4xl text-green/40">{gbId || "GB"}</span>
+          </div>
+        )}
+        <span className={`absolute left-3 top-3 rounded-full px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-ink ${ongoing ? "bg-yellow" : "bg-green"}`}>
+          {ongoing ? "Ongoing" : "Handed over"}
+        </span>
       </div>
-      <h3 className="mt-2 text-xl font-bold leading-snug">{p.locality}, {p.city}</h3>
-      <p className="font-mono text-[12px] text-ink/60 uppercase tracking-[0.08em] mt-1">{size ? `${Number(size).toLocaleString("en-IN")} sqft` : ""}</p>
-      {p.summary && (
-        <p className="mt-4 text-[14px] text-ink/70 leading-relaxed line-clamp-5">{p.summary}</p>
-      )}
-      <a href={`/projects/${slug}`} className="mt-auto pt-6 inline-flex items-center gap-1 font-bold text-[15px] underline decoration-green decoration-2 underline-offset-4 hover:decoration-4" data-testid="live-project-view-link">
-        View full project <ArrowRight className="h-4 w-4" />
-      </a>
+
+      {/* Body */}
+      <div className="flex flex-1 flex-col p-5">
+        <div className="flex items-baseline justify-between gap-3">
+          <span className="mono-label text-green text-[12px] font-bold tracking-widest" data-testid="live-project-gbid">{gbId}</span>
+          {size ? <span className="font-mono text-[12px] text-ink/55">{Number(size).toLocaleString("en-IN")} sqft</span> : null}
+        </div>
+        <h3 className="mt-1.5 text-[18px] font-bold leading-snug">{p.locality}, {p.city}</h3>
+        {shortTitle && <p className="mt-1 text-[13px] leading-snug text-ink/55">{shortTitle}</p>}
+        {summaryFirst && (
+          <p className="mt-3 text-[14px] leading-relaxed text-ink/70 line-clamp-3">{summaryFirst}</p>
+        )}
+
+        {/* Owner review (only if present) */}
+        {p.review_text && (
+          <figure className="mt-4 rounded-xl border-l-2 border-green bg-wash-yellow p-3">
+            <blockquote className="text-[13px] leading-relaxed text-ink/80">&ldquo;{p.review_text}&rdquo;</blockquote>
+          </figure>
+        )}
+
+        {/* Actions pinned to the bottom */}
+        <div className="mt-auto flex items-center justify-between gap-3 pt-5">
+          <a href={`/projects/${slug}`} className="inline-flex items-center gap-1 font-bold text-[15px] text-green-700 underline decoration-green decoration-2 underline-offset-4 hover:decoration-4" data-testid="live-project-view-link">
+            View full project <ArrowRight className="h-4 w-4" />
+          </a>
+          {p.review_video_url && (
+            <a href={p.review_video_url} target="_blank" rel="noopener noreferrer" className="rounded-full border border-green/30 px-3 py-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-green-700 transition-colors hover:bg-green hover:text-ink">
+              ▶ Video
+            </a>
+          )}
+        </div>
+      </div>
     </motion.article>
   );
 };
