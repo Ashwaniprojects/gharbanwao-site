@@ -47,16 +47,27 @@ const HOUSE_ART = (
   </svg>
 );
 
+/* Milestone brand marks. NB = Nakshaa Banwao (design/registration phase),
+   GB = Ghar Banwao (construction phase) — the two partner-brand logos, shown
+   on a white panel inside the (yellow) milestone card. */
+const NB_ART = (
+  <img className="cr-art cr-art--logo" src="/images/brands/nakshaa-banwao.webp" alt="Nakshaa Banwao" width={160} height={68} />
+);
+
+const GB_ART = (
+  <img className="cr-art cr-art--logo" src="/images/brands/ghar-banwao.png" alt="Ghar Banwao" width={160} height={68} />
+);
+
 /* --- step data ------------------------------------------------------ */
 
 const STEPS = [
   { title: "Search the Right Company", text: "Compare profiles, reviews and past projects before you commit.", icon: "⌕" },
   { title: "Appointment & Meeting", text: "Book a free consultation call or an in-person site visit with our team.", icon: "▣", art: MEETING_ART },
-  { title: "NB Project Code Allotment", text: "Your design project is registered with Nakshaa Banwao.", icon: "NB", milestone: true },
+  { title: "NB Project Code Allotment", text: "Your design project is registered with Nakshaa Banwao.", icon: "NB", art: NB_ART, milestone: true },
   { title: "Meet Architect & Engineer Team", text: "Discuss layout, Vastu, elevation and structural requirements.", icon: "⌂" },
   { title: "Design & Final Discussion", text: "Floor plan, 3D elevation and structural drawings are finalized.", icon: "✎" },
   { title: "Get Quotation & Agreement", text: "Receive a transparent phase-wise quotation and finalize the agreement.", icon: "₹" },
-  { title: "GB Project Code Allotment", text: "Your construction project is registered with Ghar Banwao.", icon: "GB", milestone: true },
+  { title: "GB Project Code Allotment", text: "Your construction project is registered with Ghar Banwao.", icon: "GB", art: GB_ART, milestone: true },
   { title: "Pooja & Work Start", text: "Bhoomi Pujan followed by foundation work and construction start.", icon: "ॐ" },
   { title: "Project Updates & Engineer Support", text: "Regular WhatsApp updates with direct access to your project team.", icon: "↗" },
   { title: "Finishing & Delivery", text: "Final quality checks, finishing, warranty handover and keys.", icon: "✓", art: HOUSE_ART },
@@ -139,7 +150,11 @@ export default function ConstructionRoadmap() {
             const g = geom(i);
             return (
               <article key={i} aria-label={`Step ${g.number}: ${step.title}`} data-testid={`roadmap-step-${i + 1}`}>
-                <div className={`cr-card ${g.top ? "cr-card--top" : "cr-card--bottom"}`} style={{ left: g.x - 107 }}>
+                <div
+                  className={`cr-card ${g.top ? "cr-card--top" : "cr-card--bottom"}${step.milestone ? " cr-card--milestone" : ""}`}
+                  style={{ left: g.x - 107 }}
+                >
+                  <span className="cr-shimmer" aria-hidden="true" />
                   <div className="cr-card-head">
                     <span className="cr-icon" aria-hidden="true">{step.icon}</span>
                     {step.milestone ? <span className="cr-badge">MILESTONE</span> : null}

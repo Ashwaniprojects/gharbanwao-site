@@ -146,6 +146,78 @@
   min-height: 240px;
 }
 
+/* --- milestone cards: yellow wash + shimmer + brand logo ------------ */
+
+.cr-card--milestone {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(155deg, #fff6d6 0%, #ffef9e 55%, #ffe27a 100%);
+  border: 1px solid #f2d45a;
+  border-top: 4px solid #739f17;
+  box-shadow: 0 10px 26px rgba(120, 96, 0, 0.14);
+}
+
+/* shimmer sweep — a soft diagonal light band that glides across, repeating */
+.cr-shimmer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.55) 47%,
+    rgba(255, 255, 255, 0.2) 53%,
+    transparent 70%
+  );
+  background-size: 250% 100%;
+  background-position: 150% 0;
+}
+
+.cr-card--milestone .cr-shimmer {
+  opacity: 1;
+  animation: cr-shimmer-sweep 2.6s ease-in-out infinite;
+}
+
+@keyframes cr-shimmer-sweep {
+  0% {
+    background-position: 150% 0;
+  }
+  55% {
+    background-position: -50% 0;
+  }
+  100% {
+    background-position: -50% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cr-card--milestone .cr-shimmer {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* milestone content sits above the shimmer */
+.cr-card--milestone > :not(.cr-shimmer) {
+  position: relative;
+  z-index: 1;
+}
+
+/* brand logo panel (replaces the green art box on the two milestones) */
+.cr-art--logo {
+  width: 100%;
+  height: 91px;
+  background: #ffffff;
+  border: 1px solid #f0d966;
+  border-radius: 11px;
+  margin: 10px 0 6px;
+  object-fit: contain;
+  object-position: center;
+  padding: 6px;
+}
+
 .cr-card h3 {
   font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
   font-size: 15px;
