@@ -183,7 +183,9 @@ const ProjectCard = ({ p }) => (
 // live data (size lives in area_sqft). A null that reaches toLocaleString /
 // .slice / .toLowerCase would throw and blank the whole page.
 const LiveProjectCard = ({ p }) => {
-  const gbId = p.gb_id || (p.slug ? p.slug.split("-")[0].toUpperCase() : "");
+  // gb_id is null on live rows, so derive the display code (e.g. "GB-216")
+  // from the title ("GB-216 | …") or the slug ("gb-216-…").
+  const gbId = p.gb_id || (String(p.title || "").match(/GB-\d+/i) || String(p.slug || "").match(/gb-\d+/i) || [""])[0].toUpperCase() || "";
   const size = p.size_sqft ?? p.area_sqft;
   const slug = p.slug || (gbId ? gbId.toLowerCase() : "");
   return (
