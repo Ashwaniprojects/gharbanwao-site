@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Container, Image, Placeholder, Reveal, SectionHeader } from "./shared";
 import { BRANDS, SERVICES } from "@/data/content";
 import { scrollToId } from "@/lib/scroll";
+import ConstructionRoadmap from "./ConstructionRoadmap";
 
 export const Services = () => (
   <section id="services" className="section-gb border-t border-divider" data-testid="services-section">
@@ -38,20 +39,7 @@ export const Services = () => (
 
 export const Process = () => (
   <section id="process" className="section-gb" data-testid="process-section">
-    <Container>
-      <Reveal>
-        <img
-          src="/images/process/dream-home-roadmap.webp"
-          alt="Your Dream Home, From First Step to Final Handover — a 10-step roadmap: search the right company, appointment and meeting, NB project code allotment, meet architect and engineer team, design and final discussion, get quotation and agreement, GB project code allotment, pooja and work start, step-by-step project updates, and finishing and delivery."
-          width={1400}
-          height={700}
-          loading="lazy"
-          decoding="async"
-          className="w-full h-auto rounded-2xl"
-          data-testid="process-roadmap-image"
-        />
-      </Reveal>
-    </Container>
+    <ConstructionRoadmap />
   </section>
 );
 
