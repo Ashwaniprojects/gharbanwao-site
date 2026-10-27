@@ -25,10 +25,10 @@ export const Hero = () => {
           <h1
             lang="hi"
             className="display mt-2 leading-[1.15]"
-            style={{ letterSpacing: "normal", fontSize: "clamp(28px, 10cqw, 72px)", color: "#FFFFFF" }}
+            style={{ letterSpacing: "normal", fontSize: "clamp(24px, 7cqw, 54px)", color: "#FFFFFF" }}
             data-testid="hero-headline"
           >
-            <span className="block overflow-hidden pb-[0.4em] -mb-[0.4em] pt-[0.08em] -mt-[0.08em]">
+            <span className="block whitespace-nowrap overflow-hidden pb-[0.4em] -mb-[0.4em] pt-[0.08em] -mt-[0.08em]">
               <motion.span
                 className="block"
                 initial={reduce ? false : { y: "110%" }}
@@ -38,14 +38,14 @@ export const Hero = () => {
                 {LINES[0]}
               </motion.span>
             </span>
-            <span className="block overflow-hidden pb-[0.4em] -mb-[0.4em] pt-[0.08em] -mt-[0.08em]">
+            <span className="block whitespace-nowrap overflow-hidden pb-[0.4em] -mb-[0.4em] pt-[0.08em] -mt-[0.08em]">
               <motion.span
                 className="block"
                 initial={reduce ? false : { y: "110%" }}
                 animate={{ y: 0 }}
                 transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.27 }}
               >
-                {LINES[1]}
+                सफ़र आपका। <span className="text-[#93C526]" data-testid="hero-green-phrase">साथ हमारा।</span>
               </motion.span>
             </span>
           </h1>
