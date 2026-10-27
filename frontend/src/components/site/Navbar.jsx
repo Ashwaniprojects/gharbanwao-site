@@ -44,7 +44,6 @@ export const Navbar = () => {
   // page (`href`, e.g. Projects → /projects). On the target page, scroll to
   // top instead of reloading; otherwise hard-navigate so the route renders.
   const goNav = (n) => {
-    setServicesOpen(false);
     setMenuOpen(false);
     if (n.href) {
       if (window.location.pathname === n.href) {
