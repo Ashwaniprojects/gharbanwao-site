@@ -3,10 +3,10 @@ import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { AnnouncementStrip } from "@/components/site/AnnouncementStrip";
 import { Navbar } from "@/components/site/Navbar";
 import { FinalCTA, Footer, MobileBar } from "@/components/site/FaqCtaFooter";
-import { Container, MonoLabel, Reveal, SectionHeader, Image, Stars } from "@/components/site/shared";
+import { Container, MonoLabel, Reveal, SectionHeader, Image } from "@/components/site/shared";
 import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
-import { SERVICES, PHONES, PRICING } from "@/data/content";
+import { SERVICES, PHONES } from "@/data/content";
 import { scrollToId } from "@/lib/scroll";
 
 const SITE = "https://gharbanwao.com";
@@ -156,36 +156,6 @@ function ServiceDetail({ service: s }) {
         </Container>
       </section>
 
-      <section className="section-gb bg-wash-yellow">
-        <Container>
-          <SectionHeader title="Pricing that starts where you are" supporting="Three packages, one payment schedule. The right one depends on plot size and finish level — not on which phone you called." align="center" />
-          <div className="mt-10 grid gap-5 md:grid-cols-3">
-            {PRICING.map((p, i) => (
-              <Reveal key={p.name} delay={i * 0.06} className="h-full">
-                <div className={`card-gb flex h-full flex-col p-6 ${p.featured ? "ring-2 ring-green" : ""}`}>
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-[20px] font-bold">{p.name}</h3>
-                    {p.featured ? <span className="bg-green text-[11px] font-bold text-ink px-2 py-0.5 rounded-full">POPULAR</span> : null}
-                  </div>
-                  <p className="mt-2 text-[15px] text-ink/60">{p.best}</p>
-                  <p className="mt-5 font-mono text-[26px] font-bold">{p.price}<span className="ml-1 text-[14px] font-medium text-ink/50">/ sq ft</span></p>
-                  <ul className="mt-5 grid gap-2 text-[14px] text-ink/75 flex-1">
-                    {p.rows.map((row, ri) => (
-                      <li key={ri} className="flex gap-2">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-700" /> {row}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-          <Reveal className="mt-8 text-center">
-            <Stars n={5} />
-            <p className="mt-2 text-[14px] text-ink/60">260+ homes handed over since 2017 · 25-year structural warranty · payments only after each stage is signed off</p>
-          </Reveal>
-        </Container>
-      </section>
     </>
   );
 }

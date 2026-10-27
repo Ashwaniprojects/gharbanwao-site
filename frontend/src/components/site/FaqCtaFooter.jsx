@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
-  BadgeCheck,
   Bot,
   Home,
   MessageCircle,
@@ -185,7 +184,6 @@ const FOOTER_STATS = [
   { Icon: Users, value: "51+", label: "Ongoing Projects", note: "Currently in Progress" },
   { Icon: Star, value: "4.8/5", label: "Google Rating", note: "250+ genuine reviews" },
   { Icon: ShieldCheck, value: "25-Year", label: "Structural Warranty", note: "Built to last generations" },
-  { Icon: BadgeCheck, value: "ISO 9001:2015", small: true, label: "Quality Management", note: "Certified" },
 ];
 
 function FooterCol({ title, links }) {
@@ -325,12 +323,12 @@ export const Footer = () => (
         </div>
 
         {/* Trust + certification stats */}
-        <div className="grid grid-cols-2 divide-x divide-white/10 border-b border-white/10 py-8 md:grid-cols-5">
-          {FOOTER_STATS.map(({ Icon, value, label, note, small }) => (
+        <div className="grid grid-cols-2 divide-x divide-white/10 border-b border-white/10 py-8 md:grid-cols-4">
+          {FOOTER_STATS.map(({ Icon, value, label, note }) => (
             <div key={label} className="flex items-start gap-3 px-4 py-2 first:pl-0" data-testid={`footer-stat-${label.toLowerCase().replace(/\s+/g, "-")}`}>
-              <Icon className={`mt-0.5 h-6 w-6 shrink-0 text-white/85 ${small ? "h-7 w-7" : ""}`} strokeWidth={1.75} />
+              <Icon className="mt-0.5 h-6 w-6 shrink-0 text-white/85" strokeWidth={1.75} />
               <div>
-                <p className={`font-extrabold leading-tight ${small ? "text-[13px]" : "text-[17px]"} tabular-nums`}>{value}</p>
+                <p className="font-extrabold leading-tight text-[17px] tabular-nums">{value}</p>
                 <p className="text-[13px] font-bold text-white/85">{label}</p>
                 <p className="text-[12px] text-white/55">{note}</p>
               </div>
