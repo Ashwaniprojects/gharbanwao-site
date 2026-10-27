@@ -17,7 +17,7 @@ export const WHATSAPP_URL = `https://api.whatsapp.com/send/?phone=${WHATSAPP_NUM
 export const NAV = [
   { label: "Home", id: "home" },
   { label: "About Us", id: "about" },
-  { label: "Services", id: "services" },
+  { label: "Services", href: "/services" },
   { label: "Projects", href: "/projects" },
   { label: "Reviews", id: "reviews" },
 ];
