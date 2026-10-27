@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Container } from "@/components/site/shared";
+import { renderBody } from "@/pages/Blog";
 import { AdminHeader, AdminLogin } from "@/pages/AdminLogin";
 import {
   CMS_BASE_URL,
@@ -28,23 +29,27 @@ import {
   dateValue,
   deleteAuthor,
   deleteCaseStudy,
+  deleteOffer,
   deletePost,
   deleteProject,
   errorMessage,
   fetchAuthors,
   fetchCaseStudies,
+  fetchOffers,
   fetchPosts,
   fetchProjects,
   fetchRegistrations,
   isAuthenticated,
   saveAuthor,
   saveCaseStudy,
+  saveOffer,
   savePost,
   saveProject,
   slugify,
   triggerDeploy,
   updateAuthor,
   updateCaseStudy,
+  updateOffer,
   updatePost,
   updateProject,
   uploadImage,
@@ -64,6 +69,35 @@ const BLANK_POST = {
   meta_title: "",
   meta_description: "",
   related_links: "",
+};
+
+const BLANK_OFFER = {
+  title: "",
+  description: "",
+  image_url: "",
+  cta_url: "",
+  code: "",
+  status: "published",
+  starts_at: "",
+  live_mode: "days",
+  live_days: "7",
+  live_until: "",
+};
+
+const dateOf = (v) => (v ? String(v).slice(0, 10) : "");
+
+/** Live window → the ISO starts_at / ends_at the backend expects. */
+const offerWindow = (form) => {
+  const starts = form.starts_at ? `${dateOf(form.starts_at)}T00:00:00.000Z` : null;
+  let ends = null;
+  if (form.live_mode === "days" && Number(form.live_days)) {
+    const d = new Date(starts ? new Date(starts) : new Date());
+    d.setUTCDate(d.getUTCDate() + Number(form.live_days));
+    ends = d.toISOString();
+  } else if (form.live_mode === "until" && form.live_until) {
+    ends = `${dateOf(form.live_until)}T00:00:00.000Z`;
+  }
+  return { starts_at: starts, ends_at: ends };
 };
 
 const BLANK_PROJECT = {
@@ -185,6 +219,16 @@ const PostRow = ({ post, onEdit, onDelete, busy }) => (
   </li>
 );
 
+const BODY_MARKDOWN_HELP = [
+  ["## Heading", "A section heading"],
+  ["### Sub-heading", "A smaller heading inside a section"],
+  ["- First point", "Lines starting with “- ” become a bulleted list"],
+  ["> A line", "Becomes a highlighted pull-quote"],
+  ["**bold**", "Bold emphasis"],
+  ["[Text](https://…)", "A link — opens in a new tab"],
+  ["![Photo caption](https://image-url)", "An inline image"],
+];
+
 const PostEditor = ({ original, onSaved, onCancel }) => {
   const [form, setForm] = useState(() =>
     original
@@ -198,8 +242,11 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
   );
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [bodyUploading, setBodyUploading] = useState(false);
+  const [preview, setPreview] = useState(false);
   const [error, setError] = useState(null);
   const fileRef = useRef(null);
+  const bodyFileRef = useRef(null);
 
   const set = (key) => (value) =>
     setForm((prev) => ({ ...prev, [key]: value?.target ? value.target.value : value }));
@@ -217,6 +264,27 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
       setError(errorMessage(err, "The image could not be uploaded."));
     } finally {
       setUploading(false);
+    }
+  };
+
+  // Upload a photo straight into the body as a `![caption](url)` line so it
+  // shows up in the post without copy-pasting a link.
+  const onPickBodyImage = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if (!file) return;
+    setBodyUploading(true);
+    setError(null);
+    try {
+      const { url } = await uploadImage(file);
+      setForm((prev) => {
+        const lead = prev.body ? (prev.body.endsWith("\n") ? "\n" : "\n\n") : "";
+        return { ...prev, body: prev.body ? `${lead}![${file.name}](${url})` : `![${file.name}](${url})` };
+      });
+    } catch (err) {
+      setError(errorMessage(err, "The image could not be uploaded."));
+    } finally {
+      setBodyUploading(false);
     }
   };
 
@@ -276,16 +344,79 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
         />
       </Field>
 
-      <Field label="Body" hint="Plain text. Blank lines separate paragraphs." htmlFor="post-body">
-        <Textarea
-          id="post-body"
-          required
-          rows={14}
-          data-testid="post-body-input"
-          value={form.body}
-          onChange={set("body")}
-          className={areaClass}
-        />
+      <Field
+        label="Body"
+        hint="Markdown-lite: blank lines separate paragraphs. Every line starts a new block, so put headings, lists and images on their own line."
+        htmlFor="post-body"
+      >
+        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <input
+              ref={bodyFileRef}
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              onChange={onPickBodyImage}
+              data-testid="post-body-image-file"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => bodyFileRef.current?.click()}
+              disabled={bodyUploading}
+              className="rounded-lg"
+              data-testid="post-body-insert-image"
+            >
+              <ImagePlus className="mr-1.5 h-4 w-4" />
+              {bodyUploading ? "Inserting…" : "Insert image"}
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setPreview((p) => !p)}
+              className="rounded-lg"
+              data-testid="post-body-preview-toggle"
+            >
+              {preview ? "Back to editing" : "Preview"}
+            </Button>
+          </div>
+          <span className="mono-label text-[12px] text-ink/40" data-testid="post-body-format-hint">
+            ## · ### · - · &gt; · **bold** · [link](url) · ![img](url)
+          </span>
+        </div>
+        {preview ? (
+          <div
+            className="card-gb max-w-[46rem] bg-paper px-6 py-6 text-[16px] text-ink/80"
+            data-testid="post-body-preview"
+          >
+            <h1 className="mb-4 text-[30px] font-bold leading-tight tracking-tight">
+              {form.title || "Untitled post"}
+            </h1>
+            {form.cover_image_url ? (
+              <img
+                src={form.cover_image_url}
+                alt="Cover preview"
+                className="mb-4 w-full rounded-2xl border border-divider"
+              />
+            ) : null}
+            {form.excerpt ? (
+              <p className="mb-4 text-[18px] font-medium leading-relaxed text-ink">{form.excerpt}</p>
+            ) : null}
+            {renderBody(form.body || "", null)}
+          </div>
+        ) : (
+          <Textarea
+            id="post-body"
+            required
+            rows={14}
+            data-testid="post-body-input"
+            value={form.body}
+            onChange={set("body")}
+            className={areaClass}
+          />
+        )}
       </Field>
 
       <Field label="Cover image">
@@ -1341,6 +1472,300 @@ const AuthorEditor = ({ original, onSaved, onCancel }) => {
 };
 
 /* ------------------------------------------------------------------ */
+/* Offers                                                             */
+/* ------------------------------------------------------------------ */
+
+const OFFER_LIVE_LABELS = { days: "Live for N days", until: "Until a date" };
+
+const OfferRow = ({ offer, onEdit, onDelete, busy }) => {
+  const window_ = [dateOf(offer.starts_at), dateOf(offer.ends_at)].filter(Boolean).join(" → ");
+  return (
+    <li
+      className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
+      data-testid={`admin-offer-${offer.slug}`}
+    >
+      <div className="min-w-0">
+        <p className="truncate font-bold">
+          {offer.title}
+          {offer.code ? (
+            <span className="mono-label ml-2 rounded-full bg-wash-yellow px-2 py-0.5 text-[11px] text-ink/60">
+              {offer.code}
+            </span>
+          ) : null}
+        </p>
+        <p className="mono-label mt-1 text-ink/40">
+          {window_ || "No live window"} · {offer.status === "published" ? "Published" : "Draft"}
+        </p>
+      </div>
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" size="sm" onClick={() => onEdit(offer)} className="rounded-lg">
+          Edit
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onDelete(offer)}
+          disabled={busy}
+          aria-label={`Delete ${offer.title}`}
+          data-testid={`admin-offer-delete-${offer.slug}`}
+          className="rounded-lg px-2 text-red-600 hover:bg-red-50"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </div>
+    </li>
+  );
+};
+
+const OfferEditor = ({ original, onSaved, onCancel }) => {
+  const [form, setForm] = useState(() =>
+    original
+      ? {
+          ...BLANK_OFFER,
+          ...original,
+          starts_at: dateOf(original.starts_at),
+          live_until: dateOf(original.ends_at),
+          live_days: "7",
+          live_mode: "days",
+        }
+      : BLANK_OFFER,
+  );
+  const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(null);
+  const fileRef = useRef(null);
+
+  const set = (key) => (value) =>
+    setForm((prev) => ({ ...prev, [key]: value?.target ? value.target.value : value }));
+
+  const onPickFile = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if (!file) return;
+    setUploading(true);
+    setError(null);
+    try {
+      const { url } = await uploadImage(file);
+      setForm((prev) => ({ ...prev, image_url: url }));
+    } catch (err) {
+      setError(errorMessage(err, "The image could not be uploaded."));
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    const { starts_at, ends_at } = offerWindow(form);
+    const payload = {
+      title: form.title,
+      slug: original ? original.slug : undefined,
+      description: form.description,
+      image_url: form.image_url || null,
+      cta_url: form.cta_url || null,
+      code: form.code || null,
+      status: form.status,
+      starts_at,
+      ends_at,
+    };
+    try {
+      if (original) {
+        await updateOffer(original.slug, payload);
+        onSaved("Offer updated.");
+      } else {
+        await saveOffer(payload);
+        onSaved("Offer created.");
+      }
+    } catch (err) {
+      setError(errorMessage(err, "The offer could not be saved."));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const windowSummary = (() => {
+    const { starts_at, ends_at } = offerWindow(form);
+    if (!starts_at) return "No start date — the offer stays inactive until one is set.";
+    return `Live ${dateOf(starts_at)} → ${ends_at ? dateOf(ends_at) : "open-ended"}`;
+  })();
+
+  return (
+    <form onSubmit={submit} className="grid gap-5" data-testid="offer-editor">
+      <Field label="Title" htmlFor="offer-title">
+        <Input
+          id="offer-title"
+          required
+          data-testid="offer-title-input"
+          value={form.title}
+          onChange={set("title")}
+          className={inputClass}
+          placeholder="Flat 10% off your Gold package this month"
+        />
+      </Field>
+
+      <Field label="Description" hint="Shown on the home-page offer banner." htmlFor="offer-description">
+        <Textarea
+          id="offer-description"
+          rows={2}
+          data-testid="offer-description-input"
+          value={form.description}
+          onChange={set("description")}
+          className={areaClass}
+        />
+      </Field>
+
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Promo code" hint="Optional code visitors quote to claim the offer." htmlFor="offer-code">
+          <Input
+            id="offer-code"
+            value={form.code}
+            onChange={set("code")}
+            className={inputClass}
+            data-testid="offer-code-input"
+          />
+        </Field>
+        <Field label="CTA link" hint="Where the banner button goes — a page, WhatsApp or any URL." htmlFor="offer-cta">
+          <Input
+            id="offer-cta"
+            value={form.cta_url}
+            onChange={set("cta_url")}
+            className={inputClass}
+            data-testid="offer-cta-input"
+            placeholder="https://gharbanwao.com/register or wa.me/…"
+          />
+        </Field>
+      </div>
+
+      <Field label="Offer image" hint="Optional, shown on the banner.">
+        <div className="flex flex-wrap items-center gap-3">
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            onChange={onPickFile}
+            data-testid="offer-image-file"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => fileRef.current?.click()}
+            disabled={uploading}
+            className="rounded-lg"
+            data-testid="offer-image-upload"
+          >
+            <ImagePlus className="mr-2 h-4 w-4" />
+            {uploading ? "Uploading…" : "Upload"}
+          </Button>
+          <Input
+            value={form.image_url}
+            onChange={set("image_url")}
+            placeholder="https://…"
+            className={`${inputClass} flex-1`}
+            data-testid="offer-image-url-input"
+          />
+        </div>
+      </Field>
+
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Starts" hint="The offer goes live at this date, midnight." htmlFor="offer-starts">
+          <Input
+            id="offer-starts"
+            type="date"
+            value={form.starts_at}
+            onChange={set("starts_at")}
+            className={inputClass}
+            data-testid="offer-starts-input"
+          />
+        </Field>
+        <Field label="Live">
+          <Select value={form.live_mode} onValueChange={set("live_mode")} data-testid="offer-live-mode">
+            <SelectTrigger className={`${inputClass} h-12`}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(OFFER_LIVE_LABELS).map(([value, label]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
+      </div>
+
+      <div className="grid gap-5 sm:grid-cols-2">
+        {form.live_mode === "days" ? (
+          <Field label="How many days" htmlFor="offer-live-days">
+            <Input
+              id="offer-live-days"
+              type="number"
+              min="0"
+              value={form.live_days}
+              onChange={set("live_days")}
+              className={inputClass}
+              data-testid="offer-live-days-input"
+            />
+          </Field>
+        ) : (
+          <Field label="Until" htmlFor="offer-live-until">
+            <Input
+              id="offer-live-until"
+              type="date"
+              value={form.live_until}
+              onChange={set("live_until")}
+              className={inputClass}
+              data-testid="offer-live-until-input"
+            />
+          </Field>
+        )}
+        <Field label="Status">
+          <Select value={form.status} onValueChange={set("status")} data-testid="offer-status-select">
+            <SelectTrigger className={`${inputClass} h-12`}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {STATUSES.map((s) => (
+                <SelectItem key={s} value={s}>
+                  {s === "published" ? "Published" : "Draft"}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
+      </div>
+
+      <p className="mono-label rounded-lg bg-wash-yellow px-4 py-3 text-[13px] text-ink/60" data-testid="offer-window-summary">
+        {windowSummary}
+      </p>
+
+      {error ? (
+        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-[14px] font-medium text-red-700">
+          {error}
+        </p>
+      ) : null}
+
+      <div className="flex flex-wrap gap-3 border-t border-divider pt-5">
+        <Button
+          type="submit"
+          disabled={busy || !form.title}
+          data-testid="offer-save"
+          className="rounded-lg bg-green px-8 text-[15px] font-bold text-ink hover:bg-green-600"
+        >
+          {busy ? "Saving…" : original ? "Save changes" : "Create offer"}
+        </Button>
+        <Button type="button" variant="ghost" onClick={onCancel} className="rounded-lg px-5">
+          Cancel
+        </Button>
+      </div>
+    </form>
+  );
+};
+
+/* ------------------------------------------------------------------ */
 /* Registrations                                                      */
 /* ------------------------------------------------------------------ */
 
@@ -1444,6 +1869,7 @@ const TABS = [
   { key: "projects", label: "Projects", noun: "projects", testid: "admin-tab-projects" },
   { key: "caseStudies", label: "Case studies", noun: "case studies", testid: "admin-tab-case-studies" },
   { key: "authors", label: "Authors", noun: "authors", testid: "admin-tab-authors" },
+  { key: "offers", label: "Offers", noun: "offers", testid: "admin-tab-offers" },
   { key: "registrations", label: "Registrations", noun: "registrations", testid: "admin-tab-registrations" },
 ];
 
@@ -1453,6 +1879,7 @@ export default function AdminPage() {
   const [projects, setProjects] = useState([]);
   const [caseStudies, setCaseStudies] = useState([]);
   const [authors, setAuthors] = useState([]);
+  const [offers, setOffers] = useState([]);
   const [registrations, setRegistrations] = useState([]);
   // Per-section load status so one missing endpoint on a stale backend can
   // show "this section is unavailable" instead of blanking every list to 0.
@@ -1461,6 +1888,7 @@ export default function AdminPage() {
     projects: { status: "idle", error: "" },
     caseStudies: { status: "idle", error: "" },
     authors: { status: "idle", error: "" },
+    offers: { status: "idle", error: "" },
     registrations: { status: "idle", error: "" },
   });
   const [editing, setEditing] = useState(null);
@@ -1513,6 +1941,7 @@ export default function AdminPage() {
       projects: { status: "loading", error: "" },
       caseStudies: { status: "loading", error: "" },
       authors: { status: "loading", error: "" },
+      offers: { status: "loading", error: "" },
       registrations: { status: "loading", error: "" },
     });
     await Promise.allSettled([
@@ -1520,6 +1949,7 @@ export default function AdminPage() {
       loadSection("projects", () => fetchProjects(), setProjects),
       loadSection("caseStudies", () => fetchCaseStudies(true), setCaseStudies),
       loadSection("authors", () => fetchAuthors(), setAuthors),
+      loadSection("offers", () => fetchOffers(true), setOffers),
       loadSection("registrations", () => fetchRegistrations(), setRegistrations),
     ]);
     setLoading(false);
@@ -1577,6 +2007,20 @@ export default function AdminPage() {
     }
   };
 
+  const removeOffer = async (offer) => {
+    if (!window.confirm(`Delete “${offer.title}”? This cannot be undone.`)) return;
+    setBusy(true);
+    try {
+      await deleteOffer(offer.slug);
+      setOffers((prev) => prev.filter((o) => o.slug !== offer.slug));
+      say("Offer deleted.");
+    } catch (err) {
+      setError(errorMessage(err, "The offer could not be deleted."));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const removeProject = async (project) => {
     if (!window.confirm(`Delete “${project.title}”? This cannot be undone.`)) return;
     setBusy(true);
@@ -1623,6 +2067,11 @@ export default function AdminPage() {
     (study.locality || "").toLowerCase().includes(q);
   const matchAuthor = (author) =>
     !q || author.name.toLowerCase().includes(q) || author.slug.includes(q);
+  const matchOffer = (offer) =>
+    !q ||
+    offer.title.toLowerCase().includes(q) ||
+    offer.slug.includes(q) ||
+    (offer.code || "").toLowerCase().includes(q);
   const matchRegistration = (reg) =>
     !q ||
     reg.name.toLowerCase().includes(q) ||
@@ -1632,6 +2081,7 @@ export default function AdminPage() {
   const visibleProjects = projects.filter(matchProject);
   const visibleCaseStudies = caseStudies.filter(matchCaseStudy);
   const visibleAuthors = authors.filter(matchAuthor);
+  const visibleOffers = offers.filter(matchOffer);
   const visibleRegistrations = registrations.filter(matchRegistration);
 
   const counts = {
@@ -1639,10 +2089,21 @@ export default function AdminPage() {
     projects: projects.length,
     caseStudies: caseStudies.length,
     authors: authors.length,
+    offers: offers.length,
     registrations: registrations.length,
   };
 
   if (editing) {
+    const kindLabel =
+      editing.kind === "case-studies"
+        ? "case study"
+        : editing.kind === "projects"
+          ? "project"
+          : editing.kind === "authors"
+            ? "author"
+            : editing.kind === "offers"
+              ? "offer"
+              : "post";
     const Editor =
       editing.kind === "case-studies"
         ? CaseStudyEditor
@@ -1650,7 +2111,9 @@ export default function AdminPage() {
           ? ProjectEditor
           : editing.kind === "authors"
             ? AuthorEditor
-            : PostEditor;
+            : editing.kind === "offers"
+              ? OfferEditor
+              : PostEditor;
     return (
       <div className="min-h-screen bg-paper">
         <AdminHeader onSignOut={signOut} />
@@ -1666,25 +2129,7 @@ export default function AdminPage() {
           </Button>
           <div className="card-gb mx-auto max-w-3xl p-6 md:p-8">
             <h1 className="mb-6 text-[26px] font-extrabold tracking-tight">
-              {editing.item
-                ? `Edit ${
-                    editing.kind === "case-studies"
-                      ? "case study"
-                      : editing.kind === "projects"
-                        ? "project"
-                        : editing.kind === "authors"
-                          ? "author"
-                          : "post"
-                  }`
-                : `New ${
-                    editing.kind === "case-studies"
-                      ? "case study"
-                      : editing.kind === "projects"
-                        ? "project"
-                        : editing.kind === "authors"
-                          ? "author"
-                          : "post"
-                  }`}
+              {editing.item ? `Edit ${kindLabel}` : `New ${kindLabel}`}
             </h1>
             <Editor
               key={editing.item ? editing.item.slug : "new"}
@@ -1952,6 +2397,42 @@ export default function AdminPage() {
                         busy={busy}
                         onEdit={(item) => setEditing({ kind: "authors", item })}
                         onDelete={removeAuthor}
+                      />
+                    ))}
+                  </ul>
+                ))}
+            </section>
+          )}
+
+          {tab === "offers" && (
+            <section className="card-gb overflow-hidden" data-testid="admin-offers">
+              <SectionHead
+                title="Offers"
+                count={visibleOffers.length}
+                action={
+                  <Button
+                    onClick={() => setEditing({ kind: "offers", item: null })}
+                    className="h-9 rounded-lg bg-green px-4 text-[13px] font-bold text-ink hover:bg-green-600"
+                    data-testid="admin-offer-new"
+                  >
+                    <Plus className="mr-1.5 h-4 w-4" strokeWidth={2.5} />
+                    New offer
+                  </Button>
+                }
+              />
+              <StatusBanner meta={listMeta.offers} noun="offers" onRetry={() => loadSection("offers", () => fetchOffers(true), setOffers)} />
+              {listMeta.offers.status === "ready" &&
+                (visibleOffers.length === 0 ? (
+                  <Empty>No offers yet. Create one to run a promotion.</Empty>
+                ) : (
+                  <ul className="divide-y divide-divider" data-testid="admin-offer-list">
+                    {visibleOffers.map((offer) => (
+                      <OfferRow
+                        key={offer.slug}
+                        offer={offer}
+                        busy={busy}
+                        onEdit={(item) => setEditing({ kind: "offers", item })}
+                        onDelete={removeOffer}
                       />
                     ))}
                   </ul>

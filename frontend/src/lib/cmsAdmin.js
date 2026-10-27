@@ -134,6 +134,30 @@ export const fetchRegistrations = (type) =>
     .get("/api/registrations", { params: type ? { type } : {} })
     .then((r) => r.data);
 
+/*
+ * Offers are scheduled promos with a live window (starts_at / ends_at). The
+ * public active list is what the home-page offer banner renders; the admin
+ * list and mutations work exactly like the other content types.
+ */
+export const fetchOffers = (includeDrafts) =>
+  request.get("/api/content/offers", {
+    params: includeDrafts ? { all: true, limit: 50 } : { limit: 50 },
+  }).then((r) => r.data.items || []);
+
+export const fetchActiveOffers = () =>
+  request.get("/api/content/offers/active").then((r) => r.data.items || []);
+
+export const saveOffer = (payload) =>
+  withLock(() => request.post("/api/content/offers", payload).then((r) => r.data));
+
+export const updateOffer = (slug, payload) =>
+  withLock(() =>
+    request.put(`/api/content/offers/${encodeURIComponent(slug)}`, payload).then((r) => r.data),
+  );
+
+export const deleteOffer = (slug) =>
+  withLock(() => request.delete(`/api/content/offers/${encodeURIComponent(slug)}`).then((r) => r.data));
+
 export const saveCaseStudy = (payload) =>
   withLock(() => request.post("/api/content/case-studies", payload).then((r) => r.data));
 

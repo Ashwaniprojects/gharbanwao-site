@@ -115,9 +115,11 @@ function inline(text) {
 
 const BULLET = "mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-green-700";
 
-/** The body is the lightweight markup documented at the top of blogs.js:
- *  ## / ### headings, - lists, > pull-quotes, *stars*, !N image slots,
- *  [[slug|text]] internal links and **bold**. Returns React nodes. */
+/** The body is lightweight markdown-lite (the conventions the 30 field-manual
+ *  posts and CMS post bodies both follow):
+ *  # / ## / ### headings, - lists, > pull-quotes, *stars*, !N image slots,
+ *  ![alt](url) inline images, [[slug|text]] internal links, [text](url) links
+ *  and **bold**. It returns React nodes, so no HTML string is ever parsed. */
 export function renderBody(body, images) {
   const nodes = [];
   let list = null;
@@ -165,6 +167,22 @@ export function renderBody(body, images) {
       );
       continue;
     }
+    // ![alt](url) — an image embed anywhere in the body. The src/alt come from
+    // admin-authored text and render as a real <img>, never raw HTML.
+    const img = /^!\[([^\]]*)\]\(([^)\s]+)\)$/.exec(line);
+    if (img) {
+      nodes.push(
+        <figure key={`f-${nodes.length}`} className="my-9">
+          <img
+            src={img[2]}
+            alt={img[1]}
+            loading="lazy"
+            className="w-full rounded-2xl border border-divider"
+          />
+        </figure>
+      );
+      continue;
+    }
     const slot = /^!(\d)$/.exec(line);
     if (slot) {
       const n = Number(slot[1]);
@@ -197,6 +215,14 @@ export function renderBody(body, images) {
         <h3 key={`h-${nodes.length}`} className="mt-7 mb-2 text-[19px] font-bold leading-snug">
           {inline(line.slice(4))}
         </h3>
+      );
+      continue;
+    }
+    if (line.startsWith("# ")) {
+      nodes.push(
+        <h1 key={`h-${nodes.length}`} className="mt-11 mb-3 text-[30px] font-bold leading-tight tracking-tight">
+          {inline(line.slice(2))}
+        </h1>
       );
       continue;
     }
@@ -397,13 +423,7 @@ export function BlogDetail() {
                 {cmsPost.excerpt ? (
                   <p className="text-[18px] font-medium leading-relaxed text-ink">{cmsPost.excerpt}</p>
                 ) : null}
-                {String(cmsPost.body || "")
-                  .split(/\n{2,}/)
-                  .map((para, i) => (
-                    <p key={i} className="mt-5 leading-relaxed">
-                      {para.trim()}
-                    </p>
-                  ))}
+                {renderBody(cmsPost.body, null)}
               </div>
             </Container>
           </article>

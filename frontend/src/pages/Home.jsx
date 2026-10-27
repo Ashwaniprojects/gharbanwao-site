@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { scrollToId } from "@/lib/scroll";
 import { AnnouncementStrip } from "@/components/site/AnnouncementStrip";
 import { Navbar } from "@/components/site/Navbar";
+import { OfferCenter } from "@/components/site/OfferCenter";
 import { Hero } from "@/components/site/Hero";
 import { TrustBar, WhyChoose } from "@/components/site/TrustWhy";
 import { ProjectsMap } from "@/components/site/ProjectsMap";
@@ -36,6 +37,7 @@ export default function Home() {
       </main>
       <Footer />
       <MobileBar />
+      <OfferCenter />
     </div>
   );
 }
