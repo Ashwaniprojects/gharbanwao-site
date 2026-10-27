@@ -68,56 +68,53 @@ const Banner = ({ offer, onDismiss }) => (
     role="dialog"
     aria-label={offer.title}
   >
-    <div className="flex items-start gap-4">
-      {offer.image_url ? (
-        <img
-          src={offer.image_url}
-          alt=""
-          className="h-16 w-20 shrink-0 rounded-xl border border-divider object-cover"
-        />
+    <button
+      type="button"
+      onClick={onDismiss}
+      aria-label="Dismiss offer"
+      data-testid="offer-banner-dismiss"
+      className="absolute right-3 top-3 z-10 rounded-full bg-paper/80 p-2 text-ink/50 transition-colors hover:bg-wash-yellow hover:text-ink"
+    >
+      <X className="h-4 w-4" />
+    </button>
+    {offer.image_url ? (
+      <img
+        src={offer.image_url}
+        alt=""
+        className="mb-4 h-auto max-h-[340px] w-full rounded-xl border border-divider object-contain"
+        data-testid="offer-banner-image"
+      />
+    ) : null}
+    <p className="mono-label text-[12px] text-green-700">
+      OFFER
+      {offer.ends_at ? (
+        <span className="ml-2 text-ink/45">
+          until{" "}
+          {new Date(offer.ends_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+        </span>
       ) : null}
-      <div className="min-w-0 flex-1">
-        <p className="mono-label text-[12px] text-green-700">
-          OFFER
-          {offer.ends_at ? (
-            <span className="ml-2 text-ink/45">
-              until{" "}
-              {new Date(offer.ends_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
-            </span>
-          ) : null}
-        </p>
-        <p className="mt-1 text-[16px] font-bold leading-snug">{offer.title}</p>
-        {offer.description ? (
-          <p className="mt-1 text-[13px] leading-relaxed text-ink/65">{offer.description}</p>
-        ) : null}
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          {offer.cta_url ? (
-            <a
-              href={offer.cta_url}
-              target={/^https?:/i.test(offer.cta_url) ? "_blank" : undefined}
-              rel={/^https?:/i.test(offer.cta_url) ? "noreferrer" : undefined}
-              className="inline-flex h-9 items-center rounded-full bg-ink px-4 text-[13px] font-bold text-green"
-              data-testid="offer-banner-cta"
-            >
-              {offer.code ? `Claim with code ${offer.code}` : "Claim offer"}
-            </a>
-          ) : null}
-          {offer.code && !offer.cta_url ? (
-            <span className="rounded-full bg-wash-yellow px-3 py-1.5 text-[13px] font-bold">
-              Code {offer.code}
-            </span>
-          ) : null}
-        </div>
-      </div>
-      <button
-        type="button"
-        onClick={onDismiss}
-        aria-label="Dismiss offer"
-        data-testid="offer-banner-dismiss"
-        className="rounded-full p-2 text-ink/40 transition-colors hover:bg-wash-yellow hover:text-ink"
-      >
-        <X className="h-4 w-4" />
-      </button>
+    </p>
+    <p className="mt-1 text-[19px] font-bold leading-snug text-green-700">{offer.title}</p>
+    {offer.description ? (
+      <p className="mt-1.5 text-[13px] leading-relaxed text-ink/65">{offer.description}</p>
+    ) : null}
+    <div className="mt-3 flex flex-wrap items-center gap-2">
+      {offer.cta_url ? (
+        <a
+          href={offer.cta_url}
+          target={/^https?:/i.test(offer.cta_url) ? "_blank" : undefined}
+          rel={/^https?:/i.test(offer.cta_url) ? "noreferrer" : undefined}
+          className="inline-flex h-9 items-center rounded-full bg-green px-4 text-[13px] font-bold text-ink"
+          data-testid="offer-banner-cta"
+        >
+          {offer.code ? `Claim with code ${offer.code}` : "Claim offer"}
+        </a>
+      ) : null}
+      {offer.code && !offer.cta_url ? (
+        <span className="rounded-full bg-wash-yellow px-3 py-1.5 text-[13px] font-bold">
+          Code {offer.code}
+        </span>
+      ) : null}
     </div>
   </motion.div>
 );
@@ -132,14 +129,20 @@ const Dock = ({ offer, onOpen }) => (
     onClick={onOpen}
     aria-label="Show current offers"
     data-testid="offers-dock"
-    className="group no-print fixed left-0 top-1/2 z-40 -translate-y-1/2 rounded-r-xl bg-ink text-paper shadow-lg lg:left-6"
+    className="group no-print fixed left-0 top-1/2 z-40 -translate-y-1/2 rounded-r-xl bg-green shadow-lg lg:left-6"
     style={{ writingMode: "vertical-rl" }}
   >
-    <span className="flex items-center gap-2 px-2 py-4 text-[13px] font-bold tracking-[0.2em]">
-      <CalendarDays className="h-4 w-4 text-green" />
+    <span className="flex items-center gap-2 px-2 py-4 text-[13px] font-bold tracking-[0.2em] text-ink">
+      <CalendarDays className="h-4 w-4" />
       OFFERS
     </span>
-    <span className="pointer-events-none absolute left-full top-1/2 ml-2 -translate-y-1/2 whitespace-nowrap rounded-full bg-ink px-3 py-1.5 text-[13px] font-bold text-paper opacity-0 transition-opacity hover:opacity-100 group-hover:opacity-100">
+    {/* The button sets writing-mode vertical for the label; the tooltip is a
+      sibling span, so reset it to read horizontally. */}
+    <span
+      style={{ writingMode: "horizontal-tb" }}
+      className="pointer-events-none absolute left-full top-1/2 ml-2 -translate-y-1/2 whitespace-nowrap rounded-full bg-ink px-3 py-1.5 text-[13px] font-bold text-paper opacity-0 transition-opacity group-hover:opacity-100"
+      data-testid="offers-dock-tooltip"
+    >
       {offer?.title || "Bring the offer back"}
     </span>
   </motion.button>
