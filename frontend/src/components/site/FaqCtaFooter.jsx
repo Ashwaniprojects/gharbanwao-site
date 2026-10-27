@@ -240,17 +240,6 @@ const PreFooterCTA = () => (
           className="h-24 w-auto rounded-xl border border-ink/10 bg-paper object-contain p-1 shadow-sm sm:h-32 lg:h-36"
         />
       </div>
-      <div className="relative shrink-0">
-        <img
-          src="/images/about/warm-modern-house.webp"
-          alt="A completed Ghar Banwao home"
-          width="320"
-          height="220"
-          loading="lazy"
-          decoding="async"
-          className="h-[150px] w-[220px] rounded-2xl border border-ink/10 object-cover shadow-lg sm:h-[180px] sm:w-[260px]"
-        />
-      </div>
       <div className="max-w-[46ch] flex-1">
         <p className="text-[12px] font-extrabold uppercase tracking-[0.14em] text-[#0c352a]">
           Ready to build your dream home?
