@@ -53,18 +53,13 @@ function WhyCard({ item, i }) {
   const Icon = Icons[item.icon] || Icons.Check;
   return (
     <Reveal delay={(i % 4) * 0.05} className="h-full" data-testid={`why-card-${i + 1}`}>
-      <article className="group relative flex h-full flex-col gap-3 overflow-hidden rounded-2xl border border-green/25 bg-[rgba(245,250,240,0.72)] p-5 backdrop-blur-xl shadow-[0_4px_24px_rgba(34,139,34,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-green hover:shadow-[0_8px_40px_rgba(34,139,34,0.2)]">
-        <span className="absolute -top-4 left-1/2 h-20 w-20 -translate-x-1/2 rounded-full bg-green/25 blur-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" aria-hidden="true" />
-        <div className="relative flex items-center gap-3">
-          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-green/15 bg-[rgba(34,139,34,0.1)] transition-transform duration-300 group-hover:scale-110">
-            <Icon className="h-5 w-5 text-green-700" strokeWidth={1.75} />
-          </div>
-          <span className="mono-label text-green text-[12px] font-bold tracking-widest">
-            {String(i + 1).padStart(2, "0")}
-          </span>
+      <article className="why-arch-item">
+        <div className="why-arch text-green-700">
+          <Icon strokeWidth={1.65} />
+          <b className="why-badge">{String(i + 1).padStart(2, "0")}</b>
         </div>
-        <h3 className="relative font-bold text-[15px] leading-snug text-ink">{item.title}</h3>
-        <p className="relative text-[13px] leading-relaxed text-ink/60">{item.text}</p>
+        <h3 className="font-bold text-[15px] leading-snug text-ink [text-wrap:balance]">{item.title}</h3>
+        <p className="mt-2.5 text-[13px] leading-relaxed text-ink/60 [text-wrap:pretty]">{item.text}</p>
       </article>
     </Reveal>
   );
@@ -77,7 +72,7 @@ export const WhyChoose = () => {
         <SectionHeader title="Why homeowners call us the best construction company in Uttar Pradesh" />
 
         {/* 12 reasons in 3 rows of 4 */}
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-4 md:gap-x-5">
           {WHY.map((item, i) => (
             <WhyCard key={item.title} item={item} i={i} />
           ))}

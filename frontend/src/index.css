@@ -114,6 +114,67 @@
     box-shadow: 15px 15px 30px #d6d6ce,
                 -15px -15px 30px #fafaf2;
   }
+  /* Why-choose arch tile: a rounded-top arch holds the icon, with a soft green
+     dot sitting behind it; a numbered badge straddles the arch's flat base. */
+  .why-arch-item {
+    text-align: center;
+    min-width: 0;
+  }
+  .why-arch {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 140px;
+    max-width: 100%;
+    height: 78px;
+    margin: 0 auto 32px;
+    border: 1px solid #dce3d5;
+    border-radius: 100px 100px 0 0;
+    background: linear-gradient(#fff, #f5faeb);
+    transition: border-color 0.2s ease;
+  }
+  .why-arch::before {
+    content: "";
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary-brand, #93c526);
+    opacity: 0.35;
+    left: 50%;
+    top: 30px;
+    transform: translateX(-50%);
+    z-index: -1;
+  }
+  .why-arch svg {
+    width: 39px;
+    height: 39px;
+    stroke-width: 1.65;
+    transition: transform 0.2s ease;
+  }
+  .why-badge {
+    position: absolute;
+    bottom: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary-brand, #93c526);
+    border: 3px solid #fff;
+    color: #1c2a06;
+    border-radius: 999px;
+    padding: 5px 12px;
+    white-space: nowrap;
+    font-weight: 700;
+    line-height: 1.25;
+    z-index: 1;
+  }
+  .why-arch-item:hover .why-arch {
+    border-color: var(--primary-brand, #93c526);
+  }
+  .why-arch-item:hover .why-arch svg {
+    transform: translateY(-3px);
+  }
   .star-gb {
     color: #d9a400;
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55), 0 1px 2px rgba(120, 84, 0, 0.45);
