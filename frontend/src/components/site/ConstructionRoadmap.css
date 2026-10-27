@@ -148,8 +148,12 @@
 
 /* --- milestone cards: yellow wash + shimmer + brand logo ------------ */
 
+/* Keep the base `.cr-card` position: absolute so the milestone cards sit at
+   their track-relative coordinates. The absolute card is already a containing
+   block for the `.cr-shimmer` overlay, so `overflow: hidden` clips it — no
+   position override needed here (a `position: relative` here used to break
+   step 7's card, pushing it down the column). */
 .cr-card--milestone {
-  position: relative;
   overflow: hidden;
   background: linear-gradient(155deg, #fff6d6 0%, #ffef9e 55%, #ffe27a 100%);
   border: 1px solid #f2d45a;
