@@ -194,28 +194,34 @@ const LiveProjectCard = ({ p }) => {
   const ongoing = p.status === "ongoing";
   return (
     <motion.article initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="card-gb flex h-full flex-col overflow-hidden" data-testid="live-project-card">
-      {/* Cover with status pill */}
-      <div className="relative aspect-[16/10] overflow-hidden bg-divider">
-        {p.cover_image_url ? (
-          <img src={p.cover_image_url} alt={shortTitle || `${p.locality}, ${p.city}`} width={800} height={500} loading="lazy" decoding="async" className="h-full w-full object-cover" />
-        ) : (
-          <div className="grid h-full place-items-center bg-gradient-to-br from-wash-green to-wash-yellow">
-            <span className="display text-4xl text-green/40">{gbId || "GB"}</span>
-          </div>
-        )}
-        <span className={`absolute left-3 top-3 rounded-full px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-ink ${ongoing ? "bg-yellow" : "bg-green"}`}>
-          {ongoing ? "Ongoing" : "Handed over"}
-        </span>
-      </div>
-
       {/* Body */}
       <div className="flex flex-1 flex-col p-5">
-        <div className="flex items-baseline justify-between gap-3">
-          <span className="mono-label text-green text-[12px] font-bold tracking-widest" data-testid="live-project-gbid">{gbId}</span>
-          {size ? <span className="font-mono text-[12px] text-ink/55">{Number(size).toLocaleString("en-IN")} sqft</span> : null}
+        {/* Header row: code + status + title on the left, thumbnail on the right */}
+        <div className="flex items-start gap-3">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="mono-label text-green text-[12px] font-bold tracking-widest" data-testid="live-project-gbid">{gbId}</span>
+              <span className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.08em] ${ongoing ? "bg-yellow text-ink" : "bg-green text-ink"}`}>
+                {ongoing ? "Ongoing" : "Handed over"}
+              </span>
+            </div>
+            <h3 className="mt-2 text-[18px] font-bold leading-snug">{p.locality}, {p.city}</h3>
+            {shortTitle && <p className="mt-1 text-[13px] leading-snug text-ink/55">{shortTitle}</p>}
+          </div>
+          {p.cover_image_url ? (
+            <img
+              src={p.cover_image_url}
+              alt={shortTitle || `${p.locality}, ${p.city}`}
+              width={72}
+              height={72}
+              loading="lazy"
+              decoding="async"
+              className="h-[72px] w-[72px] shrink-0 rounded-xl border border-divider object-cover shadow-sm"
+              data-testid="live-project-thumb"
+            />
+          ) : null}
         </div>
-        <h3 className="mt-1.5 text-[18px] font-bold leading-snug">{p.locality}, {p.city}</h3>
-        {shortTitle && <p className="mt-1 text-[13px] leading-snug text-ink/55">{shortTitle}</p>}
+        {size ? <p className="mt-2 font-mono text-[12px] text-ink/55">{Number(size).toLocaleString("en-IN")} sqft</p> : null}
         {summaryFirst && (
           <p className="mt-3 text-[14px] leading-relaxed text-ink/70 line-clamp-3">{summaryFirst}</p>
         )}
