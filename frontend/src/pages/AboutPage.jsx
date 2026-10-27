@@ -9,9 +9,9 @@ import { Helmet } from "react-helmet-async";
 
 const PHONE_HREF = `tel:${PHONES[0]}`;
 
-// The CMD and CEO messages are reproduced exactly as the owner wrote them —
-// they must NOT be condensed, shortened, or reworded. The redesign brief's
-// 80-120 word suggestion does not apply here; the owner overrode it.
+// The CMD message is reproduced exactly as the owner wrote it — do not
+// condense or reword it. The CEO message was trimmed at the owner's request
+// (2026-10-28): shorter heading, no emdashes, ~30 words cut.
 const CMD_MESSAGE = [
   "At Ghar Banwao, our journey is driven by a bold ambition: to transform the way India experiences home construction. We recognize that the construction industry has enormous potential, yet customers often face challenges in finding reliable professionals, ensuring transparency, managing costs, and coordinating multiple services. Our vision is to bridge these gaps by building a trusted, technology-driven platform that brings the entire home construction journey together under one roof.",
   "As CMD, I believe that sustainable growth comes from understanding customer needs, embracing innovation, and consistently delivering on our promises. We are focused on building more than a service company. We are building an ecosystem that makes construction more accessible, organized, transparent, and dependable.",
@@ -21,13 +21,13 @@ const CMD_MESSAGE = [
 ];
 
 const CEO_MESSAGE = [
-  "At Ghar Banwao, we believe building your dream home should be exciting, transparent, and well-managed — not complicated or stressful.",
-  "Our journey in the construction industry began in 2016, and Ghar Banwao was officially launched in November 2018, with its head office in Lucknow, Uttar Pradesh. Since then, our focus has been to provide homeowners with a professional and dependable one-stop solution for complete home construction.",
-  "From architectural planning, 2D floor plans and 3D designs to structural engineering, construction, finishing, interiors, site supervision, and final handover, we bring every stage of your home-building journey together under one experienced team.",
-  "For you, this means no hassle of coordinating with multiple architects, engineers, contractors, vendors, and different agencies. With Ghar Banwao, you have one team, one streamlined process, and clear accountability from concept to completion.",
-  "Our approach is built around what matters most to a homeowner — transparent pricing, clearly defined specifications, professional supervision, quality-focused execution, stage-wise payments, regular project updates, and dependable after-construction support.",
-  "With 260+ homes successfully handed over and 51+ ongoing projects, we continue to earn the trust of homeowners looking for a more organized and reliable way to build.",
-  "Whether you are building your first home or managing construction while living in another city, our goal is simple — to make your journey from plot to dream home seamless, transparent, and hassle-free.",
+  "At Ghar Banwao, building your dream home should be exciting, transparent, and well-managed, never complicated or stressful.",
+  "Our journey in construction began in 2016. Ghar Banwao launched in November 2018, headquartered in Lucknow. Since then, we have focused on giving homeowners a professional, dependable one-stop solution for complete home construction.",
+  "From architectural planning, 2D floor plans and 3D designs to structural engineering, construction, finishing, interiors, site supervision, and handover, we bring every stage of your home-building journey together under one team.",
+  "This means no hassle of coordinating with multiple architects, engineers, contractors, or vendors. With Ghar Banwao, you get one team, one streamlined process, and clear accountability from concept to completion.",
+  "Our approach centers on what matters most to a homeowner: transparent pricing, clear specifications, professional supervision, quality execution, stage-wise payments, regular updates, and dependable after-construction support.",
+  "With 260+ homes handed over and 51+ ongoing projects, we keep earning the trust of homeowners seeking an organized way to build.",
+  "Whether you are building your first home or managing construction from another city, our goal is simple: to make your journey from plot to dream home seamless, transparent, and hassle-free.",
 ];
 
 const ONE_STOP_PARAS = [
@@ -232,7 +232,7 @@ export default function AboutPage() {
               />
               <LeaderBlock
                 label="MESSAGE FROM THE CEO"
-                title="Customers at the centre of every decision."
+                title="Customers at the centre."
                 name="Sujata"
                 role="Chief Executive Officer (CEO), Interior Designer"
                 portrait="/images/team/sujata.jpg"
