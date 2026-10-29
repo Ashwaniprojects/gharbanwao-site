@@ -1,0 +1,49 @@
+{
+  "name": "Ghar Banwao — Best Construction Company in Lucknow",
+  "short_name": "Ghar Banwao",
+  "description": "Lucknow's #1 construction company — 264+ homes delivered across Uttar Pradesh. Transparent pricing, verified contractors, 25-year warranty.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFFFFF",
+  "theme_color": "#93C526",
+  "categories": ["business", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Cost Calculator",
+      "short_name": "Calculator",
+      "url": "/calculator"
+    },
+    {
+      "name": "Our Projects",
+      "short_name": "Projects",
+      "url": "/projects"
+    },
+    {
+      "name": "Reviews",
+      "short_name": "Reviews",
+      "url": "/reviews"
+    }
+  ]
+}

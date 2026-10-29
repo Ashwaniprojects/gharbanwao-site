@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@/index.css";
 import App from "@/App";
 import ErrorBoundary from "@/components/site/ErrorBoundary";
+import { registerServiceWorker } from "@/lib/pwa";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,3 +23,5 @@ root.render(
     </QueryClientProvider>
   </React.StrictMode>,
 );
+
+registerServiceWorker();
