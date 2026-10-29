@@ -33,7 +33,7 @@ export const TrustBar = () => (
   <section className="bg-wash-yellow border-t border-green" data-testid="trust-bar">
     <Container className="grid grid-cols-2 lg:grid-cols-5 divide-x divide-divider border-x border-divider">
       {[
-        { label: "Homes Delivered", note: "across Lucknow & UP", number: <CountDial to={263} step={5} /> },
+        { label: "Homes Delivered", note: "across Lucknow & UP", number: <CountDial to={264} step={5} /> },
         { label: "Ongoing Projects", note: "homes under construction", number: <CountDial to={52} step={1} /> },
         { label: "Avg. Rating", note: "Google Reviews", number: "4.8★" },
         { label: "Years Building", note: "in Uttar Pradesh", number: "9+" },

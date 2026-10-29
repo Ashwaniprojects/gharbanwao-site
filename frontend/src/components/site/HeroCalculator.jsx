@@ -34,6 +34,33 @@ export const UnitToggle = ({ value, onChange, idPrefix = "hero" }) => (
   </div>
 );
 
+export const PackageToggle = ({ value, onChange, idPrefix = "calc" }) => {
+  const { config } = useCalc();
+  const keys = Object.keys((config && config.packages) || { silver: {}, gold: {} });
+  return (
+    <div className="inline-flex flex-wrap gap-1 rounded-lg border border-divider p-1 bg-paper" role="radiogroup" aria-label="Package">
+      {keys.map((k) => {
+        const pkg = config?.packages?.[k] || {};
+        const active = value === k;
+        return (
+          <button
+            key={k}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            onClick={() => onChange(k)}
+            className={`h-12 px-3 rounded-md text-[13px] font-semibold transition-colors ${active ? "bg-ink text-paper" : "text-ink/60 hover:text-ink"}`}
+            data-testid={`${idPrefix}-package-${k}`}
+          >
+            {pkg.name || k}
+            <span className={`ml-1 font-mono text-[11px] ${active ? "text-paper/70" : "text-ink/40"}`}>₹{pkg.rate ?? "—"}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+};
+
 export const HeroCalculator = () => {
   const { config, inputs, setInput, estimate, isLoading, isError, setStep } = useCalc();
   const reduce = useReducedMotion();
@@ -87,6 +114,10 @@ export const HeroCalculator = () => {
         <h2 className="mt-3 text-lg md:text-xl font-bold tracking-tight">What will your home cost?</h2>
 
         <div className="mt-6 grid gap-4">
+          <div className="grid gap-1.5">
+            <span className="text-[13px] font-semibold text-ink/70">Package</span>
+            <PackageToggle value={inputs.pkg} onChange={(v) => setInput("pkg", v)} idPrefix="hero" />
+          </div>
           <label className="grid gap-1.5">
             <span className="text-[13px] font-semibold text-ink/70">City</span>
             <Select value={inputs.city} onValueChange={(v) => setInput("city", v)}>
@@ -133,7 +164,7 @@ export const HeroCalculator = () => {
               </div>
             </div>
           )}
-          <p className="mt-3 font-mono text-[11px] text-ink/50 uppercase tracking-[0.08em]">Medium grade · {inputs.city} · Not a binding quote</p>
+          <p className="mt-3 font-mono text-[11px] text-ink/50 uppercase tracking-[0.08em]">{(config?.packages?.[inputs.pkg]?.name) || "Silver"} · {inputs.city} · Not a binding quote</p>
         </div>
 
         <button

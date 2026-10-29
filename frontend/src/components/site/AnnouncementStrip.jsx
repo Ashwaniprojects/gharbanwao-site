@@ -18,7 +18,7 @@ export const AnnouncementStrip = () => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -12, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="font-mono text-[12px] md:text-[13px] font-medium tracking-[0.04em] truncate"
+            className="font-sans text-[12px] md:text-[13px] font-semibold uppercase tracking-[0.06em] text-ink"
             data-testid="announcement-text"
           >
             {ANNOUNCEMENTS[i]}

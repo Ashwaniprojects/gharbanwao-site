@@ -22,21 +22,21 @@ const CMD_MESSAGE = [
 
 const CEO_MESSAGE = [
   "At Ghar Banwao, building your dream home should be exciting, transparent, and well-managed, never complicated or stressful.",
-  "Our journey in construction began in 2016. Ghar Banwao launched in November 2018, headquartered in Lucknow. Since then, we have focused on giving homeowners a professional, dependable one-stop solution for complete home construction.",
+  "Our journey in construction began in 2017. Ghar Banwao launched in November 2018, headquartered in Lucknow. Since then, we have focused on giving homeowners a professional, dependable one-stop solution for complete home construction.",
   "From architectural planning, 2D floor plans and 3D designs to structural engineering, construction, finishing, interiors, site supervision, and handover, we bring every stage of your home-building journey together under one team.",
   "This means no hassle of coordinating with multiple architects, engineers, contractors, or vendors. With Ghar Banwao, you get one team, one streamlined process, and clear accountability from concept to completion.",
   "Our approach centers on what matters most to a homeowner: transparent pricing, clear specifications, professional supervision, quality execution, stage-wise payments, regular updates, and dependable after-construction support.",
-  "With 260+ homes handed over and 51+ ongoing projects, we keep earning the trust of homeowners seeking an organized way to build.",
+  "With 264+ homes handed over and 52 ongoing projects, we keep earning the trust of homeowners seeking an organized way to build.",
   "Whether you are building your first home or managing construction from another city, our goal is simple: to make your journey from plot to dream home seamless, transparent, and hassle-free.",
 ];
 
 const ONE_STOP_PARAS = [
   "At Ghar Banwao, we believe building your dream home should be exciting, transparent, and well-managed — not complicated or stressful.",
-  "Our journey in the construction industry began in 2016, and Ghar Banwao was officially launched in November 2018, with its Head Office in Lucknow, Uttar Pradesh. Since then, our focus has been to provide homeowners with a professional and dependable one-stop solution for complete home construction.",
+  "Our journey in the construction industry began in 2017, and Ghar Banwao was officially launched in November 2018, with its Head Office in Lucknow, Uttar Pradesh. Since then, our focus has been to provide homeowners with a professional and dependable one-stop solution for complete home construction.",
   "From architectural planning, 2D floor plans and 3D designs to structural engineering, construction, finishing, interiors, site supervision, and final handover, we bring every stage of your home-building journey together under one experienced team.",
   "For you, this means no hassle of coordinating with multiple architects, engineers, contractors, vendors, and different agencies. With Ghar Banwao, you have one team, one streamlined process, and clear accountability from concept to completion.",
   "Our approach is built around what matters most to a homeowner — transparent pricing, clearly defined specifications, professional supervision, quality-focused execution, stage-wise payments, regular project updates, and dependable after-construction support.",
-  "With 260+ homes successfully handed over and 51+ ongoing projects, we continue to earn the trust of homeowners looking for a more organized and reliable way to build.",
+  "With 264+ homes successfully handed over and 52 ongoing projects, we continue to earn the trust of homeowners looking for a more organized and reliable way to build.",
   "Whether you are building your first home or managing construction while living in another city, our goal is simple — to make your journey from plot to dream home seamless, transparent, and hassle-free.",
 ];
 
@@ -130,15 +130,15 @@ export default function AboutPage() {
     <div className="min-h-screen bg-paper text-ink">
       <Helmet>
         <title>About Ghar Banwao — A trusted construction partner for homeowners in Lucknow</title>
-        <meta name="description" content="Ghar Banwao is a construction company in Lucknow, Uttar Pradesh. Since 2017 we have delivered 260+ homes across 8 UP cities with transparent pricing, verified professionals, and a 25-year structural warranty. Book a free consultation." />
+        <meta name="description" content="Ghar Banwao is a construction company in Lucknow, Uttar Pradesh. Since 2017 we have delivered 264+ homes across 8 UP cities with transparent pricing, verified professionals, and a 25-year structural warranty. Book a free consultation." />
         <meta name="keywords" content="construction company Lucknow, home construction Lucknow, builders in Lucknow, civil engineers Lucknow, architects Lucknow, residential construction Lucknow, construction company Uttar Pradesh, Ghar Banwao, house construction Lucknow" />
         <link rel="canonical" href="https://gharbanwao.com/about" />
         <meta property="og:title" content="About Ghar Banwao — A trusted construction partner for homeowners in Lucknow" />
-        <meta property="og:description" content="260+ homes delivered across Uttar Pradesh since 2017. Transparent pricing, verified professionals, and a 25-year structural warranty. Talk to our team about your plans." />
+        <meta property="og:description" content="264+ homes delivered across Uttar Pradesh since 2017. Transparent pricing, verified professionals, and a 25-year structural warranty. Talk to our team about your plans." />
         <meta property="og:url" content="https://gharbanwao.com/about" />
         <meta property="og:type" content="website" />
         <meta name="twitter:title" content="About Ghar Banwao — A trusted construction partner for homeowners in Lucknow" />
-        <meta name="twitter:description" content="260+ homes delivered across Uttar Pradesh since 2017. Transparent pricing and a 25-year structural warranty." />
+        <meta name="twitter:description" content="264+ homes delivered across Uttar Pradesh since 2017. Transparent pricing and a 25-year structural warranty." />
       </Helmet>
       <AnnouncementStrip />
       <Navbar />

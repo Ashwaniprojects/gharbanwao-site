@@ -91,6 +91,47 @@ export const fetchProjects = () =>
   request.get("/api/content/projects", { params: { limit: 50 } }).then((r) => r.data.items || []);
 
 /*
+ * Featured customer-review videos and the project-gallery entries live on the
+ * content service like every other content type. The public site reads the
+ * published list; the admin reads and writes with the stored Bearer token.
+ */
+export const fetchVideos = (includeDrafts) =>
+  request.get("/api/content/videos", {
+    params: includeDrafts ? { all: true, limit: 50 } : { limit: 50 },
+  }).then((r) => r.data.items || []);
+
+export const saveVideo = (payload) =>
+  withLock(() => request.post("/api/content/videos", payload).then((r) => r.data));
+
+export const updateVideo = (slug, payload) =>
+  withLock(() =>
+    request.put(`/api/content/videos/${encodeURIComponent(slug)}`, payload).then((r) => r.data),
+  );
+
+export const deleteVideo = (slug) =>
+  withLock(() =>
+    request.delete(`/api/content/videos/${encodeURIComponent(slug)}`).then((r) => r.data),
+  );
+
+export const fetchGallery = (includeDrafts) =>
+  request.get("/api/content/gallery", {
+    params: includeDrafts ? { all: true, limit: 50 } : { limit: 50 },
+  }).then((r) => r.data.items || []);
+
+export const saveGallery = (payload) =>
+  withLock(() => request.post("/api/content/gallery", payload).then((r) => r.data));
+
+export const updateGallery = (slug, payload) =>
+  withLock(() =>
+    request.put(`/api/content/gallery/${encodeURIComponent(slug)}`, payload).then((r) => r.data),
+  );
+
+export const deleteGallery = (slug) =>
+  withLock(() =>
+    request.delete(`/api/content/gallery/${encodeURIComponent(slug)}`).then((r) => r.data),
+  );
+
+/*
  * Case studies live on the content service too. The list endpoint returns
  * published stories to anyone, which is what the public site renders, and
  * returns drafts as well to an admin carrying a token — so the same call

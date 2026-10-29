@@ -6,12 +6,21 @@ import { computeEstimate } from "@/lib/calc";
 const CalcContext = createContext(null);
 
 export function CalcProvider({ children }) {
-  const [inputs, setInputs] = useState({ state: "Uttar Pradesh", city: "Lucknow", area: 1500, unit: "sqft" });
+  const [inputs, setInputs] = useState({
+    state: "Uttar Pradesh",
+    city: "Lucknow",
+    area: 1500,
+    unit: "sqft",
+    pkg: "silver",
+  });
   const [qualities, setQualities] = useState({});
   const [step, setStep] = useState(1);
   const { data: config, isLoading, isError } = useQuery({ queryKey: ["calc-config"], queryFn: fetchCalculatorConfig });
 
-  const estimate = useMemo(() => (config ? computeEstimate(config, { ...inputs, qualities }) : null), [config, inputs, qualities]);
+  const estimate = useMemo(
+    () => (config ? computeEstimate(config, { ...inputs, qualities, qualityTier: "medium" }) : null),
+    [config, inputs, qualities]
+  );
 
   const value = {
     config,

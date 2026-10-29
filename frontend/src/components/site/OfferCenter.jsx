@@ -63,7 +63,7 @@ const Banner = ({ offer, onDismiss }) => (
     animate={{ y: 0, opacity: 1 }}
     exit={{ y: 24, opacity: 0 }}
     transition={{ duration: 0.3 }}
-    className="card-gb no-print fixed bottom-24 left-1/2 z-40 w-[min(92vw,560px)] -translate-x-1/2 p-5 shadow-xl md:bottom-8"
+    className="card-gb no-print fixed bottom-24 left-1/2 z-40 w-[92vw] max-w-[560px] -translate-x-1/2 p-4 shadow-xl md:bottom-8 md:p-5"
     data-testid="offer-banner"
     role="dialog"
     aria-label={offer.title}
@@ -81,7 +81,7 @@ const Banner = ({ offer, onDismiss }) => (
       <img
         src={offer.image_url}
         alt=""
-        className="mb-4 h-auto max-h-[340px] w-full rounded-xl border border-divider object-contain"
+        className="mb-4 h-auto max-h-[220px] w-full rounded-xl border border-divider object-contain md:max-h-[340px]"
         data-testid="offer-banner-image"
       />
     ) : null}
@@ -94,7 +94,7 @@ const Banner = ({ offer, onDismiss }) => (
         </span>
       ) : null}
     </p>
-    <p className="mt-1 text-[19px] font-bold leading-snug text-green-700">{offer.title}</p>
+    <p className="mt-1 text-[16px] md:text-[19px] font-bold leading-snug text-green-700">{offer.title}</p>
     {offer.description ? (
       <p className="mt-1.5 text-[13px] leading-relaxed text-ink/65">{offer.description}</p>
     ) : null}
@@ -104,7 +104,7 @@ const Banner = ({ offer, onDismiss }) => (
           href={offer.cta_url}
           target={/^https?:/i.test(offer.cta_url) ? "_blank" : undefined}
           rel={/^https?:/i.test(offer.cta_url) ? "noreferrer" : undefined}
-          className="inline-flex h-9 items-center rounded-full bg-green px-4 text-[13px] font-bold text-ink"
+          className="inline-flex h-9 items-center rounded-full bg-green px-4 text-[13px] font-medium text-ink hover:bg-green-600 hover:text-paper"
           data-testid="offer-banner-cta"
         >
           {offer.code ? `Claim with code ${offer.code}` : "Claim offer"}

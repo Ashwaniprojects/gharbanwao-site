@@ -55,3 +55,35 @@ export const CalcTimeline = ({ estimate }) => {
     </div>
   );
 };
+
+// Ghar Banwao's stage-linked payment schedule, read off the live total. Each
+// instalment is only released after the matching stage is signed off — the
+// last stage is "Remaining" so the instalments always add to the total.
+export const CalcPaymentSchedule = ({ estimate }) => {
+  if (!estimate || !Array.isArray(estimate.schedule)) return null;
+  return (
+    <div className="mt-4" data-testid="calc-schedule-block">
+      <ol className="space-y-0">
+        {estimate.schedule.map((s) => (
+          <li key={s.stage} className="grid grid-cols-[1fr_auto] items-center gap-3 py-2.5 border-b border-divider last:border-0" data-testid={`calc-schedule-row-${s.index}`}>
+            <div className="flex items-start gap-3 min-w-0">
+              <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-green font-mono text-[10px] font-bold text-ink">{s.index + 1}</span>
+              <div className="min-w-0">
+                <p className="text-[14px] font-semibold leading-snug">{s.stage}</p>
+                {s.note ? <p className="mt-0.5 text-[11px] text-ink/50 leading-relaxed">{s.note}</p> : null}
+              </div>
+            </div>
+            <div className="text-right shrink-0">
+              <p className="font-mono text-[15px] font-bold text-green-700">{formatINR(s.amount)}</p>
+              <p className="font-mono text-[11px] text-ink/50">{typeof s.pct === "number" ? `${s.pct}%` : "Balance"}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <p className="mt-4 font-mono text-[12px] uppercase tracking-[0.1em] border-t border-divider pt-3" data-testid="calc-schedule-total">
+        Total payable in instalments: <strong>{formatINR(estimate.total)}</strong>
+      </p>
+      <p className="mt-2 font-mono text-[11px] text-ink/50">Every instalment is released only after you inspect and sign off the completed stage. All payments must be completed 15 days before possession.</p>
+    </div>
+  );
+};

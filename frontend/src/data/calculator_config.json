@@ -1,31 +1,33 @@
 {
-  "updated": "2026-10-08",
+  "updated": "2026-10-29",
   "states": ["Uttar Pradesh"],
-  "cities": ["Lucknow", "Kanpur", "Ayodhya", "Gorakhpur", "Vindhyachal", "Prayagraj", "Sitapur", "Sultanpur"],
-  "city_multipliers": {
-    "Lucknow": 1.0,
-    "Kanpur": 0.92,
-    "Ayodhya": 0.91,
-    "Gorakhpur": 0.9,
-    "Vindhyachal": 0.85,
-    "Prayagraj": 0.95,
-    "Sitapur": 0.88,
-    "Sultanpur": 0.87
+  "cities": ["Lucknow", "Kanpur", "Ayodhya", "Gorakhpur", "Vindhyachal", "Prayagraj", "Sitapur", "Sultanpur", "Basti", "Lakhimpur", "Fatehpur", "Rai Bareilly"],
+  "packages": {
+    "silver": { "name": "Silver", "rate": 1299, "best": "First-time builders, tight budgets" },
+    "gold": { "name": "Gold", "rate": 1699, "best": "Most homeowners, best value" },
+    "platinum": { "name": "Platinum", "rate": 1999, "best": "Larger plots, custom finishes" }
+  },
+  "default_package": "silver",
+  "quality_mult": { "basic": 0.93, "medium": 1.0, "premium": 1.12 },
+  "resource_split": {
+    "cement": 9, "steel": 11, "bricks": 7, "aggregate": 5, "sand": 4,
+    "flooring": 9, "windows": 6, "doors": 5, "electrical": 8, "painting": 5,
+    "sanitary": 9, "kitchen": 6, "labor": 16
   },
   "resources": {
-    "cement": { "label": "Cement", "unit": "bags", "per_sqft": 0.4, "quality": { "basic": 331, "medium": 391, "premium": 399 } },
-    "steel": { "label": "Steel (TMT)", "unit": "kg", "per_sqft": 3.5, "quality": { "basic": 54.5, "medium": 63.8, "premium": 66.8 } },
-    "bricks": { "label": "Bricks", "unit": "nos", "per_sqft": 8, "quality": { "basic": 6.8, "medium": 8.2, "premium": 8.8 } },
-    "aggregate": { "label": "Aggregate", "unit": "cft", "per_sqft": 1.2, "quality": { "basic": 43.8, "medium": 53.5, "premium": 55.7 } },
-    "sand": { "label": "Sand", "unit": "cft", "per_sqft": 1.5, "quality": { "basic": 38.9, "medium": 49.4, "premium": 51.0 } },
-    "flooring": { "label": "Flooring", "unit": "sqft", "per_sqft": 1.0, "quality": { "basic": 53.5, "medium": 87.5, "premium": 129.9 } },
-    "windows": { "label": "Windows", "unit": "sqft", "per_sqft": 0.12, "quality": { "basic": 438, "medium": 669, "premium": 882 } },
-    "doors": { "label": "Doors", "unit": "sqft", "per_sqft": 0.1, "quality": { "basic": 584, "medium": 926, "premium": 1299 } },
-    "electrical": { "label": "Electrical fittings", "unit": "points", "per_sqft": 0.03, "quality": { "basic": 2726, "medium": 3910, "premium": 4826 } },
-    "painting": { "label": "Painting", "unit": "sqft", "per_sqft": 2.8, "quality": { "basic": 13.6, "medium": 22.6, "premium": 29.7 } },
-    "sanitary": { "label": "Sanitary fittings", "unit": "sets", "per_sqft": 0.01, "quality": { "basic": 8762, "medium": 14921, "premium": 22272 } },
-    "kitchen": { "label": "Kitchen work", "unit": "sqft", "per_sqft": 1.0, "quality": { "basic": 87.6, "medium": 133.8, "premium": 194.9 } },
-    "labor": { "label": "Contractor labor", "unit": "sqft", "per_sqft": 1.0, "quality": { "basic": 351, "medium": 391, "premium": 380.7 } }
+    "cement": { "label": "Cement", "unit": "bags", "per_sqft": 0.4 },
+    "steel": { "label": "Steel (TMT)", "unit": "kg", "per_sqft": 3.5 },
+    "bricks": { "label": "Bricks", "unit": "nos", "per_sqft": 8 },
+    "aggregate": { "label": "Aggregate", "unit": "cft", "per_sqft": 1.2 },
+    "sand": { "label": "Sand", "unit": "cft", "per_sqft": 1.5 },
+    "flooring": { "label": "Flooring", "unit": "sqft", "per_sqft": 1.0 },
+    "windows": { "label": "Windows", "unit": "sqft", "per_sqft": 0.12 },
+    "doors": { "label": "Doors", "unit": "sqft", "per_sqft": 0.1 },
+    "electrical": { "label": "Electrical fittings", "unit": "points", "per_sqft": 0.03 },
+    "painting": { "label": "Painting", "unit": "sqft", "per_sqft": 2.8 },
+    "sanitary": { "label": "Sanitary fittings", "unit": "sets", "per_sqft": 0.01 },
+    "kitchen": { "label": "Kitchen work", "unit": "sqft", "per_sqft": 1.0 },
+    "labor": { "label": "Contractor labor", "unit": "sqft", "per_sqft": 1.0 }
   },
   "phases": {
     "design_approval": { "label": "Design & Approval", "days": 46, "percent_of_cost": 3.5 },
@@ -39,5 +41,16 @@
     "plumbing": { "label": "Plumbing", "days": 12, "percent_of_cost": 5.5 },
     "doors_windows": { "label": "Doors & Windows", "days": 13, "percent_of_cost": 8 },
     "finishing": { "label": "Finishing", "days": 14, "percent_of_cost": 16 }
-  }
+  },
+  "payment_schedule": [
+    { "stage": "Advance at the time of agreement sign", "pct": 20, "note": "If less is paid at signing, the full 20% must be completed within 15 days from the date work starts." },
+    { "stage": "Before plinth beam & DPC", "pct": 10, "note": "" },
+    { "stage": "Before 5' brick wall work", "pct": 10, "note": "" },
+    { "stage": "Before shuttering for slab", "pct": 20, "note": "" },
+    { "stage": "Before plumbing & electrical work", "pct": 10, "note": "" },
+    { "stage": "Before flooring", "pct": 10, "note": "" },
+    { "stage": "Before painting work", "pct": 10, "note": "" },
+    { "stage": "Before door and window", "pct": 8, "note": "" },
+    { "stage": "Before sanitary & miscellaneous work", "pct": "Remaining", "note": "The balance after the stages above." }
+  ]
 }

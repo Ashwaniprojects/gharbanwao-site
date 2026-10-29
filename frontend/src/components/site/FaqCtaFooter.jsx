@@ -12,7 +12,7 @@ import {
   Star,
   Users,
 } from "lucide-react";
-import { FaFacebook, FaInstagram, FaLinkedin, FaWhatsapp, FaYoutube } from "react-icons/fa6";
+import { FaFacebook, FaInstagram, FaLinkedin, FaPinterest, FaWhatsapp, FaYoutube } from "react-icons/fa6";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Container, Reveal, SectionHeader } from "./shared";
@@ -74,7 +74,7 @@ export const FinalCTA = () => {
         <div>
           <SectionHeader label="FREE · NO COMMITMENT" title="Ready to start?" supporting="Free site visit. Free design discussion. Free written quote. No commitment to continue after." />
           <Reveal className="mt-8 flex flex-wrap gap-x-3 gap-y-1 text-[14px] font-medium text-ink/70" data-testid="cta-trust-row">
-            <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5 fill-green text-green" /> 4.8/5 Google</span><span>·</span><span>260+ homes</span><span>·</span><span>Avg response in under 2 hours</span>
+            <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5 fill-green text-green" /> 4.8/5 Google</span><span>·</span><span>264+ homes</span><span>·</span><span>Avg response in under 2 hours</span>
           </Reveal>
           <Reveal className="mt-10 flex flex-col sm:flex-row gap-3">
             <a href={`tel:${PHONES[0]}`} className="pill-green h-12 px-6 text-[15px]" data-testid="cta-call-link"><Phone className="h-[18px] w-[18px]" strokeWidth={2.5} /> {PHONES[0]}</a>
@@ -139,6 +139,7 @@ const FOOTER_COLUMNS = [
     title: "Projects",
     links: [
       { label: "Residential Projects", href: "/projects" },
+      { label: "Project Gallery", href: "/gallery" },
       { label: "Naksha Banwao", href: "https://nakshaabanwao.com/", external: true },
     ],
   },
@@ -174,14 +175,15 @@ const FOOTER_COLUMNS = [
 const FOOTER_SOCIALS = [
   { Icon: FaFacebook, label: "Facebook", href: "https://www.facebook.com/gharbanwao/" },
   { Icon: FaInstagram, label: "Instagram", href: "https://www.instagram.com/gharbanwao/" },
+  { Icon: FaPinterest, label: "Pinterest", href: "https://www.pinterest.com/gharbanwao/" },
   { Icon: FaYoutube, label: "YouTube", href: "https://www.youtube.com/@gharbanwao" },
   { Icon: FaLinkedin, label: "LinkedIn", href: "https://www.linkedin.com/" },
   { Icon: FaWhatsapp, label: "WhatsApp", href: WHATSAPP_URL },
 ];
 
 const FOOTER_STATS = [
-  { Icon: Home, value: "260+", label: "Homes Handed Over", note: "Across Lucknow" },
-  { Icon: Users, value: "51+", label: "Ongoing Projects", note: "Currently in Progress" },
+  { Icon: Home, value: "264+", label: "Homes Handed Over", note: "Across Lucknow" },
+  { Icon: Users, value: "52", label: "Ongoing Projects", note: "Currently in Progress" },
   { Icon: Star, value: "4.8/5", label: "Google Rating", note: "250+ genuine reviews" },
   { Icon: ShieldCheck, value: "25-Year", label: "Structural Warranty", note: "Built to last generations" },
 ];
@@ -309,7 +311,7 @@ export const Footer = () => (
               <Bot className="h-5 w-5" />
               <div className="leading-tight">
                 <p className="text-[13px] font-extrabold">GB AI</p>
-                <p className="text-[11px] font-semibold opacity-70">Coming Soon</p>
+                <p className="text-[11px] font-semibold opacity-70">Website under development</p>
               </div>
               <ArrowRight className="h-4 w-4" />
             </div>
@@ -340,7 +342,7 @@ export const Footer = () => (
         <div className="flex flex-col gap-3 py-6 text-[13px] text-white/60 md:flex-row md:items-center md:justify-between">
           <p data-testid="footer-copyright">
             © 2026 Ghar Banwao. All rights reserved. <span className="mx-2 text-white/25">|</span>
-            Building Better Homes Since 2016.
+            Building Better Homes Since 2017.
           </p>
           <p>
             Designed &amp; Developed by{" "}
@@ -357,6 +359,6 @@ export const Footer = () => (
 export const MobileBar = () => (
   <div className="fixed bottom-0 inset-x-0 z-50 grid grid-cols-2 md:hidden no-print" data-testid="mobile-sticky-bar">
     <a href={`tel:${PHONES[0]}`} className="h-14 bg-yellow text-ink font-bold grid place-items-center active:scale-[0.98]" data-testid="mobile-call-button"><span className="inline-flex items-center gap-2"><Phone className="h-4 w-4" /> Call Now</span></a>
-    <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="h-14 bg-green text-ink font-bold grid place-items-center active:scale-[0.98]" data-testid="mobile-whatsapp-button"><span className="inline-flex items-center gap-2"><FaWhatsapp className="h-4 w-4" /> WhatsApp</span></a>
+    <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="h-14 bg-green text-ink font-medium grid place-items-center active:scale-[0.98] hover:bg-green-600 hover:text-paper" data-testid="mobile-whatsapp-button"><span className="inline-flex items-center gap-2"><FaWhatsapp className="h-4 w-4" /> WhatsApp</span></a>
   </div>
 );

@@ -158,7 +158,7 @@ export default function PackagesPage() {
               </Link>
               <Link to="/about" className="card-gb p-5 bg-paper hover:border-green transition-colors">
                 <p className="font-bold">Why we exist</p>
-                <p className="text-[13px] text-ink/60 mt-1">260 homes, 8 UP cities, same office since 2017.</p>
+                <p className="text-[13px] text-ink/60 mt-1">264+ homes, 8 UP cities, same office since 2017.</p>
               </Link>
             </Reveal>
           </Container>

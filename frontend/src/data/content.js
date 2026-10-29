@@ -51,16 +51,18 @@ export const REGISTER_TYPES = [
   { key: "hiring", label: "Careers / Hiring", tagline: "Join our site, design, or support teams across Lucknow, Kanpur, Ayodhya, Gorakhpur, Vindhyachal, Prayagraj, Sitapur and Sultanpur." },
 ];
 
-export const CITIES = ["Lucknow", "Kanpur", "Ayodhya", "Gorakhpur", "Vindhyachal", "Prayagraj", "Sitapur", "Sultanpur"];
+export const CITIES = [
+  "Lucknow", "Kanpur", "Ayodhya", "Gorakhpur", "Vindhyachal", "Prayagraj", "Sitapur", "Sultanpur",
+  "Basti", "Lakhimpur", "Fatehpur", "Rai Bareilly",
+];
 
 export const ANNOUNCEMENTS = [
-  "Serving Lucknow / Kanpur / Ayodhya / Gorakhpur / Vindhyachal / Prayagraj / Sitapur / Sultanpur",
-  "Free site visit + written quote in 48 hours  ·  No consultation fee  ·  Call 09648249999",
-  "260+ homes handed over since 2017  ·  37 sites live this week  ·  25-year structural warranty",
+  "Serving Lucknow / Kanpur / Ayodhya / Gorakhpur / Vindhyachal / Prayagraj / Sitapur / Sultanpur / Basti / Lakhimpur / Fatehpur / Rai Bareilly",
+  "264+ Homes Handed Over Since 2017  ·  52 Sites Live This Week  ·  25-Year Structural Warranty",
 ];
 
 export const TRUST = [
-  { number: "263+", label: "Projects completed", note: "Handed over across UP since 2017" },
+  { number: "264+", label: "Projects completed", note: "Handed over across UP since 2017" },
   { number: "52", label: "Ongoing projects", note: "Live on the project map below" },
   { number: "4.8 / 5", label: "Google rating", note: "From 180+ verified reviews" },
   { number: "9+ yrs", label: "On the ground", note: "Lucknow headquartered" },
@@ -75,7 +77,7 @@ export const WHY = [
   { icon: "Landmark", title: "Structural warranty", text: "25 years on structure. In writing. Transferable on resale.", img: "/images/about/warm-modern-house.webp" },
   { icon: "CalendarRange", title: "Stage-linked payment schedule", text: "The same 9-stage schedule on every package, mapped to work finished, not ours.", img: "/images/about/warm-modern-indian-home.webp" },
   { icon: "Headset", title: "Dedicated customer support", text: "One project manager per build. One WhatsApp number. One accountable name.", img: "/images/featured/renovation.png" },
-  { icon: "Timer", title: "On-time delivery", text: "Average delay across 263+ homes: 11 days. We publish it.", img: "/images/about/proud-family-dream-home.webp" },
+  { icon: "Timer", title: "On-time delivery", text: "Average delay across 264+ homes: 11 days. We publish it.", img: "/images/about/proud-family-dream-home.webp" },
   { icon: "History", title: "9+ years of experience", text: "Started 2017. Still Lucknow-headquartered.", img: "/images/featured/interior.png" },
   { icon: "HardHat", title: "Dedicated engineers", text: "One structural, one site, one quality — assigned per project.", img: "/images/about/onsite-blueprint-consultation.webp" },
   { icon: "Wrench", title: "Post-handover support", text: "12 months of free fixes on anything we built.", img: "/images/about/warm-modern-house.webp" },

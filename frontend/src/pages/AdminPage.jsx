@@ -29,29 +29,37 @@ import {
   dateValue,
   deleteAuthor,
   deleteCaseStudy,
+  deleteGallery,
   deleteOffer,
   deletePost,
   deleteProject,
+  deleteVideo,
   errorMessage,
   fetchAuthors,
   fetchCaseStudies,
+  fetchGallery,
   fetchOffers,
   fetchPosts,
   fetchProjects,
   fetchRegistrations,
+  fetchVideos,
   isAuthenticated,
   saveAuthor,
   saveCaseStudy,
+  saveGallery,
   saveOffer,
   savePost,
   saveProject,
+  saveVideo,
   slugify,
   triggerDeploy,
   updateAuthor,
   updateCaseStudy,
+  updateGallery,
   updateOffer,
   updatePost,
   updateProject,
+  updateVideo,
   uploadImage,
 } from "@/lib/cmsAdmin";
 
@@ -143,6 +151,25 @@ const BLANK_AUTHOR = {
   bio: "",
   photo_url: "",
   social: {},
+};
+
+const BLANK_VIDEO = {
+  title: "",
+  video_url: "",
+  thumbnail_url: "",
+  status: "published",
+};
+
+const BLANK_GALLERY = {
+  title: "",
+  city: "Lucknow",
+  locality: "",
+  area_sqft: "",
+  package: "",
+  status: "published",
+  published_at: "",
+  photos: "",
+  cover_image_url: "",
 };
 
 const SOCIAL_KEYS = [
@@ -1472,6 +1499,385 @@ const AuthorEditor = ({ original, onSaved, onCancel }) => {
 };
 
 /* ------------------------------------------------------------------ */
+/* Videos (featured customer-review videos)                           */
+/* ------------------------------------------------------------------ */
+
+const VideoRow = ({ video, onEdit, onDelete, busy }) => (
+  <li
+    className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
+    data-testid={`admin-video-${video.slug}`}
+  >
+    <div className="min-w-0">
+      <p className="truncate font-bold">{video.title}</p>
+      <p className="mono-label mt-1 truncate text-ink/40">
+        {video.video_url || "—"} · {video.status === "published" ? "Published" : "Draft"}
+      </p>
+    </div>
+    <div className="flex items-center gap-2">
+      <Button variant="ghost" size="sm" onClick={() => onEdit(video)} className="rounded-lg">
+        Edit
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => onDelete(video)}
+        disabled={busy}
+        aria-label={`Delete ${video.title}`}
+        data-testid={`admin-video-delete-${video.slug}`}
+        className="rounded-lg px-2 text-red-600 hover:bg-red-50"
+      >
+        <Trash2 className="h-4 w-4" />
+      </Button>
+    </div>
+  </li>
+);
+
+const VideoEditor = ({ original, onSaved, onCancel }) => {
+  const [form, setForm] = useState(() =>
+    original
+      ? { ...BLANK_VIDEO, ...original, thumbnail_url: original.thumbnail_url || "" }
+      : BLANK_VIDEO,
+  );
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(null);
+
+  const set = (key) => (value) =>
+    setForm((prev) => ({ ...prev, [key]: value?.target ? value.target.value : value }));
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    const payload = {
+      title: form.title,
+      slug: original ? original.slug : undefined,
+      video_url: form.video_url || null,
+      thumbnail_url: form.thumbnail_url || null,
+      status: form.status,
+    };
+    try {
+      if (original) {
+        await updateVideo(original.slug, payload);
+        onSaved("Video updated.");
+      } else {
+        await saveVideo(payload);
+        onSaved("Video created.");
+      }
+    } catch (err) {
+      setError(errorMessage(err, "The video could not be saved."));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <form onSubmit={submit} className="grid gap-5" data-testid="video-editor">
+      <Field label="Title" htmlFor="video-title">
+        <Input
+          id="video-title"
+          required
+          data-testid="video-title-input"
+          value={form.title}
+          onChange={set("title")}
+          className={inputClass}
+          placeholder="Modern 3BHK house in Lucknow | 1670 sq.ft full tour"
+        />
+      </Field>
+      <Field label="Video link" hint="YouTube or Instagram URL — paste the video's share link." htmlFor="video-link">
+        <Input
+          id="video-link"
+          required
+          data-testid="video-link-input"
+          value={form.video_url}
+          onChange={set("video_url")}
+          className={inputClass}
+          placeholder="https://youtube.com/watch?v=…"
+        />
+      </Field>
+      <Field label="Thumbnail URL" hint="Optional — falls back to the platform thumbnail when left blank." htmlFor="video-thumb">
+        <Input
+          id="video-thumb"
+          value={form.thumbnail_url}
+          onChange={set("thumbnail_url")}
+          className={inputClass}
+          placeholder="https://…"
+        />
+      </Field>
+      <Field label="Status">
+        <Select value={form.status} onValueChange={set("status")}>
+          <SelectTrigger className={`${inputClass} h-12`}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {STATUSES.map((s) => (
+              <SelectItem key={s} value={s}>
+                {s === "published" ? "Published" : "Draft"}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </Field>
+      {error ? (
+        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-[14px] font-medium text-red-700">
+          {error}
+        </p>
+      ) : null}
+      <div className="flex flex-wrap gap-3 border-t border-divider pt-5">
+        <Button
+          type="submit"
+          disabled={busy || !form.title}
+          data-testid="video-save"
+          className="rounded-lg bg-green px-8 text-[15px] font-bold text-ink hover:bg-green-600"
+        >
+          {busy ? "Saving…" : original ? "Save changes" : "Create video"}
+        </Button>
+        <Button type="button" variant="ghost" onClick={onCancel} className="rounded-lg px-5">
+          Cancel
+        </Button>
+      </div>
+    </form>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/* Project gallery                                                     */
+/* ------------------------------------------------------------------ */
+
+const GalleryRow = ({ item, onEdit, onDelete, busy }) => (
+  <li
+    className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
+    data-testid={`admin-gallery-${item.slug}`}
+  >
+    <div className="min-w-0">
+      <p className="truncate font-bold">{item.title}</p>
+      <p className="mono-label mt-1 text-ink/40">
+        {[item.locality, item.city].filter(Boolean).join(", ") || "—"} ·{" "}
+        {item.status === "published" ? "Published" : "Draft"}
+        {Array.isArray(item.photos) && item.photos.length ? ` · ${item.photos.length} photos` : ""}
+      </p>
+    </div>
+    <div className="flex items-center gap-2">
+      <Button variant="ghost" size="sm" onClick={() => onEdit(item)} className="rounded-lg">
+        Edit
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => onDelete(item)}
+        disabled={busy}
+        aria-label={`Delete ${item.title}`}
+        data-testid={`admin-gallery-delete-${item.slug}`}
+        className="rounded-lg px-2 text-red-600 hover:bg-red-50"
+      >
+        <Trash2 className="h-4 w-4" />
+      </Button>
+    </div>
+  </li>
+);
+
+const GalleryEditor = ({ original, onSaved, onCancel }) => {
+  const [form, setForm] = useState(() =>
+    original
+      ? {
+          ...BLANK_GALLERY,
+          ...original,
+          area_sqft: original.area_sqft ?? "",
+          published_at: dateValue(original.published_at),
+          photos: photosToText(original.photos),
+        }
+      : BLANK_GALLERY,
+  );
+  const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(null);
+  const fileRef = useRef(null);
+
+  const set = (key) => (value) =>
+    setForm((prev) => ({ ...prev, [key]: value?.target ? value.target.value : value }));
+
+  const onPickFile = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if (!file) return;
+    setUploading(true);
+    setError(null);
+    try {
+      const { url } = await uploadImage(file);
+      setForm((prev) => {
+        const lines = prev.photos.split("\n").map((l) => l.trim()).filter(Boolean);
+        return {
+          ...prev,
+          photos: [...lines, url].join("\n"),
+          cover_image_url: prev.cover_image_url || url,
+        };
+      });
+    } catch (err) {
+      setError(errorMessage(err, "The image could not be uploaded."));
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const numOr = (v) => (v === "" || v == null ? null : Number(v));
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    const payload = {
+      ...form,
+      slug: slugFor(form, original),
+      area_sqft: numOr(form.area_sqft),
+      published_at: form.published_at ? `${form.published_at}T00:00:00.000Z` : null,
+      photos: form.photos.split("\n").map((line) => line.trim()).filter(Boolean),
+    };
+    try {
+      if (original) {
+        await updateGallery(original.slug, payload);
+        onSaved("Gallery entry updated.");
+      } else {
+        await saveGallery(payload);
+        onSaved("Gallery entry created.");
+      }
+    } catch (err) {
+      setError(errorMessage(err, "The gallery entry could not be saved."));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <form onSubmit={submit} className="grid gap-5" data-testid="gallery-editor">
+      <Field label="Title" htmlFor="gallery-title">
+        <Input
+          id="gallery-title"
+          required
+          value={form.title}
+          onChange={set("title")}
+          className={inputClass}
+          data-testid="gallery-title-input"
+          placeholder="Modern 3BHK villa, Gomti Nagar"
+        />
+      </Field>
+
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="City" htmlFor="gallery-city">
+          <Input id="gallery-city" value={form.city} onChange={set("city")} className={inputClass} />
+        </Field>
+        <Field label="Locality" htmlFor="gallery-locality">
+          <Input id="gallery-locality" value={form.locality} onChange={set("locality")} className={inputClass} />
+        </Field>
+        <Field label="Area (sq. ft.)" htmlFor="gallery-area">
+          <Input
+            id="gallery-area"
+            type="number"
+            min="0"
+            value={form.area_sqft}
+            onChange={set("area_sqft")}
+            className={inputClass}
+          />
+        </Field>
+        <Field label="Package" htmlFor="gallery-package">
+          <Input id="gallery-package" value={form.package} onChange={set("package")} className={inputClass} placeholder="Gold" />
+        </Field>
+        <Field label="Publish date" htmlFor="gallery-date" hint="When the entry becomes live (blank = now).">
+          <Input
+            id="gallery-date"
+            type="date"
+            value={form.published_at}
+            onChange={set("published_at")}
+            className={inputClass}
+          />
+        </Field>
+        <Field label="Status">
+          <Select value={form.status} onValueChange={set("status")}>
+            <SelectTrigger className={`${inputClass} h-12`}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {STATUSES.map((s) => (
+                <SelectItem key={s} value={s}>
+                  {s === "published" ? "Published" : "Draft"}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
+      </div>
+
+      <Field
+        label="Photos"
+        hint="One image URL per line. Aim for 3-5 per featured project; the first is used as the cover."
+        htmlFor="gallery-photos"
+      >
+        <Textarea
+          id="gallery-photos"
+          rows={4}
+          value={form.photos}
+          onChange={set("photos")}
+          className={areaClass}
+          data-testid="gallery-photos-input"
+        />
+      </Field>
+
+      <div>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          className="sr-only"
+          onChange={onPickFile}
+          data-testid="gallery-photo-file"
+        />
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => fileRef.current?.click()}
+          disabled={uploading}
+          className="rounded-lg"
+          data-testid="gallery-photo-upload"
+        >
+          <ImagePlus className="mr-2 h-4 w-4" />
+          {uploading ? "Uploading…" : "Upload and add"}
+        </Button>
+      </div>
+
+      <Field label="Cover image URL" htmlFor="gallery-cover">
+        <Input
+          id="gallery-cover"
+          value={form.cover_image_url}
+          onChange={set("cover_image_url")}
+          placeholder="https://…"
+          className={inputClass}
+        />
+      </Field>
+
+      {error ? (
+        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-[14px] font-medium text-red-700">
+          {error}
+        </p>
+      ) : null}
+
+      <div className="flex flex-wrap gap-3 border-t border-divider pt-5">
+        <Button
+          type="submit"
+          disabled={busy || !form.title}
+          data-testid="gallery-save"
+          className="rounded-lg bg-green px-8 text-[15px] font-bold text-ink hover:bg-green-600"
+        >
+          {busy ? "Saving…" : original ? "Save changes" : "Create gallery entry"}
+        </Button>
+        <Button type="button" variant="ghost" onClick={onCancel} className="rounded-lg px-5">
+          Cancel
+        </Button>
+      </div>
+    </form>
+  );
+};
+
+/* ------------------------------------------------------------------ */
 /* Offers                                                             */
 /* ------------------------------------------------------------------ */
 
@@ -1870,6 +2276,8 @@ const TABS = [
   { key: "caseStudies", label: "Case studies", noun: "case studies", testid: "admin-tab-case-studies" },
   { key: "authors", label: "Authors", noun: "authors", testid: "admin-tab-authors" },
   { key: "offers", label: "Offers", noun: "offers", testid: "admin-tab-offers" },
+  { key: "videos", label: "Videos", noun: "videos", testid: "admin-tab-videos" },
+  { key: "gallery", label: "Gallery", noun: "gallery entries", testid: "admin-tab-gallery" },
   { key: "registrations", label: "Registrations", noun: "registrations", testid: "admin-tab-registrations" },
 ];
 
@@ -1880,6 +2288,8 @@ export default function AdminPage() {
   const [caseStudies, setCaseStudies] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [offers, setOffers] = useState([]);
+  const [videos, setVideos] = useState([]);
+  const [gallery, setGallery] = useState([]);
   const [registrations, setRegistrations] = useState([]);
   // Per-section load status so one missing endpoint on a stale backend can
   // show "this section is unavailable" instead of blanking every list to 0.
@@ -1889,6 +2299,8 @@ export default function AdminPage() {
     caseStudies: { status: "idle", error: "" },
     authors: { status: "idle", error: "" },
     offers: { status: "idle", error: "" },
+    videos: { status: "idle", error: "" },
+    gallery: { status: "idle", error: "" },
     registrations: { status: "idle", error: "" },
   });
   const [editing, setEditing] = useState(null);
@@ -1942,6 +2354,8 @@ export default function AdminPage() {
       caseStudies: { status: "loading", error: "" },
       authors: { status: "loading", error: "" },
       offers: { status: "loading", error: "" },
+      videos: { status: "loading", error: "" },
+      gallery: { status: "loading", error: "" },
       registrations: { status: "loading", error: "" },
     });
     await Promise.allSettled([
@@ -1950,6 +2364,8 @@ export default function AdminPage() {
       loadSection("caseStudies", () => fetchCaseStudies(true), setCaseStudies),
       loadSection("authors", () => fetchAuthors(), setAuthors),
       loadSection("offers", () => fetchOffers(true), setOffers),
+      loadSection("videos", () => fetchVideos(true), setVideos),
+      loadSection("gallery", () => fetchGallery(true), setGallery),
       loadSection("registrations", () => fetchRegistrations(), setRegistrations),
     ]);
     setLoading(false);
@@ -2035,6 +2451,34 @@ export default function AdminPage() {
     }
   };
 
+  const removeVideo = async (video) => {
+    if (!window.confirm(`Delete “${video.title}”? This cannot be undone.`)) return;
+    setBusy(true);
+    try {
+      await deleteVideo(video.slug);
+      setVideos((prev) => prev.filter((v) => v.slug !== video.slug));
+      say("Video deleted.");
+    } catch (err) {
+      setError(errorMessage(err, "The video could not be deleted."));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const removeGallery = async (item) => {
+    if (!window.confirm(`Delete “${item.title}”? This cannot be undone.`)) return;
+    setBusy(true);
+    try {
+      await deleteGallery(item.slug);
+      setGallery((prev) => prev.filter((g) => g.slug !== item.slug));
+      say("Gallery entry deleted.");
+    } catch (err) {
+      setError(errorMessage(err, "The gallery entry could not be deleted."));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const deploy = async () => {
     setBusy(true);
     try {
@@ -2072,6 +2516,13 @@ export default function AdminPage() {
     offer.title.toLowerCase().includes(q) ||
     offer.slug.includes(q) ||
     (offer.code || "").toLowerCase().includes(q);
+  const matchVideo = (video) =>
+    !q || video.title.toLowerCase().includes(q) || video.slug.includes(q);
+  const matchGallery = (item) =>
+    !q ||
+    item.title.toLowerCase().includes(q) ||
+    item.slug.includes(q) ||
+    (item.locality || "").toLowerCase().includes(q);
   const matchRegistration = (reg) =>
     !q ||
     reg.name.toLowerCase().includes(q) ||
@@ -2082,6 +2533,8 @@ export default function AdminPage() {
   const visibleCaseStudies = caseStudies.filter(matchCaseStudy);
   const visibleAuthors = authors.filter(matchAuthor);
   const visibleOffers = offers.filter(matchOffer);
+  const visibleVideos = videos.filter(matchVideo);
+  const visibleGallery = gallery.filter(matchGallery);
   const visibleRegistrations = registrations.filter(matchRegistration);
 
   const counts = {
@@ -2090,6 +2543,8 @@ export default function AdminPage() {
     caseStudies: caseStudies.length,
     authors: authors.length,
     offers: offers.length,
+    videos: videos.length,
+    gallery: gallery.length,
     registrations: registrations.length,
   };
 
@@ -2103,7 +2558,11 @@ export default function AdminPage() {
             ? "author"
             : editing.kind === "offers"
               ? "offer"
-              : "post";
+              : editing.kind === "videos"
+                ? "video"
+                : editing.kind === "gallery"
+                  ? "gallery entry"
+                  : "post";
     const Editor =
       editing.kind === "case-studies"
         ? CaseStudyEditor
@@ -2113,7 +2572,11 @@ export default function AdminPage() {
             ? AuthorEditor
             : editing.kind === "offers"
               ? OfferEditor
-              : PostEditor;
+              : editing.kind === "videos"
+                ? VideoEditor
+                : editing.kind === "gallery"
+                  ? GalleryEditor
+                  : PostEditor;
     return (
       <div className="min-h-screen bg-paper">
         <AdminHeader onSignOut={signOut} />
@@ -2433,6 +2896,78 @@ export default function AdminPage() {
                         busy={busy}
                         onEdit={(item) => setEditing({ kind: "offers", item })}
                         onDelete={removeOffer}
+                      />
+                    ))}
+                  </ul>
+                ))}
+            </section>
+          )}
+
+          {tab === "videos" && (
+            <section className="card-gb overflow-hidden" data-testid="admin-videos">
+              <SectionHead
+                title="Videos"
+                count={visibleVideos.length}
+                action={
+                  <Button
+                    onClick={() => setEditing({ kind: "videos", item: null })}
+                    className="h-9 rounded-lg bg-green px-4 text-[13px] font-bold text-ink hover:bg-green-600"
+                    data-testid="admin-video-new"
+                  >
+                    <Plus className="mr-1.5 h-4 w-4" strokeWidth={2.5} />
+                    New video
+                  </Button>
+                }
+              />
+              <StatusBanner meta={listMeta.videos} noun="videos" onRetry={() => loadSection("videos", () => fetchVideos(true), setVideos)} />
+              {listMeta.videos.status === "ready" &&
+                (visibleVideos.length === 0 ? (
+                  <Empty>No videos yet. Add a featured customer review.</Empty>
+                ) : (
+                  <ul className="divide-y divide-divider" data-testid="admin-video-list">
+                    {visibleVideos.map((video) => (
+                      <VideoRow
+                        key={video.slug}
+                        video={video}
+                        busy={busy}
+                        onEdit={(item) => setEditing({ kind: "videos", item })}
+                        onDelete={removeVideo}
+                      />
+                    ))}
+                  </ul>
+                ))}
+            </section>
+          )}
+
+          {tab === "gallery" && (
+            <section className="card-gb overflow-hidden" data-testid="admin-gallery">
+              <SectionHead
+                title="Project gallery"
+                count={visibleGallery.length}
+                action={
+                  <Button
+                    onClick={() => setEditing({ kind: "gallery", item: null })}
+                    className="h-9 rounded-lg bg-green px-4 text-[13px] font-bold text-ink hover:bg-green-600"
+                    data-testid="admin-gallery-new"
+                  >
+                    <Plus className="mr-1.5 h-4 w-4" strokeWidth={2.5} />
+                    New gallery entry
+                  </Button>
+                }
+              />
+              <StatusBanner meta={listMeta.gallery} noun="gallery entries" onRetry={() => loadSection("gallery", () => fetchGallery(true), setGallery)} />
+              {listMeta.gallery.status === "ready" &&
+                (visibleGallery.length === 0 ? (
+                  <Empty>No gallery entries yet. Add a featured project with 3-5 photos.</Empty>
+                ) : (
+                  <ul className="divide-y divide-divider" data-testid="admin-gallery-list">
+                    {visibleGallery.map((item) => (
+                      <GalleryRow
+                        key={item.slug}
+                        item={item}
+                        busy={busy}
+                        onEdit={(entry) => setEditing({ kind: "gallery", item: entry })}
+                        onDelete={removeGallery}
                       />
                     ))}
                   </ul>

@@ -5,8 +5,8 @@ import { FaWhatsapp } from "react-icons/fa6";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { Container, MonoLabel, Reveal, SectionHeader } from "./shared";
-import { UnitToggle } from "./HeroCalculator";
-import { CalcDonut, CalcTimeline } from "./CalcCharts";
+import { UnitToggle, PackageToggle } from "./HeroCalculator";
+import { CalcDonut, CalcTimeline, CalcPaymentSchedule } from "./CalcCharts";
 import { CalcResources } from "./CalcResources";
 import { ShareEstimateModal } from "./ShareEstimateModal";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -82,7 +82,10 @@ export const CalculatorSection = ({ standalone = false }) => {
             <MonoLabel>Step 01 · Inputs</MonoLabel>
             <MonoLabel className="text-ink/40">Rates updated {config?.updated || "—"}</MonoLabel>
           </div>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-4 gap-4">
+            <Field label="Package">
+              <PackageToggle value={inputs.pkg} onChange={(v) => setInput("pkg", v)} idPrefix="calc" />
+            </Field>
             <Field label="Select State">
               <Select value={inputs.state} onValueChange={(v) => setInput("state", v)}>
                 <SelectTrigger className="h-12 rounded-lg border-divider bg-paper text-[16px] font-medium" data-testid="calc-state-dropdown"><SelectValue /></SelectTrigger>
@@ -134,10 +137,17 @@ export const CalculatorSection = ({ standalone = false }) => {
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 mb-5">
                       <div>
                         <h3 className="text-[18px] font-bold">Resource allocation</h3>
-                        <p className="text-[14px] text-ink/60">Change a quality tier. The total recalculates live. Default is Medium — matches real market pricing.</p>
+                        <p className="text-[14px] text-ink/60">A fixed split of your package total. Change a quality tier to nudge the finishing rows; the headline total stays with your package rate.</p>
                       </div>
                     </div>
                     <CalcResources />
+                  </div>
+                  <div className="lg:col-span-12 card-gb p-6 md:p-8" data-testid="calc-schedule-block-wrap">
+                    <div className="mb-5">
+                      <h3 className="text-[18px] font-bold">Ghar Banwao payment schedule</h3>
+                      <p className="text-[14px] text-ink/60">The same 9-stage schedule on every package, mapped to work finished on site — not to calendar dates.</p>
+                    </div>
+                    <CalcPaymentSchedule estimate={estimate} />
                   </div>
                 </div>
 

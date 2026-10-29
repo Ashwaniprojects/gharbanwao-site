@@ -14,6 +14,7 @@ const PAGES = [
   ["About Us", "/about"],
   ["Services", "/services"],
   ["Projects", "/projects"],
+  ["Project Gallery", "/gallery"],
   ["Case Studies", "/case-studies"],
   ["Blog", "/blog"],
   ["Reviews", "/reviews"],

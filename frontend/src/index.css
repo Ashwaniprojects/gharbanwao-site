@@ -180,10 +180,10 @@
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55), 0 1px 2px rgba(120, 84, 0, 0.45);
   }
   .pill {
-    @apply inline-flex items-center justify-center gap-2 rounded-full font-bold transition-[transform,background-color,color,border-color] duration-200 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2;
+    @apply inline-flex items-center justify-center gap-2 rounded-full font-medium transition-[transform,background-color,color,border-color] duration-200 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2;
   }
   .pill-green {
-    @apply pill bg-green text-ink hover:bg-green-600 hover:text-ink;
+    @apply pill bg-green text-ink hover:bg-green-600 hover:text-paper;
   }
   .pill-yellow {
     @apply pill bg-yellow text-ink hover:brightness-95;

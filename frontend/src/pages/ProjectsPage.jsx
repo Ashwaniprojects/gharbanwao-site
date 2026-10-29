@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Building2, CheckCircle2, Hammer, MapPin } from "lucide-react";
+import { ArrowRight, Building2, CheckCircle2, Hammer, ImagePlus, MapPin } from "lucide-react";
 import { AnnouncementStrip } from "@/components/site/AnnouncementStrip";
 import { Navbar } from "@/components/site/Navbar";
 import { FinalCTA, Footer, MobileBar } from "@/components/site/FaqCtaFooter";
@@ -128,13 +128,18 @@ export default function ProjectsPage() {
               </div>
             )}
             <Reveal className="mt-12 text-center">
-              <a
-                href="/#projects"
-                className="pill-ghost h-12 px-6 text-[15px] inline-flex items-center gap-2"
-                data-testid="projects-map-link"
-              >
-                <MapPin className="h-[18px] w-[18px]" /> See the live projects map
-              </a>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Link to="/gallery" className="pill-green h-12 px-6 text-[15px] inline-flex items-center gap-2" data-testid="projects-gallery-link">
+                  <ImagePlus className="h-[18px] w-[18px]" /> See the photo gallery
+                </Link>
+                <a
+                  href="/#projects"
+                  className="pill-ghost h-12 px-6 text-[15px] inline-flex items-center gap-2"
+                  data-testid="projects-map-link"
+                >
+                  <MapPin className="h-[18px] w-[18px]" /> See the live projects map
+                </a>
+              </div>
             </Reveal>
           </Container>
         </section>
