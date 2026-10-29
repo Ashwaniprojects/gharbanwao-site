@@ -153,7 +153,7 @@ export const fetchCaseStudy = (slug) =>
  * list (no token), the admin reads and writes with the stored Bearer token, so
  * a single fetchAuthors call serves both. */
 export const fetchAuthors = () =>
-  request.get("/api/content/authors", { params: { limit: 100 } }).then((r) => r.data.items || []);
+  request.get("/api/content/authors", { params: { limit: 50 } }).then((r) => r.data.items || []);
 
 export const saveAuthor = (payload) =>
   withLock(() => request.post("/api/content/authors", payload).then((r) => r.data));
