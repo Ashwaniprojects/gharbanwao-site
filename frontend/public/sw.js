@@ -3,9 +3,9 @@
  * Strategies:
  *  - Navigations: network-first; fall back to the cached SPA shell so every
  *    route still boots while offline.
- *  - Same-origin static assets (hashed /static/*, /images/*, icons):
- *    cache-first — a new deploy changes the hashes, so the cache never goes
- *    stale.
+ *  - Same-origin static assets (hashed /static/*, icons) and the Vercel Blob
+ *    image store: cache-first — a new deploy changes the hashes / blob keys,
+ *    so the cache never goes stale.
  *  - API reads (Vercel /api/* and the Railway CMS backend): network-first
  *    with a short cache fallback so content pages still render offline.
  *  - POST requests (leads, registrations, admin mutations) are never
@@ -13,7 +13,7 @@
  *  - Third-party scripts (analytics, fonts) always go to the network.
  */
 
-const VERSION = "gbw-v1";
+const VERSION = "gbw-v2";
 const SHELL_CACHE = `${VERSION}-shell`;
 const ASSET_CACHE = `${VERSION}-assets`;
 const API_CACHE = `${VERSION}-api`;
@@ -92,14 +92,16 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 2) Same-origin static assets: immutable, so cache-first is safe.
+  // 2) Immutable assets: same-origin hashed /static/* + icons, and the Vercel
+  // Blob image store (signed public URLs). Cache-first is safe because every
+  // asset key includes a content hash — a new upload is a new URL.
   if (
-    isSameOrigin &&
-    (url.pathname.startsWith("/static/") ||
-      url.pathname.startsWith("/images/") ||
-      url.pathname.startsWith("/icons/") ||
-      url.pathname === "/manifest.json" ||
-      url.pathname === "/logo.png")
+    url.hostname === "ogilrhhcbbuhntyk.public.blob.vercel-storage.com" ||
+    (isSameOrigin &&
+      (url.pathname.startsWith("/static/") ||
+        url.pathname.startsWith("/icons/") ||
+        url.pathname === "/manifest.json" ||
+        url.pathname === "/logo.png"))
   ) {
     event.respondWith(
       caches.open(ASSET_CACHE).then(async (cache) => {

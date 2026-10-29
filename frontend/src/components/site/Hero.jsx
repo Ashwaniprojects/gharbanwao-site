@@ -13,7 +13,7 @@ export const Hero = () => {
   return (
     <section className="relative overflow-hidden bg-paper" data-testid="hero-section">
       <img
-        src="/images/hero/twilight-villa.webp"
+        src="https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/hero/twilight-villa-CU1J7SlTpKICwCqnmV9iVy8Mzllmdb.webp"
         alt=""
         aria-hidden="true"
         fetchPriority="high"

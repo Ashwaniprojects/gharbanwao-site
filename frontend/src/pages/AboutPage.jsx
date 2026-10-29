@@ -148,7 +148,7 @@ export default function AboutPage() {
           {/* Full-bleed collage with a white blurred wash so the text reads on top */}
           <div className="absolute inset-0" aria-hidden="true">
             <img
-              src="/images/about/one-stop-collage.webp"
+              src="https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/about/one-stop-collage-Kp7HuP1G3PgDGFXztzRZKcLHETcGE1.webp"
               alt=""
               width={1200}
               height={800}
@@ -226,7 +226,7 @@ export default function AboutPage() {
                 title="Building for the long term."
                 name="Er. Virendra Kumar Nishad"
                 role="Chairman and Managing Director"
-                portrait="/images/team/virendra-nishad.webp"
+                portrait="https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/team/virendra-nishad-CCVEFJCEuK9XqKPTL9vQhod5BCePKe.webp"
                 alt="Er. Virendra Kumar Nishad, Chairman and Managing Director, Ghar Banwao"
                 paragraphs={CMD_MESSAGE}
               />
@@ -235,7 +235,7 @@ export default function AboutPage() {
                 title="Customers at the centre."
                 name="Sujata"
                 role="Chief Executive Officer (CEO), Interior Designer"
-                portrait="/images/team/sujata.webp"
+                portrait="https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/team/sujata-uiZmmUPQfhjHEledr2j1eUDLrc4315.webp"
                 alt="Sujata, Chief Executive Officer and Interior Designer, Ghar Banwao"
                 paragraphs={CEO_MESSAGE}
               />

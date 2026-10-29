@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Download, Printer, Share2 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa6";
@@ -6,7 +6,16 @@ import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { Container, MonoLabel, Reveal, SectionHeader } from "./shared";
 import { UnitToggle, PackageToggle } from "./HeroCalculator";
-import { CalcDonut, CalcTimeline, CalcPaymentSchedule } from "./CalcCharts";
+
+// The chart blocks pull in recharts (~500KB) but only ever render on calculator
+// step 2. Code-split them so the initial load skips that parse entirely. All
+// three resolve to the same module, so webpack emits a single shared chunk.
+const CalcDonut = lazy(() => import("./CalcCharts").then((m) => ({ default: m.CalcDonut })));
+const CalcTimeline = lazy(() => import("./CalcCharts").then((m) => ({ default: m.CalcTimeline })));
+const CalcPaymentSchedule = lazy(
+  () => import("./CalcCharts").then((m) => ({ default: m.CalcPaymentSchedule }))
+);
+const ChartFallback = () => <div className="h-[300px] mt-2 animate-pulse rounded-lg bg-[#E9E9E6]" />;
 import { CalcResources } from "./CalcResources";
 import { ShareEstimateModal } from "./ShareEstimateModal";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -94,14 +103,14 @@ export const CalculatorSection = ({ standalone = false }) => {
             </Field>
             <Field label="Select City">
               <Select value={inputs.city} onValueChange={(v) => setInput("city", v)}>
-                <SelectTrigger className="h-12 rounded-lg border-divider bg-paper text-[16px] font-medium" data-testid="calc-city-dropdown"><SelectValue /></SelectTrigger>
+                <SelectTrigger aria-label="Select City" className="h-12 rounded-lg border-divider bg-paper text-[16px] font-medium" data-testid="calc-city-dropdown"><SelectValue /></SelectTrigger>
                 <SelectContent>{(config?.cities || ["Lucknow"]).map((c) => <SelectItem key={c} value={c} data-testid={`calc-city-option-${c.toLowerCase()}`}>{c}</SelectItem>)}</SelectContent>
               </Select>
             </Field>
             <div className="grid gap-1.5">
               <span className="text-[13px] font-semibold text-ink/70">Plot Area</span>
               <div className="flex gap-2">
-                <input type="number" min="100" value={inputs.area} onChange={(e) => setInput("area", e.target.value === "" ? "" : Number(e.target.value))} className="input-gb flex-1 font-mono" data-testid="calc-area-input" />
+                <input type="number" min="100" aria-label="Plot area in square feet" value={inputs.area} onChange={(e) => setInput("area", e.target.value === "" ? "" : Number(e.target.value))} className="input-gb flex-1 font-mono" data-testid="calc-area-input" />
                 <UnitToggle value={inputs.unit} onChange={(v) => setInput("unit", v)} idPrefix="calc" />
               </div>
             </div>
@@ -127,11 +136,15 @@ export const CalculatorSection = ({ standalone = false }) => {
                 <div className="grid lg:grid-cols-12 gap-5">
                   <div className="lg:col-span-4 card-gb p-6" data-testid="calc-donut-block">
                     <h3 className="text-[18px] font-bold">Phase-wise split</h3>
-                    <CalcDonut estimate={estimate} />
+                    <Suspense fallback={<ChartFallback />}>
+                      <CalcDonut estimate={estimate} />
+                    </Suspense>
                   </div>
                   <div className="lg:col-span-8 card-gb p-6" data-testid="calc-timeline-block">
                     <h3 className="text-[18px] font-bold">Timeline · days per phase</h3>
-                    <CalcTimeline estimate={estimate} />
+                    <Suspense fallback={<ChartFallback />}>
+                      <CalcTimeline estimate={estimate} />
+                    </Suspense>
                   </div>
                   <div className="lg:col-span-12 card-gb p-6 md:p-8" data-testid="calc-resources-block">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 mb-5">
@@ -147,7 +160,9 @@ export const CalculatorSection = ({ standalone = false }) => {
                       <h3 className="text-[18px] font-bold">Ghar Banwao payment schedule</h3>
                       <p className="text-[14px] text-ink/60">The same 9-stage schedule on every package, mapped to work finished on site — not to calendar dates.</p>
                     </div>
-                    <CalcPaymentSchedule estimate={estimate} />
+                    <Suspense fallback={<ChartFallback />}>
+                      <CalcPaymentSchedule estimate={estimate} />
+                    </Suspense>
                   </div>
                 </div>
 

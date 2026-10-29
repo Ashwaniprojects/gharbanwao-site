@@ -84,21 +84,21 @@ export const FinalCTA = () => {
         <Reveal delay={0.1}>
           <form onSubmit={submit} className="card-gb p-6 md:p-8 bg-paper grid gap-4" data-testid="consultation-form">
             <div className="grid sm:grid-cols-2 gap-4">
-              <input required placeholder="Name" value={f.name} onChange={set("name")} className="input-gb" data-testid="form-name-input" />
-              <input required type="tel" pattern="[0-9+ ]{10,14}" placeholder="Phone (primary)" value={f.phone} onChange={set("phone")} className="input-gb" data-testid="form-phone-input" />
+              <input required aria-label="Your name" placeholder="Name" value={f.name} onChange={set("name")} className="input-gb" data-testid="form-name-input" />
+              <input required type="tel" aria-label="Phone number" pattern="[0-9+ ]{10,14}" placeholder="Phone (primary)" value={f.phone} onChange={set("phone")} className="input-gb" data-testid="form-phone-input" />
             </div>
-            <input type="tel" placeholder="WhatsApp number (defaults to phone)" value={f.whatsapp} onChange={set("whatsapp")} className="input-gb" data-testid="form-whatsapp-input" />
+            <input type="tel" aria-label="WhatsApp number" placeholder="WhatsApp number (defaults to phone)" value={f.whatsapp} onChange={set("whatsapp")} className="input-gb" data-testid="form-whatsapp-input" />
             <div className="grid sm:grid-cols-2 gap-4">
               <Select value={f.city} onValueChange={set("city")}>
-                <SelectTrigger className="h-12 rounded-lg border-divider text-[16px]" data-testid="form-city-select"><SelectValue placeholder="City" /></SelectTrigger>
+                <SelectTrigger aria-label="City" className="h-12 rounded-lg border-divider text-[16px]" data-testid="form-city-select"><SelectValue placeholder="City" /></SelectTrigger>
                 <SelectContent>{[...CITIES, "Other"].map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
               </Select>
-              <input placeholder="Locality" value={f.locality} onChange={set("locality")} className="input-gb" data-testid="form-locality-input" />
+              <input aria-label="Locality" placeholder="Locality" value={f.locality} onChange={set("locality")} className="input-gb" data-testid="form-locality-input" />
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
-              <input placeholder="Plot size (optional) e.g. 30×50 ft" value={f.plot_size} onChange={set("plot_size")} className="input-gb" data-testid="form-plot-input" />
+              <input aria-label="Plot size" placeholder="Plot size (optional) e.g. 30×50 ft" value={f.plot_size} onChange={set("plot_size")} className="input-gb" data-testid="form-plot-input" />
               <Select value={f.timeline} onValueChange={set("timeline")}>
-                <SelectTrigger className="h-12 rounded-lg border-divider text-[16px]" data-testid="form-timeline-select"><SelectValue placeholder="Timeline" /></SelectTrigger>
+                <SelectTrigger aria-label="Timeline" className="h-12 rounded-lg border-divider text-[16px]" data-testid="form-timeline-select"><SelectValue placeholder="Timeline" /></SelectTrigger>
                 <SelectContent>{TIMELINES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
               </Select>
             </div>
@@ -233,7 +233,7 @@ function FooterCol({ title, links }) {
 const PreFooterCTA = () => (
   <div className="relative overflow-hidden bg-[#0c352a] text-white no-print" data-testid="pre-footer-cta">
     <img
-      src="/images/footer-sketch.webp"
+      src="https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/footer-sketch-faKE9awlZYXNmMWMdD09DYWvrSV5u5.webp"
       alt=""
       aria-hidden="true"
       className="pointer-events-none absolute right-0 top-0 h-full w-[40%] max-w-[560px] object-cover object-right opacity-[0.12] mix-blend-luminosity"

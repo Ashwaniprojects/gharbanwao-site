@@ -1,16 +1,25 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { scrollToId } from "@/lib/scroll";
 import { AnnouncementStrip } from "@/components/site/AnnouncementStrip";
 import { Navbar } from "@/components/site/Navbar";
 import { OfferCenter } from "@/components/site/OfferCenter";
 import { Hero } from "@/components/site/Hero";
 import { TrustBar, WhyChoose } from "@/components/site/TrustWhy";
-import { ProjectsMap } from "@/components/site/ProjectsMap";
 import { Process, Services } from "@/components/site/ServicesProcessMaterials";
 import { CalculatorSection } from "@/components/site/CalculatorSection";
 import { Testimonials, VideoTestimonials } from "@/components/site/SocialProof";
 import { Comparison } from "@/components/site/PricingTeam";
 import { FAQ, FinalCTA, Footer, MobileBar } from "@/components/site/FaqCtaFooter";
+
+// ProjectsMap pulls in Leaflet + marker-cluster (~300KB) and sits mid-page on
+// home; code-split it so the initial bundle skips it. The fallback keeps the
+// section's layout height stable while the chunk streams in.
+const ProjectsMap = lazy(() =>
+  import("@/components/site/ProjectsMap").then((m) => ({ default: m.ProjectsMap }))
+);
+const MapFallback = () => (
+  <div className="h-[300px] lg:h-[400px] rounded-2xl border border-divider bg-paper" aria-hidden="true" />
+);
 
 export default function Home() {
   useEffect(() => {
@@ -26,7 +35,9 @@ export default function Home() {
         <TrustBar />
         <VideoTestimonials />
         <WhyChoose />
-        <ProjectsMap />
+        <Suspense fallback={<MapFallback />}>
+          <ProjectsMap />
+        </Suspense>
         <Services />
         <CalculatorSection />
         <Process />

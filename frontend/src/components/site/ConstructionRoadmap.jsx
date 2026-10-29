@@ -51,11 +51,11 @@ const HOUSE_ART = (
    GB = Ghar Banwao (construction phase) — the two partner-brand logos, shown
    on a white panel inside the (yellow) milestone card. */
 const NB_ART = (
-  <img className="cr-art cr-art--logo" src="/images/brands/nakshaa-banwao.webp" alt="Nakshaa Banwao" width={160} height={68} />
+  <img className="cr-art cr-art--logo" src="https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/brands/nakshaa-banwao-fUuB34OQ7b0lBVgdGj0c0vsStD5qqi.webp" alt="Nakshaa Banwao" width={160} height={68} />
 );
 
 const GB_ART = (
-  <img className="cr-art cr-art--logo" src="/images/brands/ghar-banwao.webp" alt="Ghar Banwao" width={160} height={68} />
+  <img className="cr-art cr-art--logo" src="https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/brands/ghar-banwao-kQHRhZhVr0RRoq7q5RfmAHLjpFOqTD.webp" alt="Ghar Banwao" width={160} height={68} />
 );
 
 /* --- step data ------------------------------------------------------ */

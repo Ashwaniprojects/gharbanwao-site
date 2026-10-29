@@ -122,7 +122,7 @@ export const HeroCalculator = () => {
           <label className="grid gap-1.5">
             <span className="text-[13px] font-semibold text-ink/70">City</span>
             <Select value={inputs.city} onValueChange={(v) => setInput("city", v)}>
-              <SelectTrigger className="h-12 rounded-lg border-divider text-[16px] font-medium focus:ring-green" data-testid="hero-calculator-city-dropdown">
+              <SelectTrigger aria-label="City" className="h-12 rounded-lg border-divider text-[16px] font-medium focus:ring-green" data-testid="hero-calculator-city-dropdown">
                 <SelectValue placeholder="Select city" />
               </SelectTrigger>
               <SelectContent>
@@ -138,6 +138,7 @@ export const HeroCalculator = () => {
               <input
                 type="number"
                 min="100"
+                aria-label="Plot area in square feet"
                 value={inputs.area}
                 onChange={(e) => setInput("area", e.target.value === "" ? "" : Number(e.target.value))}
                 className="input-gb flex-1 font-mono"
