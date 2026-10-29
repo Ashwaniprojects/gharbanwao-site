@@ -304,12 +304,12 @@ export default function AboutPage() {
                     a free site visit and a written quote within 48 hours.
                   </p>
                   <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-                    <CtaLink href="/contact" className="pill h-12 px-6 text-[16px] text-ink border border-ink hover:bg-ink hover:text-green">
+                    <CtaLink href="/contact" className="pill h-12 px-6 text-[16px] text-ink border border-ink hover:bg-ink hover:text-paper">
                       Book a Free Consultation <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
                     </CtaLink>
                     <a
                       href={PHONE_HREF}
-                      className="pill h-12 px-6 text-[16px] border border-ink/30 text-ink hover:bg-ink hover:text-green"
+                      className="pill h-12 px-6 text-[16px] border border-ink/30 text-ink hover:bg-ink hover:text-paper"
                       data-testid="about-call-cta"
                     >
                       <Phone className="h-4 w-4" strokeWidth={2.5} /> {PHONES[0]}
@@ -318,7 +318,7 @@ export default function AboutPage() {
                       href={WHATSAPP_URL}
                       target="_blank"
                       rel="noopener,noreferrer"
-                      className="pill h-12 px-6 text-[16px] border border-ink/30 text-ink hover:bg-ink hover:text-green"
+                      className="pill h-12 px-6 text-[16px] border border-ink/30 text-ink hover:bg-ink hover:text-paper"
                       data-testid="about-whatsapp-cta"
                     >
                       WhatsApp us
