@@ -5,7 +5,7 @@ import { ArrowRight, Building2, CheckCircle2, Hammer, ImagePlus, MapPin } from "
 import { AnnouncementStrip } from "@/components/site/AnnouncementStrip";
 import { Navbar } from "@/components/site/Navbar";
 import { FinalCTA, Footer, MobileBar } from "@/components/site/FaqCtaFooter";
-import { Container, MonoLabel, Reveal, SectionHeader, Image, Placeholder } from "@/components/site/shared";
+import { Container, MonoLabel, Reveal, Image, Placeholder } from "@/components/site/shared";
 import GallerySection from "@/components/site/GallerySection";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
@@ -92,17 +92,11 @@ export default function ProjectsPage() {
       <AnnouncementStrip />
       <Navbar />
       <main>
-        <section className="section-gb bg-wash-yellow">
-          <Container className="max-w-4xl">
-            <Reveal>
-              <SectionHeader
-                label="PROJECT GALLERY"
-                title="Homes we've built, and are building."
-                supporting="Every project here is a real build across Lucknow and Uttar Pradesh — browse by status, open any one for the full story, stage and owner words."
-                align="center"
-              />
-            </Reveal>
-            <Reveal className="mt-8 flex flex-wrap justify-center gap-2" delay={0.05}>
+        <GallerySection />
+
+        <section className="section-gb">
+          <Container>
+            <Reveal className="flex flex-wrap justify-center gap-2">
               {[["all", "All projects"], ["ongoing", "Ongoing"], ["handed_over", "Completed"]].map(([v, l]) => (
                 <button
                   key={v}
@@ -114,13 +108,6 @@ export default function ProjectsPage() {
                 </button>
               ))}
             </Reveal>
-          </Container>
-        </section>
-
-        <GallerySection />
-
-        <section className="section-gb">
-          <Container>
             {isLoading ? (
               <p className="py-20 text-center font-mono text-[14px] text-ink/50" data-testid="projects-loading">
                 Loading projects…
