@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { ArrowRight, MapPin } from "lucide-react";
@@ -24,6 +24,27 @@ const inSize = (s, k) => k === "all" || (k === "lt1000" && s < 1000) || (k === "
 const STAGES = ["Design", "Foundation", "Structure", "Brickwork", "Finishing", "Handover"];
 const STATUS_TABS = [["all", "All"], ["ongoing", "Ongoing"], ["handed_over", "Completed"]];
 const LUCKNOW_BOUNDS = [[26.73, 80.84], [26.95, 81.07]]; // default zoomed-in view — most projects live here
+
+/* The map's real cost is Leaflet's initialisation plus 297 cluster markers and
+   the tile fetch — and it sits below the fold on the home page, so doing all
+   of that at load delays LCP with no visible benefit. Mount the canvas only
+   once the wrapper is near the viewport; the same-height placeholder keeps the
+   layout identical until then. */
+function useOnScreen(ref, { rootMargin = "400px" } = {}) {
+  const [onScreen, setOnScreen] = useState(false);
+  useEffect(() => {
+    if (!ref.current || onScreen) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) setOnScreen(true);
+      },
+      { rootMargin }
+    );
+    io.observe(ref.current);
+    return () => io.disconnect();
+  }, [ref, rootMargin, onScreen]);
+  return onScreen;
+}
 
 const Chip = ({ active, children, ...rest }) => (
   <button type="button" className={`h-9 px-3.5 rounded-full text-[13px] font-semibold border transition-colors ${active ? "bg-green border-green" : "border-divider hover:border-ink/40"}`} {...rest}>
@@ -262,6 +283,10 @@ export const ProjectsMap = () => {
   const [selected, setSelected] = useState(null);
   const [mapEngaged, setMapEngaged] = useState(false);
 
+  // Mount the Leaflet canvas only once it scrolls near the viewport.
+  const mapRef = useRef(null);
+  const mapNear = useOnScreen(mapRef, { rootMargin: "400px" });
+
   const localities = useMemo(() => [...new Set(projects.map((p) => p.locality))].sort(), [projects]);
   const filtered = useMemo(
     () => projects.filter((p) => (status === "all" || p.status === status) && (locality === "all" || p.locality === locality) && inSize(p.size_sqft, size) && (pkg === "all" || p.package === pkg)),
@@ -314,10 +339,11 @@ export const ProjectsMap = () => {
         </Reveal>
 
         <div className="mt-4 grid lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2 gb-map-scope relative rounded-2xl border border-divider bg-paper overflow-hidden">
+          <div ref={mapRef} className="lg:col-span-2 gb-map-scope relative rounded-2xl border border-divider bg-paper overflow-hidden">
             <BorderBeam colorFrom="rgba(147,197,38,0)" colorTo="rgba(147,197,38,0.55)" duration={6} />
             <Reveal className="relative h-[300px] lg:h-[400px]" data-testid="projects-map">
             {isLoading && <div className="absolute inset-0 z-[1000] grid place-items-center bg-paper font-mono text-[12px] text-ink/50">Loading 297 pins…</div>}
+            {mapNear ? (
             <MapContainer bounds={LUCKNOW_BOUNDS} scrollWheelZoom={false} className="h-full w-full" style={{ height: "100%", width: "100%" }} data-testid="projects-map-canvas">
               <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <FitToPoints locality={locality} points={points} />
@@ -342,6 +368,9 @@ export const ProjectsMap = () => {
                 ))}
               </MarkerClusterGroup>
             </MapContainer>
+            ) : (
+              <div className="h-full w-full" aria-hidden="true" />
+            )}
             <div className="absolute left-4 top-4 z-[1000] flex flex-col gap-1 font-mono text-[11px] uppercase tracking-[0.1em] bg-paper/90 backdrop-blur px-3 py-2 rounded-lg border border-divider pointer-events-none">
               <span className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-green" /> Handed over</span>
               <span className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-yellow border border-ink/20" /> Ongoing</span>

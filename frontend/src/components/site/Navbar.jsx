@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Logo } from "./Logo";
 import { SearchOverlay } from "./SearchOverlay";
 import { NAV, PHONES } from "@/data/content";
-import { scrollToId } from "@/lib/scroll";
+import { scrollToId, scrollToTop } from "@/lib/scroll";
 
 export const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -47,7 +47,7 @@ export const Navbar = () => {
     setMenuOpen(false);
     if (n.href) {
       if (window.location.pathname === n.href) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        scrollToTop(true);
       } else {
         window.location.href = n.href;
       }

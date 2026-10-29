@@ -8,6 +8,7 @@ import { Link, useParams } from "react-router-dom";
 import { ArrowRight, Linkedin, Instagram, Youtube, Globe, Feather } from "lucide-react";
 import { BLOGS } from "@/data/blogs";
 import { fetchAuthors } from "@/lib/cmsAdmin";
+import { scrollToTop } from "@/lib/scroll";
 
 // A profile can carry any of these channels; the one present is what we render.
 const SOCIAL_META = [
@@ -31,7 +32,7 @@ export default function AuthorPage() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    scrollToTop();
     fetchAuthors()
       .then((items) => setAuthor(items.find((a) => a.slug === slug) || null))
       .catch(() => setError(true));

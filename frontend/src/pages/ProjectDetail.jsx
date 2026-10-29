@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { fetchProjects } from "@/lib/api";
 import { fetchProjects as fetchCmsProjects } from "@/lib/cmsAdmin";
+import { scrollToTop } from "@/lib/scroll";
 import { PHONES, WHATSAPP_URL } from "@/data/content";
 import { Image as CmsImage } from "@/components/site/shared";
 
@@ -105,7 +106,7 @@ export default function ProjectDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    scrollToTop();
     setLoading(true);
     const cmsPromise = fetchCmsProjects()
       .then((cms) =>

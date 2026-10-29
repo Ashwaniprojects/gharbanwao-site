@@ -139,7 +139,7 @@ const FOOTER_COLUMNS = [
     title: "Projects",
     links: [
       { label: "Residential Projects", href: "/projects" },
-      { label: "Project Gallery", href: "/gallery" },
+      { label: "Project Gallery", href: "/projects#gallery" },
       { label: "Naksha Banwao", href: "https://nakshaabanwao.com/", external: true },
     ],
   },

@@ -16,6 +16,8 @@ export const Hero = () => {
         src="/images/hero/twilight-villa.webp"
         alt=""
         aria-hidden="true"
+        fetchPriority="high"
+        decoding="async"
         className="absolute inset-0 h-full w-full object-cover object-[72%_center] pointer-events-none select-none"
       />
       <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent" aria-hidden="true" />

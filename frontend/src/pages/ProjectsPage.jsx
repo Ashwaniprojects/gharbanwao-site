@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "react-router-dom";
 import { ArrowRight, Building2, CheckCircle2, Hammer, ImagePlus, MapPin } from "lucide-react";
 import { AnnouncementStrip } from "@/components/site/AnnouncementStrip";
 import { Navbar } from "@/components/site/Navbar";
 import { FinalCTA, Footer, MobileBar } from "@/components/site/FaqCtaFooter";
 import { Container, MonoLabel, Reveal, SectionHeader, Image, Placeholder } from "@/components/site/shared";
+import GallerySection from "@/components/site/GallerySection";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { scrollToId } from "@/lib/scroll";
 import { fetchProjects } from "@/lib/cmsAdmin";
 
 const SITE = "https://gharbanwao.com";
@@ -65,6 +68,11 @@ const ProjectCard = ({ p, i }) => {
 };
 
 export default function ProjectsPage() {
+  const { hash } = useLocation();
+  useEffect(() => {
+    const id = hash.slice(1);
+    if (id) setTimeout(() => scrollToId(id), 400);
+  }, [hash]);
   const { data: projects = [], isLoading } = useQuery({
     queryKey: ["cms-projects-all"],
     queryFn: () => fetchProjects(),
@@ -109,6 +117,8 @@ export default function ProjectsPage() {
           </Container>
         </section>
 
+        <GallerySection />
+
         <section className="section-gb">
           <Container>
             {isLoading ? (
@@ -129,9 +139,14 @@ export default function ProjectsPage() {
             )}
             <Reveal className="mt-12 text-center">
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Link to="/gallery" className="pill-green h-12 px-6 text-[15px] inline-flex items-center gap-2" data-testid="projects-gallery-link">
+                <button
+                  type="button"
+                  onClick={() => scrollToId("gallery")}
+                  className="pill-green h-12 px-6 text-[15px] inline-flex items-center gap-2"
+                  data-testid="projects-gallery-link"
+                >
                   <ImagePlus className="h-[18px] w-[18px]" /> See the photo gallery
-                </Link>
+                </button>
                 <a
                   href="/#projects"
                   className="pill-ghost h-12 px-6 text-[15px] inline-flex items-center gap-2"

@@ -9,6 +9,7 @@ import { Link, useParams } from "react-router-dom";
 import { ArrowRight, CalendarDays, Clock, Feather } from "lucide-react";
 import { BLOGS, BLOG_UPDATED } from "@/data/blogs";
 import { fetchAuthors, fetchPosts } from "@/lib/cmsAdmin";
+import { scrollToTop } from "@/lib/scroll";
 
 const SITE = "https://gharbanwao.com";
 const BY_SLUG = Object.fromEntries(BLOGS.map((p) => [p.slug, p]));
@@ -356,7 +357,7 @@ export function BlogDetail() {
   }, [slug]);
   const [author, setAuthor] = useState(null);
   useEffect(() => {
-    window.scrollTo(0, 0);
+    scrollToTop();
     // The byline links to a named author profile when the post credits one by
     // name; a post with no author (or an unknown name) stays the team label.
     fetchAuthors()
