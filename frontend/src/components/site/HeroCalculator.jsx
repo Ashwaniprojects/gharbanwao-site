@@ -109,13 +109,7 @@ export const HeroCalculator = () => {
         <div className="flex items-center justify-end">
           <span className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.1em]">
             <span className="h-2 w-2 rounded-full bg-green animate-pulse" />
-            {(() => {
-              const stamp = config?.updated ? new Date(config.updated) : new Date();
-              const label = Number.isNaN(stamp.getTime())
-                ? new Date().toLocaleDateString("en-US", { month: "short", year: "numeric" })
-                : stamp.toLocaleDateString("en-US", { month: "short", year: "numeric" });
-              return `${label} rates`;
-            })()}
+            {new Date().toLocaleDateString("en-US", { month: "short", year: "numeric" })} rates
           </span>
         </div>
         <h2 className="mt-3 text-lg md:text-xl font-bold tracking-tight">What will your home cost?</h2>
