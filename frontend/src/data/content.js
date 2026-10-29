@@ -57,7 +57,7 @@ export const CITIES = [
 ];
 
 export const ANNOUNCEMENTS = [
-  "Serving Lucknow / Kanpur / Ayodhya / Gorakhpur / Vindhyachal / Prayagraj / Sitapur / Sultanpur / Basti / Lakhimpur / Fatehpur / Rai Bareilly",
+  "Serving - Lucknow / Kanpur / Ayodhya / Gorakhpur / Vindhyachal / Prayagraj / Sitapur / Sultanpur / Basti / Lakhimpur / Fatehpur / Rai Bareilly",
   "264+ Homes Handed Over Since 2017  ·  52 Sites Live This Week  ·  25-Year Structural Warranty",
 ];
 
