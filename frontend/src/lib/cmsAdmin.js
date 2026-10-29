@@ -18,12 +18,31 @@ export const CMS_BASE_URL =
   "https://backend-production-07ed.up.railway.app";
 
 const TOKEN_KEY = "cms_admin_token";
+const ROLE_KEY = "cms_admin_role";
 
 export const getToken = () => localStorage.getItem(TOKEN_KEY) || null;
 
 export const setToken = (token) => localStorage.setItem(TOKEN_KEY, token);
 
-export const clearToken = () => localStorage.removeItem(TOKEN_KEY);
+export const clearToken = () => {
+  localStorage.removeItem(TOKEN_KEY);
+  clearRole();
+};
+
+/**
+ * The signed-in role ("admin" or "author"), mirrored from the token so the UI
+ * can gate destructive actions (delete, site rebuild) without decoding the
+ * JWT. Absent for an author session that pre-dates the role field.
+ */
+export const getRole = () => localStorage.getItem(ROLE_KEY) || null;
+
+export const setRole = (role) => {
+  if (role) localStorage.setItem(ROLE_KEY, role);
+};
+
+export const clearRole = () => localStorage.removeItem(ROLE_KEY);
+
+export const isAdmin = () => getRole() === "admin";
 
 export const isAuthenticated = () => Boolean(getToken());
 
@@ -78,7 +97,10 @@ export const errorMessage = (error, fallback = "Something went wrong.") => {
 export const login = (password) =>
   request
     .post("/api/admin/login", { password })
-    .then((r) => r.data.token);
+    .then((r) => {
+      if (r.data.role) setRole(r.data.role);
+      return r.data.token;
+    });
 
 export const fetchPosts = (includeDrafts) =>
   request

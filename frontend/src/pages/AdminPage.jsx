@@ -43,6 +43,7 @@ import {
   fetchProjects,
   fetchRegistrations,
   fetchVideos,
+  getRole,
   isAuthenticated,
   saveAuthor,
   saveCaseStudy,
@@ -206,7 +207,7 @@ const areaClass =
 /* Posts                                                              */
 /* ------------------------------------------------------------------ */
 
-const PostRow = ({ post, onEdit, onDelete, busy }) => (
+const PostRow = ({ post, onEdit, onDelete, busy, canDelete }) => (
   <li
     className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
     data-testid={`admin-post-${post.slug}`}
@@ -231,17 +232,19 @@ const PostRow = ({ post, onEdit, onDelete, busy }) => (
       <Button variant="ghost" size="sm" onClick={() => onEdit(post)} className="rounded-lg">
         Edit
       </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => onDelete(post)}
-        disabled={busy}
-        aria-label={`Delete ${post.title}`}
-        data-testid={`admin-post-delete-${post.slug}`}
-        className="rounded-lg px-2 text-red-600 hover:bg-red-50"
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
+      {canDelete && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onDelete(post)}
+          disabled={busy}
+          aria-label={`Delete ${post.title}`}
+          data-testid={`admin-post-delete-${post.slug}`}
+          className="rounded-lg px-2 text-red-600 hover:bg-red-50"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      )}
     </div>
   </li>
 );
@@ -590,7 +593,7 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
 /* Projects                                                           */
 /* ------------------------------------------------------------------ */
 
-const ProjectRow = ({ project, onEdit, onDelete, busy }) => (
+const ProjectRow = ({ project, onEdit, onDelete, busy, canDelete }) => (
   <li
     className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
     data-testid={`admin-project-${project.slug}`}
@@ -606,17 +609,19 @@ const ProjectRow = ({ project, onEdit, onDelete, busy }) => (
       <Button variant="ghost" size="sm" onClick={() => onEdit(project)} className="rounded-lg">
         Edit
       </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => onDelete(project)}
-        disabled={busy}
-        aria-label={`Delete ${project.title}`}
-        data-testid={`admin-project-delete-${project.slug}`}
-        className="rounded-lg px-2 text-red-600 hover:bg-red-50"
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
+      {canDelete && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onDelete(project)}
+          disabled={busy}
+          aria-label={`Delete ${project.title}`}
+          data-testid={`admin-project-delete-${project.slug}`}
+          className="rounded-lg px-2 text-red-600 hover:bg-red-50"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      )}
     </div>
   </li>
 );
@@ -914,7 +919,7 @@ const ProjectEditor = ({ original, onSaved, onCancel }) => {
 /* Case studies                                                       */
 /* ------------------------------------------------------------------ */
 
-const CaseStudyRow = ({ study, onEdit, onDelete, busy }) => (
+const CaseStudyRow = ({ study, onEdit, onDelete, busy, canDelete }) => (
   <li
     className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
     data-testid={`admin-case-study-${study.slug}`}
@@ -933,17 +938,19 @@ const CaseStudyRow = ({ study, onEdit, onDelete, busy }) => (
       <Button variant="ghost" size="sm" onClick={() => onEdit(study)} className="rounded-lg">
         Edit
       </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => onDelete(study)}
-        disabled={busy}
-        aria-label={`Delete ${study.title}`}
-        data-testid={`admin-case-study-delete-${study.slug}`}
-        className="rounded-lg px-2 text-red-600 hover:bg-red-50"
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
+      {canDelete && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onDelete(study)}
+          disabled={busy}
+          aria-label={`Delete ${study.title}`}
+          data-testid={`admin-case-study-delete-${study.slug}`}
+          className="rounded-lg px-2 text-red-600 hover:bg-red-50"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      )}
     </div>
   </li>
 );
@@ -1274,7 +1281,7 @@ const CaseStudyEditor = ({ original, onSaved, onCancel }) => {
 /* Authors                                                            */
 /* ------------------------------------------------------------------ */
 
-const AuthorRow = ({ author, onEdit, onDelete, busy }) => (
+const AuthorRow = ({ author, onEdit, onDelete, busy, canDelete }) => (
   <li
     className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
     data-testid={`admin-author-${author.slug}`}
@@ -1302,17 +1309,19 @@ const AuthorRow = ({ author, onEdit, onDelete, busy }) => (
       <Button variant="ghost" size="sm" onClick={() => onEdit(author)} className="rounded-lg">
         Edit
       </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => onDelete(author)}
-        disabled={busy}
-        aria-label={`Delete ${author.name}`}
-        data-testid={`admin-author-delete-${author.slug}`}
-        className="rounded-lg px-2 text-red-600 hover:bg-red-50"
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
+      {canDelete && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onDelete(author)}
+          disabled={busy}
+          aria-label={`Delete ${author.name}`}
+          data-testid={`admin-author-delete-${author.slug}`}
+          className="rounded-lg px-2 text-red-600 hover:bg-red-50"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      )}
     </div>
   </li>
 );
@@ -1502,7 +1511,7 @@ const AuthorEditor = ({ original, onSaved, onCancel }) => {
 /* Videos (featured customer-review videos)                           */
 /* ------------------------------------------------------------------ */
 
-const VideoRow = ({ video, onEdit, onDelete, busy }) => (
+const VideoRow = ({ video, onEdit, onDelete, busy, canDelete }) => (
   <li
     className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
     data-testid={`admin-video-${video.slug}`}
@@ -1517,17 +1526,19 @@ const VideoRow = ({ video, onEdit, onDelete, busy }) => (
       <Button variant="ghost" size="sm" onClick={() => onEdit(video)} className="rounded-lg">
         Edit
       </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => onDelete(video)}
-        disabled={busy}
-        aria-label={`Delete ${video.title}`}
-        data-testid={`admin-video-delete-${video.slug}`}
-        className="rounded-lg px-2 text-red-600 hover:bg-red-50"
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
+      {canDelete && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onDelete(video)}
+          disabled={busy}
+          aria-label={`Delete ${video.title}`}
+          data-testid={`admin-video-delete-${video.slug}`}
+          className="rounded-lg px-2 text-red-600 hover:bg-red-50"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      )}
     </div>
   </li>
 );
@@ -1644,7 +1655,7 @@ const VideoEditor = ({ original, onSaved, onCancel }) => {
 /* Project gallery                                                     */
 /* ------------------------------------------------------------------ */
 
-const GalleryRow = ({ item, onEdit, onDelete, busy }) => (
+const GalleryRow = ({ item, onEdit, onDelete, busy, canDelete }) => (
   <li
     className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
     data-testid={`admin-gallery-${item.slug}`}
@@ -1661,17 +1672,19 @@ const GalleryRow = ({ item, onEdit, onDelete, busy }) => (
       <Button variant="ghost" size="sm" onClick={() => onEdit(item)} className="rounded-lg">
         Edit
       </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => onDelete(item)}
-        disabled={busy}
-        aria-label={`Delete ${item.title}`}
-        data-testid={`admin-gallery-delete-${item.slug}`}
-        className="rounded-lg px-2 text-red-600 hover:bg-red-50"
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
+      {canDelete && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onDelete(item)}
+          disabled={busy}
+          aria-label={`Delete ${item.title}`}
+          data-testid={`admin-gallery-delete-${item.slug}`}
+          className="rounded-lg px-2 text-red-600 hover:bg-red-50"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      )}
     </div>
   </li>
 );
@@ -1883,7 +1896,7 @@ const GalleryEditor = ({ original, onSaved, onCancel }) => {
 
 const OFFER_LIVE_LABELS = { days: "Live for N days", until: "Until a date" };
 
-const OfferRow = ({ offer, onEdit, onDelete, busy }) => {
+const OfferRow = ({ offer, onEdit, onDelete, busy, canDelete }) => {
   const window_ = [dateOf(offer.starts_at), dateOf(offer.ends_at)].filter(Boolean).join(" → ");
   return (
     <li
@@ -1907,6 +1920,7 @@ const OfferRow = ({ offer, onEdit, onDelete, busy }) => {
         <Button variant="ghost" size="sm" onClick={() => onEdit(offer)} className="rounded-lg">
           Edit
         </Button>
+        {canDelete && (
         <Button
           variant="ghost"
           size="sm"
@@ -1918,6 +1932,7 @@ const OfferRow = ({ offer, onEdit, onDelete, busy }) => {
         >
           <Trash2 className="h-4 w-4" />
         </Button>
+        )}
       </div>
     </li>
   );
@@ -2283,6 +2298,14 @@ const TABS = [
 
 export default function AdminPage() {
   const [authed, setAuthed] = useState(isAuthenticated);
+  // Whether this session may delete (and trigger the site rebuild). Derived
+  // from the stored role: "author" signs hide the destructive actions. A
+  // session that predates the role field (an old admin token) has no stored
+  // role, so it defaults to admin rather than silently losing access.
+  const [canDelete, setCanDelete] = useState(() => {
+    const role = getRole();
+    return role ? role === "admin" : true;
+  });
   const [posts, setPosts] = useState([]);
   const [projects, setProjects] = useState([]);
   const [caseStudies, setCaseStudies] = useState([]);
@@ -2379,6 +2402,12 @@ export default function AdminPage() {
     clearToken();
     setAuthed(false);
     setEditing(null);
+  };
+
+  const onAuthenticated = () => {
+    const role = getRole();
+    setCanDelete(role ? role === "admin" : true);
+    setAuthed(true);
   };
 
   const removePost = async (post) => {
@@ -2492,7 +2521,7 @@ export default function AdminPage() {
   };
 
   if (!authed) {
-    return <AdminLogin onAuthenticated={() => setAuthed(true)} />;
+    return <AdminLogin onAuthenticated={onAuthenticated} />;
   }
 
   const q = query.trim().toLowerCase();
@@ -2644,15 +2673,17 @@ export default function AdminPage() {
               <ExternalLink className="h-4 w-4 text-ink/50" />
               Google Search Console
             </a>
-            <Button
-              onClick={deploy}
-              disabled={busy}
-              className="h-11 rounded-lg bg-green px-5 text-[14px] font-bold text-ink hover:bg-green-600"
-              data-testid="admin-deploy"
-            >
-              <Rocket className="mr-2 h-4 w-4" />
-              Publish site
-            </Button>
+            {canDelete && (
+              <Button
+                onClick={deploy}
+                disabled={busy}
+                className="h-11 rounded-lg bg-green px-5 text-[14px] font-bold text-ink hover:bg-green-600"
+                data-testid="admin-deploy"
+              >
+                <Rocket className="mr-2 h-4 w-4" />
+                Publish site
+              </Button>
+            )}
           </div>
         </div>
 
@@ -2750,6 +2781,7 @@ export default function AdminPage() {
                         key={post.slug}
                         post={post}
                         busy={busy}
+                        canDelete={canDelete}
                         onEdit={(item) => setEditing({ kind: "posts", item })}
                         onDelete={removePost}
                       />
@@ -2787,6 +2819,7 @@ export default function AdminPage() {
                         project={project}
                         busy={busy}
                         onEdit={(item) => setEditing({ kind: "projects", item })}
+                        canDelete={canDelete}
                         onDelete={removeProject}
                       />
                     ))}
@@ -2823,6 +2856,7 @@ export default function AdminPage() {
                         study={study}
                         busy={busy}
                         onEdit={(item) => setEditing({ kind: "case-studies", item })}
+                        canDelete={canDelete}
                         onDelete={removeCaseStudy}
                       />
                     ))}
@@ -2859,6 +2893,7 @@ export default function AdminPage() {
                         author={author}
                         busy={busy}
                         onEdit={(item) => setEditing({ kind: "authors", item })}
+                        canDelete={canDelete}
                         onDelete={removeAuthor}
                       />
                     ))}
@@ -2895,6 +2930,7 @@ export default function AdminPage() {
                         offer={offer}
                         busy={busy}
                         onEdit={(item) => setEditing({ kind: "offers", item })}
+                        canDelete={canDelete}
                         onDelete={removeOffer}
                       />
                     ))}
@@ -2931,6 +2967,7 @@ export default function AdminPage() {
                         video={video}
                         busy={busy}
                         onEdit={(item) => setEditing({ kind: "videos", item })}
+                        canDelete={canDelete}
                         onDelete={removeVideo}
                       />
                     ))}
@@ -2967,6 +3004,7 @@ export default function AdminPage() {
                         item={item}
                         busy={busy}
                         onEdit={(entry) => setEditing({ kind: "gallery", item: entry })}
+                        canDelete={canDelete}
                         onDelete={removeGallery}
                       />
                     ))}
