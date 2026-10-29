@@ -112,18 +112,29 @@
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
-        <div id="gb-splash" aria-hidden="true">
+        <!-- Hidden until the inline script below proves this is a standalone
+             (installed PWA / fullscreen app) context, so it never shows on a
+             normal desktop or mobile browser tab. -->
+        <div id="gb-splash" style="display:none" aria-hidden="true">
             <img class="gb-splash-logo" src="/logo.png" alt="Ghar Banwao" />
             <p class="gb-splash-credit">Designed &amp; Developed by <a href="https://clicknify.com" target="_blank" rel="noopener noreferrer">Clicknify</a></p>
         </div>
         <div id="root"></div>
         <script>
-            // Fade the branded launch screen out as soon as the page's first
-            // paint is done. A second timeout is the safety net so a slow or
-            // failed first paint can never leave the splash up forever.
             (function () {
                 var splash = document.getElementById("gb-splash");
                 if (!splash) return;
+                // Standalone = the app was opened as an installed PWA /
+                // "Add to home screen" launch, not a normal browser tab.
+                // display-mode covers Chrome/Edge fullscreen PWA;
+                // navigator.standalone is the iOS Safari PWA signal.
+                var isStandalone = (window.matchMedia &&
+                    (window.matchMedia("(display-mode: standalone)").matches ||
+                     window.matchMedia("(display-mode: fullscreen)").matches)) ||
+                    navigator.standalone === true;
+                if (!isStandalone) return; // leave it hidden — no splash
+                splash.style.display = ""; // show for standalone PWA launches
+
                 var hide = function () {
                     splash.classList.add("is-gone");
                     setTimeout(function () { if (splash.parentNode) splash.parentNode.removeChild(splash); }, 700);
@@ -133,7 +144,7 @@
                 } else {
                     window.addEventListener("load", function () { setTimeout(hide, 400); });
                 }
-                setTimeout(hide, 5000);
+                setTimeout(hide, 5000); // safety net: never up more than 5s
             })();
         </script>
         <script>
