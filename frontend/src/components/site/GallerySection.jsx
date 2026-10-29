@@ -19,8 +19,16 @@ export default function GallerySection() {
     retry: false,
   });
   const [lightbox, setLightbox] = useState(null); // { item, index }
+  const [filter, setFilter] = useState("all");
 
-  const shown = entries.slice(0, 10);
+  // progress: "ongoing" (default, incl. legacy rows) or "handed_over". Mirror
+  // the projects-list filter convention: a finished home is the exception.
+  const filtered =
+    filter === "all"
+      ? entries
+      : entries.filter((p) => (filter === "handed_over" ? p.progress === "handed_over" : p.progress !== "handed_over"));
+
+  const shown = filtered.slice(0, 10);
 
   const openLightbox = (item, index = 0) => setLightbox({ item, index });
   const step = (dir) => {
@@ -46,15 +54,35 @@ export default function GallerySection() {
       </Container>
 
       <Container className="mt-12">
+        <div className="mb-8 flex flex-wrap justify-center gap-2" data-testid="gallery-filter">
+          {[
+            ["all", "All homes"],
+            ["ongoing", "Ongoing"],
+            ["handed_over", "Completed"],
+          ].map(([v, l]) => (
+            <button
+              key={v}
+              onClick={() => setFilter(v)}
+              className={`h-10 rounded-full px-5 text-[14px] font-bold border transition-colors ${filter === v ? "bg-ink text-paper border-ink" : "border-divider hover:border-ink/40"}`}
+              data-testid={`gallery-filter-${v}`}
+            >
+              {l}
+            </button>
+          ))}
+        </div>
         {isLoading ? (
           <p className="py-16 text-center font-mono text-[14px] text-ink/50" data-testid="gallery-loading">
             Loading photos…
           </p>
         ) : shown.length === 0 ? (
           <div className="card-gb p-10 text-center" data-testid="gallery-empty">
-            <p className="font-bold text-[18px]">Featured projects coming soon.</p>
+            <p className="font-bold text-[18px]">
+              {filter === "all" ? "Featured projects coming soon." : "No featured homes in this view yet."}
+            </p>
             <p className="mt-2 text-[14px] text-ink/60">
-              Photo sets for our featured homes are being curated — browse the project list above in the meantime.
+              {filter === "all"
+                ? "Photo sets for our featured homes are being curated — browse the project list above in the meantime."
+                : "Try another filter, or browse the project list below."}
             </p>
           </div>
         ) : (

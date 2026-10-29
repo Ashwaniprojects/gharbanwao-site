@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/sonner";
 import Home from "@/pages/Home";
@@ -20,8 +20,6 @@ const CalculatorPage = lazy(() => import("@/pages/CalculatorPage"));
 const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
 const ReviewsPage = lazy(() => import("@/pages/ReviewsPage"));
 const FaqPage = lazy(() => import("@/pages/FaqPage"));
-const CaseStudiesPage = lazy(() => import("@/pages/CaseStudiesPage"));
-const CaseStudyDetail = lazy(() => import("@/pages/CaseStudyDetail"));
 const BlogIndex = lazy(() =>
   import("@/pages/Blog").then((m) => ({ default: m.BlogIndex }))
 );
@@ -90,8 +88,8 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/reviews" element={<ReviewsPage />} />
               <Route path="/faq" element={<FaqPage />} />
-              <Route path="/case-studies" element={<CaseStudiesPage />} />
-              <Route path="/case-studies/:slug" element={<CaseStudyDetail />} />
+              <Route path="/case-studies" element={<Navigate to="/projects" replace />} />
+              <Route path="/case-studies/:slug" element={<Navigate to="/projects" replace />} />
               <Route path="/projects" element={<ProjectsPage />} />
               <Route path="/projects/:gbId" element={<ProjectDetail />} />
               <Route path="/blog" element={<BlogIndex />} />

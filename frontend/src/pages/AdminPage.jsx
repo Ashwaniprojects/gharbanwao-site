@@ -28,7 +28,6 @@ import {
   clearToken,
   dateValue,
   deleteAuthor,
-  deleteCaseStudy,
   deleteGallery,
   deleteOffer,
   deletePost,
@@ -36,7 +35,6 @@ import {
   deleteVideo,
   errorMessage,
   fetchAuthors,
-  fetchCaseStudies,
   fetchGallery,
   fetchOffers,
   fetchPosts,
@@ -46,7 +44,6 @@ import {
   getRole,
   isAuthenticated,
   saveAuthor,
-  saveCaseStudy,
   saveGallery,
   saveOffer,
   savePost,
@@ -55,7 +52,6 @@ import {
   slugify,
   triggerDeploy,
   updateAuthor,
-  updateCaseStudy,
   updateGallery,
   updateOffer,
   updatePost,
@@ -126,26 +122,6 @@ const BLANK_PROJECT = {
   review_video_url: "",
 };
 
-const BLANK_CASE_STUDY = {
-  title: "",
-  locality: "",
-  city: "Lucknow",
-  gb_id: "",
-  plot_dimensions: "",
-  area_sqft: "",
-  package: "",
-  owner: "",
-  summary: "",
-  challenge: "",
-  solution: "",
-  quote: "",
-  duration_months: "",
-  budget_lakhs: "",
-  status: "draft",
-  photos: "",
-  cover_image_url: "",
-};
-
 const BLANK_AUTHOR = {
   name: "",
   title: "",
@@ -168,10 +144,15 @@ const BLANK_GALLERY = {
   area_sqft: "",
   package: "",
   status: "published",
+  progress: "ongoing",
   published_at: "",
   photos: "",
   cover_image_url: "",
 };
+
+// Ongoing vs. finished for the featured-gallery filter — a separate concept
+// from the draft/publish `status` above. Mirrors the projects status values.
+const GALLERY_PROGRESS = ["ongoing", "handed_over"];
 
 const SOCIAL_KEYS = [
   ["linkedin", "LinkedIn"],
@@ -916,368 +897,6 @@ const ProjectEditor = ({ original, onSaved, onCancel }) => {
 };
 
 /* ------------------------------------------------------------------ */
-/* Case studies                                                       */
-/* ------------------------------------------------------------------ */
-
-const CaseStudyRow = ({ study, onEdit, onDelete, busy, canDelete }) => (
-  <li
-    className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
-    data-testid={`admin-case-study-${study.slug}`}
-  >
-    <div className="min-w-0">
-      <p className="truncate font-bold">
-        {study.gb_id ? <span className="mono-label mr-2 text-green-700">{study.gb_id}</span> : null}
-        {study.title}
-      </p>
-      <p className="mono-label mt-1 text-ink/40">
-        {[study.locality, study.city].filter(Boolean).join(", ") || "—"} ·{" "}
-        {study.status === "published" ? "Published" : "Draft"}
-      </p>
-    </div>
-    <div className="flex items-center gap-2">
-      <Button variant="ghost" size="sm" onClick={() => onEdit(study)} className="rounded-lg">
-        Edit
-      </Button>
-      {canDelete && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onDelete(study)}
-          disabled={busy}
-          aria-label={`Delete ${study.title}`}
-          data-testid={`admin-case-study-delete-${study.slug}`}
-          className="rounded-lg px-2 text-red-600 hover:bg-red-50"
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
-      )}
-    </div>
-  </li>
-);
-
-const CaseStudyEditor = ({ original, onSaved, onCancel }) => {
-  const [form, setForm] = useState(() =>
-    original
-      ? {
-          ...BLANK_CASE_STUDY,
-          ...original,
-          area_sqft: original.area_sqft ?? "",
-          duration_months: original.duration_months ?? "",
-          budget_lakhs: original.budget_lakhs ?? "",
-          photos: photosToText(original.photos),
-        }
-      : BLANK_CASE_STUDY,
-  );
-  const [busy, setBusy] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState(null);
-  const fileRef = useRef(null);
-
-  const set = (key) => (value) =>
-    setForm((prev) => ({ ...prev, [key]: value?.target ? value.target.value : value }));
-
-  const onPickFile = async (e) => {
-    const file = e.target.files && e.target.files[0];
-    e.target.value = "";
-    if (!file) return;
-    setUploading(true);
-    setError(null);
-    try {
-      const { url } = await uploadImage(file);
-      setForm((prev) => {
-        const lines = prev.photos.split("\n").map((l) => l.trim()).filter(Boolean);
-        return {
-          ...prev,
-          photos: [...lines, url].join("\n"),
-          cover_image_url: prev.cover_image_url || url,
-        };
-      });
-    } catch (err) {
-      setError(errorMessage(err, "The image could not be uploaded."));
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const numOr = (v) => (v === "" || v == null ? null : Number(v));
-
-  const submit = async (e) => {
-    e.preventDefault();
-    if (busy) return;
-    setBusy(true);
-    setError(null);
-    const payload = {
-      ...form,
-      slug: slugFor(form, original),
-      gb_id: form.gb_id || null,
-      area_sqft: numOr(form.area_sqft),
-      duration_months: numOr(form.duration_months),
-      budget_lakhs: numOr(form.budget_lakhs),
-      photos: form.photos
-        .split("\n")
-        .map((line) => line.trim())
-        .filter(Boolean),
-    };
-    try {
-      if (original) {
-        await updateCaseStudy(original.slug, payload);
-        onSaved("Case study updated.");
-      } else {
-        await saveCaseStudy(payload);
-        onSaved("Case study created.");
-      }
-    } catch (err) {
-      setError(errorMessage(err, "The case study could not be saved."));
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <form onSubmit={submit} className="grid gap-5" data-testid="case-study-editor">
-      <Field label="Title" htmlFor="cs-title">
-        <Input
-          id="cs-title"
-          required
-          value={form.title}
-          onChange={set("title")}
-          className={inputClass}
-          data-testid="cs-title-input"
-          placeholder="GB-216 | 1670 Sq.ft - Near Peeli kothi"
-        />
-      </Field>
-
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="GB ID" htmlFor="cs-gb-id" hint="Project reference, e.g. GB-216.">
-          <Input
-            id="cs-gb-id"
-            value={form.gb_id}
-            onChange={set("gb_id")}
-            className={inputClass}
-            data-testid="cs-gb-id-input"
-            placeholder="GB-216"
-          />
-        </Field>
-        <Field label="Status">
-          <Select
-            value={form.status}
-            onValueChange={set("status")}
-            data-testid="cs-status-select"
-          >
-            <SelectTrigger className={`${inputClass} h-12`}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {STATUSES.map((s) => (
-                <SelectItem key={s} value={s}>
-                  {s === "published" ? "Published" : "Draft"}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </Field>
-        <Field label="Locality" htmlFor="cs-locality">
-          <Input
-            id="cs-locality"
-            value={form.locality}
-            onChange={set("locality")}
-            className={inputClass}
-            data-testid="cs-locality-input"
-            placeholder="Peeli kothi, Triveni Nagar"
-          />
-        </Field>
-        <Field label="City" htmlFor="cs-city">
-          <Input
-            id="cs-city"
-            value={form.city}
-            onChange={set("city")}
-            className={inputClass}
-            data-testid="cs-city-input"
-          />
-        </Field>
-        <Field label="Area (sq. ft.)" htmlFor="cs-area">
-          <Input
-            id="cs-area"
-            type="number"
-            min="0"
-            value={form.area_sqft}
-            onChange={set("area_sqft")}
-            className={inputClass}
-            data-testid="cs-area-input"
-          />
-        </Field>
-        <Field label="Plot dimensions" htmlFor="cs-plot">
-          <Input
-            id="cs-plot"
-            value={form.plot_dimensions}
-            onChange={set("plot_dimensions")}
-            className={inputClass}
-            placeholder="30×50 ft"
-            data-testid="cs-plot-input"
-          />
-        </Field>
-        <Field label="Package" htmlFor="cs-package">
-          <Input
-            id="cs-package"
-            value={form.package}
-            onChange={set("package")}
-            className={inputClass}
-            placeholder="Gold"
-            data-testid="cs-package-input"
-          />
-        </Field>
-        <Field label="Owner" htmlFor="cs-owner" hint="Shown under the quote.">
-          <Input
-            id="cs-owner"
-            value={form.owner}
-            onChange={set("owner")}
-            className={inputClass}
-            data-testid="cs-owner-input"
-            placeholder="Delhi-based family"
-          />
-        </Field>
-        <Field label="Duration (months)" htmlFor="cs-duration">
-          <Input
-            id="cs-duration"
-            type="number"
-            min="0"
-            value={form.duration_months}
-            onChange={set("duration_months")}
-            className={inputClass}
-            data-testid="cs-duration-input"
-          />
-        </Field>
-        <Field label="Budget (₹ lakh)" htmlFor="cs-budget">
-          <Input
-            id="cs-budget"
-            type="number"
-            min="0"
-            step="0.5"
-            value={form.budget_lakhs}
-            onChange={set("budget_lakhs")}
-            className={inputClass}
-            data-testid="cs-budget-input"
-          />
-        </Field>
-      </div>
-
-      <Field label="Summary" htmlFor="cs-summary" hint="The one-line subhead.">
-        <Textarea
-          id="cs-summary"
-          rows={2}
-          value={form.summary}
-          onChange={set("summary")}
-          className={areaClass}
-          data-testid="cs-summary-input"
-          placeholder="Living in Delhi. Building a Home in Lucknow."
-        />
-      </Field>
-
-      <Field label="Challenge" htmlFor="cs-challenge">
-        <Textarea
-          id="cs-challenge"
-          rows={3}
-          value={form.challenge}
-          onChange={set("challenge")}
-          className={areaClass}
-          data-testid="cs-challenge-input"
-        />
-      </Field>
-
-      <Field label="Solution" htmlFor="cs-solution">
-        <Textarea
-          id="cs-solution"
-          rows={3}
-          value={form.solution}
-          onChange={set("solution")}
-          className={areaClass}
-          data-testid="cs-solution-input"
-        />
-      </Field>
-
-      <Field label="Owner quote" htmlFor="cs-quote">
-        <Textarea
-          id="cs-quote"
-          rows={2}
-          value={form.quote}
-          onChange={set("quote")}
-          className={areaClass}
-          data-testid="cs-quote-input"
-        />
-      </Field>
-
-      <Field
-        label="Photos"
-        hint="One image URL per line. The first is used as the cover."
-        htmlFor="cs-photos"
-      >
-        <Textarea
-          id="cs-photos"
-          rows={4}
-          value={form.photos}
-          onChange={set("photos")}
-          className={areaClass}
-          data-testid="cs-photos-input"
-        />
-      </Field>
-
-      <div>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          className="sr-only"
-          onChange={onPickFile}
-          data-testid="cs-photo-file"
-        />
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => fileRef.current?.click()}
-          disabled={uploading}
-          className="rounded-lg"
-          data-testid="cs-photo-upload"
-        >
-          <ImagePlus className="mr-2 h-4 w-4" />
-          {uploading ? "Uploading…" : "Upload and add"}
-        </Button>
-      </div>
-
-      <Field label="Cover image URL" htmlFor="cs-cover">
-        <Input
-          id="cs-cover"
-          value={form.cover_image_url}
-          onChange={set("cover_image_url")}
-          placeholder="https://…"
-          className={inputClass}
-          data-testid="cs-cover-input"
-        />
-      </Field>
-
-      {error ? (
-        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-[14px] font-medium text-red-700">
-          {error}
-        </p>
-      ) : null}
-
-      <div className="flex flex-wrap gap-3 border-t border-divider pt-5">
-        <Button
-          type="submit"
-          disabled={busy || !form.title}
-          data-testid="cs-save"
-          className="rounded-lg bg-green px-8 text-[15px] font-bold text-ink hover:bg-green-600"
-        >
-          {busy ? "Saving…" : original ? "Save changes" : "Create case study"}
-        </Button>
-        <Button type="button" variant="ghost" onClick={onCancel} className="rounded-lg px-5">
-          Cancel
-        </Button>
-      </div>
-    </form>
-  );
-};
-
-/* ------------------------------------------------------------------ */
 /* Authors                                                            */
 /* ------------------------------------------------------------------ */
 
@@ -1696,6 +1315,7 @@ const GalleryEditor = ({ original, onSaved, onCancel }) => {
           ...BLANK_GALLERY,
           ...original,
           area_sqft: original.area_sqft ?? "",
+          progress: original.progress ?? "ongoing",
           published_at: dateValue(original.published_at),
           photos: photosToText(original.photos),
         }
@@ -1819,6 +1439,21 @@ const GalleryEditor = ({ original, onSaved, onCancel }) => {
           </Select>
         </Field>
       </div>
+
+      <Field label="Progress" hint="Ongoing or finished — controls the featured-gallery filter on the public page.">
+        <Select value={form.progress} onValueChange={set("progress")} data-testid="gallery-progress-select">
+          <SelectTrigger className={`${inputClass} h-12`}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {GALLERY_PROGRESS.map((s) => (
+              <SelectItem key={s} value={s}>
+                {s === "handed_over" ? "Finished" : "Ongoing"}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </Field>
 
       <Field
         label="Photos"
@@ -2288,7 +1923,6 @@ const StatusBanner = ({ meta, noun, onRetry }) => {
 const TABS = [
   { key: "posts", label: "Blog posts", noun: "posts", testid: "admin-tab-posts" },
   { key: "projects", label: "Projects", noun: "projects", testid: "admin-tab-projects" },
-  { key: "caseStudies", label: "Case studies", noun: "case studies", testid: "admin-tab-case-studies" },
   { key: "authors", label: "Authors", noun: "authors", testid: "admin-tab-authors" },
   { key: "offers", label: "Offers", noun: "offers", testid: "admin-tab-offers" },
   { key: "videos", label: "Videos", noun: "videos", testid: "admin-tab-videos" },
@@ -2308,7 +1942,6 @@ export default function AdminPage() {
   });
   const [posts, setPosts] = useState([]);
   const [projects, setProjects] = useState([]);
-  const [caseStudies, setCaseStudies] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [offers, setOffers] = useState([]);
   const [videos, setVideos] = useState([]);
@@ -2319,7 +1952,6 @@ export default function AdminPage() {
   const [listMeta, setListMeta] = useState({
     posts: { status: "idle", error: "" },
     projects: { status: "idle", error: "" },
-    caseStudies: { status: "idle", error: "" },
     authors: { status: "idle", error: "" },
     offers: { status: "idle", error: "" },
     videos: { status: "idle", error: "" },
@@ -2374,7 +2006,6 @@ export default function AdminPage() {
     setListMeta({
       posts: { status: "loading", error: "" },
       projects: { status: "loading", error: "" },
-      caseStudies: { status: "loading", error: "" },
       authors: { status: "loading", error: "" },
       offers: { status: "loading", error: "" },
       videos: { status: "loading", error: "" },
@@ -2384,7 +2015,6 @@ export default function AdminPage() {
     await Promise.allSettled([
       loadSection("posts", () => fetchPosts(true), setPosts),
       loadSection("projects", () => fetchProjects(), setProjects),
-      loadSection("caseStudies", () => fetchCaseStudies(true), setCaseStudies),
       loadSection("authors", () => fetchAuthors(), setAuthors),
       loadSection("offers", () => fetchOffers(true), setOffers),
       loadSection("videos", () => fetchVideos(true), setVideos),
@@ -2419,20 +2049,6 @@ export default function AdminPage() {
       say("Post deleted.");
     } catch (err) {
       setError(errorMessage(err, "The post could not be deleted."));
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const removeCaseStudy = async (study) => {
-    if (!window.confirm(`Delete “${study.title}”? This cannot be undone.`)) return;
-    setBusy(true);
-    try {
-      await deleteCaseStudy(study.slug);
-      setCaseStudies((prev) => prev.filter((s) => s.slug !== study.slug));
-      say("Case study deleted.");
-    } catch (err) {
-      setError(errorMessage(err, "The case study could not be deleted."));
     } finally {
       setBusy(false);
     }
@@ -2532,12 +2148,6 @@ export default function AdminPage() {
     project.title.toLowerCase().includes(q) ||
     project.slug.includes(q) ||
     (project.locality || "").toLowerCase().includes(q);
-  const matchCaseStudy = (study) =>
-    !q ||
-    study.title.toLowerCase().includes(q) ||
-    study.slug.includes(q) ||
-    (study.gb_id || "").toLowerCase().includes(q) ||
-    (study.locality || "").toLowerCase().includes(q);
   const matchAuthor = (author) =>
     !q || author.name.toLowerCase().includes(q) || author.slug.includes(q);
   const matchOffer = (offer) =>
@@ -2559,7 +2169,6 @@ export default function AdminPage() {
     (reg.city || "").toLowerCase().includes(q);
   const visiblePosts = posts.filter(match);
   const visibleProjects = projects.filter(matchProject);
-  const visibleCaseStudies = caseStudies.filter(matchCaseStudy);
   const visibleAuthors = authors.filter(matchAuthor);
   const visibleOffers = offers.filter(matchOffer);
   const visibleVideos = videos.filter(matchVideo);
@@ -2569,7 +2178,6 @@ export default function AdminPage() {
   const counts = {
     posts: posts.length,
     projects: projects.length,
-    caseStudies: caseStudies.length,
     authors: authors.length,
     offers: offers.length,
     videos: videos.length,
@@ -2579,27 +2187,23 @@ export default function AdminPage() {
 
   if (editing) {
     const kindLabel =
-      editing.kind === "case-studies"
-        ? "case study"
-        : editing.kind === "projects"
-          ? "project"
-          : editing.kind === "authors"
-            ? "author"
-            : editing.kind === "offers"
-              ? "offer"
-              : editing.kind === "videos"
-                ? "video"
-                : editing.kind === "gallery"
-                  ? "gallery entry"
-                  : "post";
+      editing.kind === "projects"
+        ? "project"
+        : editing.kind === "authors"
+          ? "author"
+          : editing.kind === "offers"
+            ? "offer"
+            : editing.kind === "videos"
+              ? "video"
+              : editing.kind === "gallery"
+                ? "gallery entry"
+                : "post";
     const Editor =
-      editing.kind === "case-studies"
-        ? CaseStudyEditor
-        : editing.kind === "projects"
-          ? ProjectEditor
-          : editing.kind === "authors"
-            ? AuthorEditor
-            : editing.kind === "offers"
+      editing.kind === "projects"
+        ? ProjectEditor
+        : editing.kind === "authors"
+          ? AuthorEditor
+          : editing.kind === "offers"
               ? OfferEditor
               : editing.kind === "videos"
                 ? VideoEditor
@@ -2692,8 +2296,8 @@ export default function AdminPage() {
         <p className="mono-label mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-ink/50">
           <span className="inline-flex items-center gap-1.5">
             <CalendarDays className="h-3.5 w-3.5" />
-            {posts.length} posts · {projects.length} projects · {caseStudies.length} case
-            studies · {authors.length} authors · {registrations.length} registrations
+            {posts.length} posts · {projects.length} projects · {authors.length} authors ·
+            {registrations.length} registrations
           </span>
           <a
             href={CMS_BASE_URL.replace(/\/api.*$/, "") + "/docs"}
@@ -2821,43 +2425,6 @@ export default function AdminPage() {
                         onEdit={(item) => setEditing({ kind: "projects", item })}
                         canDelete={canDelete}
                         onDelete={removeProject}
-                      />
-                    ))}
-                  </ul>
-                ))}
-            </section>
-          )}
-
-          {tab === "caseStudies" && (
-            <section className="card-gb overflow-hidden" data-testid="admin-case-studies">
-              <SectionHead
-                title="Case studies"
-                count={visibleCaseStudies.length}
-                action={
-                  <Button
-                    onClick={() => setEditing({ kind: "case-studies", item: null })}
-                    className="h-9 rounded-lg bg-green px-4 text-[13px] font-bold text-ink hover:bg-green-600"
-                    data-testid="admin-case-study-new"
-                  >
-                    <Plus className="mr-1.5 h-4 w-4" strokeWidth={2.5} />
-                    New case study
-                  </Button>
-                }
-              />
-              <StatusBanner meta={listMeta.caseStudies} noun="case studies" onRetry={() => loadSection("caseStudies", () => fetchCaseStudies(true), setCaseStudies)} />
-              {listMeta.caseStudies.status === "ready" &&
-                (visibleCaseStudies.length === 0 ? (
-                  <Empty>No case studies yet. Create the first one.</Empty>
-                ) : (
-                  <ul className="divide-y divide-divider" data-testid="admin-case-study-list">
-                    {visibleCaseStudies.map((study) => (
-                      <CaseStudyRow
-                        key={study.slug}
-                        study={study}
-                        busy={busy}
-                        onEdit={(item) => setEditing({ kind: "case-studies", item })}
-                        canDelete={canDelete}
-                        onDelete={removeCaseStudy}
                       />
                     ))}
                   </ul>

@@ -153,24 +153,6 @@ export const deleteGallery = (slug) =>
     request.delete(`/api/content/gallery/${encodeURIComponent(slug)}`).then((r) => r.data),
   );
 
-/*
- * Case studies live on the content service too. The list endpoint returns
- * published stories to anyone, which is what the public site renders, and
- * returns drafts as well to an admin carrying a token — so the same call
- * serves both, and `includeDrafts` only decides whether to ask for them.
- */
-export const fetchCaseStudies = (includeDrafts) =>
-  request
-    .get("/api/content/case-studies", {
-      params: includeDrafts ? { all: true, limit: 50 } : { limit: 50 },
-    })
-    .then((r) => r.data.items || []);
-
-export const fetchCaseStudy = (slug) =>
-  request
-    .get(`/api/content/case-studies/${encodeURIComponent(slug)}`)
-    .then((r) => r.data);
-
 /* Author profiles power the blog byline. The public site reads the public
  * list (no token), the admin reads and writes with the stored Bearer token, so
  * a single fetchAuthors call serves both. */
@@ -220,19 +202,6 @@ export const updateOffer = (slug, payload) =>
 
 export const deleteOffer = (slug) =>
   withLock(() => request.delete(`/api/content/offers/${encodeURIComponent(slug)}`).then((r) => r.data));
-
-export const saveCaseStudy = (payload) =>
-  withLock(() => request.post("/api/content/case-studies", payload).then((r) => r.data));
-
-export const updateCaseStudy = (slug, payload) =>
-  withLock(() =>
-    request.put(`/api/content/case-studies/${encodeURIComponent(slug)}`, payload).then((r) => r.data),
-  );
-
-export const deleteCaseStudy = (slug) =>
-  withLock(() =>
-    request.delete(`/api/content/case-studies/${encodeURIComponent(slug)}`).then((r) => r.data),
-  );
 
 export const uploadImage = (file) =>
   withLock(async () => {

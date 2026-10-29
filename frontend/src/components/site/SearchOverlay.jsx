@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Search, X, CornerDownLeft, ArrowUpRight } from "lucide-react";
 import { fetchLiveProjects } from "@/lib/api";
-import { fetchCaseStudies, fetchPosts } from "@/lib/cmsAdmin";
+import { fetchPosts } from "@/lib/cmsAdmin";
 import { FAQS, SERVICES, SEARCH_POPULAR } from "@/data/content";
 import { BLOGS } from "@/data/blogs";
 
@@ -15,7 +15,6 @@ const PAGES = [
   ["Services", "/services"],
   ["Projects", "/projects"],
   ["Project Gallery", "/projects#gallery"],
-  ["Case Studies", "/case-studies"],
   ["Blog", "/blog"],
   ["Reviews", "/reviews"],
   ["Cost Calculator", "/calculator"],
@@ -32,14 +31,13 @@ const TABS = [
   { key: "all", label: "All" },
   { key: "project", label: "Projects" },
   { key: "post", label: "Blog" },
-  { key: "case-study", label: "Case Studies" },
   { key: "service", label: "Services" },
   { key: "faq", label: "FAQs" },
   { key: "page", label: "Pages" },
 ];
 
-const KIND_LABEL = { project: "PROJECT", "case-study": "CASE STUDY", post: "BLOG", service: "SERVICE", faq: "FAQ", page: "PAGE" };
-const KIND_ORDER = ["project", "case-study", "post", "service", "faq", "page"];
+const KIND_LABEL = { project: "PROJECT", post: "BLOG", service: "SERVICE", faq: "FAQ", page: "PAGE" };
+const KIND_ORDER = ["project", "post", "service", "faq", "page"];
 
 // Live rows are sparse: gb_id, package and plot can all be null. Derive the
 // display code from the title ("GB-216 | …") or the slug the same way the map
@@ -63,10 +61,9 @@ export const SearchOverlay = ({ open, onClose }) => {
   const navigate = useNavigate();
 
   const live = useQuery({ queryKey: ["projects-live-search"], queryFn: () => fetchLiveProjects(), enabled: open, retry: false });
-  const cases = useQuery({ queryKey: ["cms-case-studies-search"], queryFn: () => fetchCaseStudies(), enabled: open, retry: false });
   const posts = useQuery({ queryKey: ["cms-posts-search"], queryFn: () => fetchPosts(), enabled: open, retry: false });
 
-  const loading = live.isPending || cases.isPending || posts.isPending;
+  const loading = live.isPending || posts.isPending;
 
   useEffect(() => {
     if (open) setTimeout(() => inputRef.current?.focus(), 50);
@@ -89,16 +86,6 @@ export const SearchOverlay = ({ open, onClose }) => {
         meta: [gbId, p.status === "handed_over" ? "Handed over" : "Ongoing", p.plot_dimensions].filter(Boolean).join(" · "),
         to: `/projects/${p.slug || gbId.toLowerCase()}`,
         thumb: p.cover_image_url || null,
-      });
-    }
-    for (const c of cases.data || []) {
-      list.push({
-        kind: "case-study",
-        key: `case-${c.slug}`,
-        title: c.title,
-        sub: [[c.locality, c.city].filter(Boolean).join(", "), c.area_sqft ? `${Number(c.area_sqft).toLocaleString("en-IN")} sqft` : null].filter(Boolean).join(" · "),
-        meta: [c.gb_id, c.package].filter(Boolean).join(" · "),
-        to: `/case-studies/${c.slug}`,
       });
     }
     // The field manual ships in the bundle; CMS posts come from the admin.
@@ -137,7 +124,7 @@ export const SearchOverlay = ({ open, onClose }) => {
       list.push({ kind: "page", key: `page-${to}`, title, sub: to === "/" ? "gharbanwao.com" : `gharbanwao.com${to}`, meta: "", to });
     }
     return list;
-  }, [live.data, cases.data, posts.data]);
+  }, [live.data, posts.data]);
 
   const byKind = useMemo(() => {
     const m = {};
@@ -223,7 +210,7 @@ export const SearchOverlay = ({ open, onClose }) => {
     </button>
   );
 
-  const GROUP_HEADER = { project: "Projects", "case-study": "Case studies", post: "From the blog", service: "Services", faq: "FAQs", page: "Pages" };
+  const GROUP_HEADER = { project: "Projects", post: "From the blog", service: "Services", faq: "FAQs", page: "Pages" };
   const groupHeader = (kind) => (
     <p className="mono-label text-ink/50 text-[11px] mt-4 mb-1">{GROUP_HEADER[kind]}</p>
   );
@@ -253,7 +240,7 @@ export const SearchOverlay = ({ open, onClose }) => {
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && onEnter()}
-                placeholder="Search projects, guides, case studies, services, pages…"
+                placeholder="Search projects, guides, services, pages…"
                 className="flex-1 bg-transparent text-[17px] font-medium outline-none placeholder:text-ink/40"
                 data-testid="search-input"
               />
@@ -308,7 +295,7 @@ export const SearchOverlay = ({ open, onClose }) => {
                     <button
                       onClick={() => {
                         onClose();
-                        const to = { project: "/projects", post: "/blog", "case-study": "/case-studies", service: "/services", faq: "/faq", page: "/" }[tab];
+                        const to = { project: "/projects", post: "/blog", service: "/services", faq: "/faq", page: "/" }[tab];
                         navigate(to);
                       }}
                       className="w-full text-center font-mono text-[12px] text-green-700 py-2 hover:underline"
