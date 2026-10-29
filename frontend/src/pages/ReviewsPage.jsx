@@ -23,19 +23,15 @@ export default function ReviewsPage() {
 
       <main>
         {/* Hero */}
-        <section className="section-gb pt-24 md:pt-28" data-testid="reviews-hero">
+        <section className="section-gb pt-10 md:pt-16" data-testid="reviews-hero">
           <Container className="max-w-5xl">
             <SectionHeader
               label="6 CUSTOMER REVIEWS · WATCH THE HOMES"
               title="Trusted by Homeowners, Proven by Their Experiences."
               supporting="Hear directly from our customers about their journey with Ghar Banwao—from the first plan to the final handover."
               align="center"
+              className="lg:[&_h2]:whitespace-nowrap lg:[&_h2]:!text-4xl"
             />
-            <Reveal className="mt-6 flex justify-center">
-              <p className="text-[15px] text-ink/60 text-center max-w-[60ch]">
-                Each video is an unedited walk-through with the family that lived the build. No scripts, no voiceovers — just homeowners showing you what we delivered.
-              </p>
-            </Reveal>
             <Reveal className="mt-8 flex flex-wrap items-center justify-center gap-3" delay={0.05}>
               <a
                 href="https://www.youtube.com/@gharbanwao"
