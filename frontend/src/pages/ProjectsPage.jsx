@@ -96,7 +96,7 @@ export default function ProjectsPage() {
 
         <section className="section-gb">
           <Container>
-            <Reveal className="mb-[15px] flex flex-wrap justify-center gap-2">
+            <Reveal className="mb-[30px] flex flex-wrap justify-center gap-2">
               {[["all", "All projects"], ["ongoing", "Ongoing"], ["handed_over", "Completed"]].map(([v, l]) => (
                 <button
                   key={v}
