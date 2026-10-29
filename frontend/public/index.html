@@ -42,6 +42,52 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&family=Mukta:wght@600;700;800&display=swap" rel="stylesheet" />
         <title>Ghar Banwao® Best Construction Company in Lucknow</title>
+        <style>
+            /* Branded launch screen: the house logo centred, "Designed by
+               Clicknify" bottom-centre. Visible until React paints, then
+               fades — matching a native PWA splash. */
+            #gb-splash {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                background: #ffffff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: opacity 0.5s ease;
+            }
+            #gb-splash.is-gone { opacity: 0; pointer-events: none; }
+            .gb-splash-logo {
+                height: 130px;
+                max-width: 62vw;
+                object-fit: contain;
+                animation: gb-splash-pop 0.6s ease both;
+            }
+            .gb-splash-credit {
+                position: absolute;
+                bottom: 24px;
+                left: 0;
+                right: 0;
+                text-align: center;
+                font-size: 13px;
+                color: #728064;
+                font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+                animation: gb-splash-fadein 0.8s ease 0.3s both;
+            }
+            .gb-splash-credit a {
+                color: #4f5e45;
+                font-weight: 700;
+                text-decoration: none;
+            }
+            @keyframes gb-splash-pop {
+                from { opacity: 0; transform: scale(0.94); }
+                to { opacity: 1; transform: scale(1); }
+            }
+            @keyframes gb-splash-fadein {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+        </style>
         <script type="application/ld+json">
         {
             "@context": "https://schema.org",
@@ -66,7 +112,30 @@
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
+        <div id="gb-splash" aria-hidden="true">
+            <img class="gb-splash-logo" src="/logo.png" alt="Ghar Banwao" />
+            <p class="gb-splash-credit">Designed &amp; Developed by <a href="https://clicknify.com" target="_blank" rel="noopener noreferrer">Clicknify</a></p>
+        </div>
         <div id="root"></div>
+        <script>
+            // Fade the branded launch screen out as soon as the page's first
+            // paint is done. A second timeout is the safety net so a slow or
+            // failed first paint can never leave the splash up forever.
+            (function () {
+                var splash = document.getElementById("gb-splash");
+                if (!splash) return;
+                var hide = function () {
+                    splash.classList.add("is-gone");
+                    setTimeout(function () { if (splash.parentNode) splash.parentNode.removeChild(splash); }, 700);
+                };
+                if (document.readyState === "complete") {
+                    setTimeout(hide, 400);
+                } else {
+                    window.addEventListener("load", function () { setTimeout(hide, 400); });
+                }
+                setTimeout(hide, 5000);
+            })();
+        </script>
         <script>
             !(function (t, e) {
                 var o, n, p, r;
