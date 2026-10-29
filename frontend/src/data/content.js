@@ -71,21 +71,21 @@ export const TRUST = [
 export const WHY = [
   { icon: "ClipboardCheck", title: "150+ onsite quality checks", text: "Documented stage-wise. You see the checklist, not just the result.", img: "/images/about/onsite-blueprint-consultation.webp" },
   { icon: "FileText", title: "100% materials transparency", text: "Brand, grade, and quantity on every delivery note.", img: "/images/about/modern-brick-house-under-construction.webp" },
-  { icon: "FlaskConical", title: "Materials quality control", text: "Sample testing before site delivery. Rejected batches get returned.", img: "/images/featured/construction.png" },
+  { icon: "FlaskConical", title: "Materials quality control", text: "Sample testing before site delivery. Rejected batches get returned.", img: "/images/featured/construction.webp" },
   { icon: "Camera", title: "Real-time project tracking", text: "Your WhatsApp gets site photos every Monday and Thursday.", img: "/images/about/blueprints-across-india.webp" },
-  { icon: "ShieldCheck", title: "100% money safety", text: "Payments linked to stage completion, not calendar dates.", img: "/images/featured/architecture.png" },
+  { icon: "ShieldCheck", title: "100% money safety", text: "Payments linked to stage completion, not calendar dates.", img: "/images/featured/architecture.webp" },
   { icon: "Landmark", title: "Structural warranty", text: "25 years on structure. In writing. Transferable on resale.", img: "/images/about/warm-modern-house.webp" },
   { icon: "CalendarRange", title: "Stage-linked payment schedule", text: "The same 9-stage schedule on every package, mapped to work finished, not ours.", img: "/images/about/warm-modern-indian-home.webp" },
-  { icon: "Headset", title: "Dedicated customer support", text: "One project manager per build. One WhatsApp number. One accountable name.", img: "/images/featured/renovation.png" },
+  { icon: "Headset", title: "Dedicated customer support", text: "One project manager per build. One WhatsApp number. One accountable name.", img: "/images/featured/renovation.webp" },
   { icon: "Timer", title: "On-time delivery", text: "Average delay across 264+ homes: 11 days. We publish it.", img: "/images/about/proud-family-dream-home.webp" },
-  { icon: "History", title: "9+ years of experience", text: "Started 2017. Still Lucknow-headquartered.", img: "/images/featured/interior.png" },
+  { icon: "History", title: "9+ years of experience", text: "Started 2017. Still Lucknow-headquartered.", img: "/images/featured/interior.webp" },
   { icon: "HardHat", title: "Dedicated engineers", text: "One structural, one site, one quality — assigned per project.", img: "/images/about/onsite-blueprint-consultation.webp" },
   { icon: "Wrench", title: "Post-handover support", text: "12 months of free fixes on anything we built.", img: "/images/about/warm-modern-house.webp" },
 ];
 
 export const SERVICES = [
   {
-    img: "/images/featured/architecture.png",
+    img: "/images/featured/architecture.webp",
     title: "Architecture Services & Planning",
     text: "Vastu-aligned, approval-ready drawings.",
     cta: "See floor plans",
@@ -110,7 +110,7 @@ export const SERVICES = [
     ],
   },
   {
-    img: "/images/featured/construction.png",
+    img: "/images/featured/construction.webp",
     title: "Construction with Materials",
     text: "Plot to key handover, turnkey, brand-verified materials.",
     cta: "See projects",
@@ -134,7 +134,7 @@ export const SERVICES = [
     ],
   },
   {
-    img: "/images/featured/interior.png",
+    img: "/images/featured/interior.webp",
     title: "Interior Design",
     text: "Modular kitchen, wardrobes, false ceiling, finishes.",
     cta: "See interiors",
@@ -158,7 +158,7 @@ export const SERVICES = [
     ],
   },
   {
-    img: "/images/featured/renovation.png",
+    img: "/images/featured/renovation.webp",
     title: "Renovation & Makeover",
     text: "Floor addition, remodeling, structural retrofit.",
     cta: "See renovations",
@@ -186,11 +186,11 @@ export const SERVICES = [
 export const PROCESS = [
   { n: "01", name: "Search the Right Company", highlight: "Compare profiles, reviews and past projects before you commit to anyone.", img: "/images/about/blueprints-across-india.webp" },
   { n: "02", name: "Appointment & Meeting", highlight: "Book a free consultation call or an in-person site visit with our team.", img: "/images/about/onsite-blueprint-consultation.webp" },
-  { n: "03", name: "NB Project Code Allotment", highlight: "Your design file is registered with Nakshaa Banwao, our architecture arm.", img: "/images/featured/architecture.png" },
+  { n: "03", name: "NB Project Code Allotment", highlight: "Your design file is registered with Nakshaa Banwao, our architecture arm.", img: "/images/featured/architecture.webp" },
   { n: "04", name: "Meet Architect & Engineer Team", highlight: "Discuss layout, Vastu, elevation and structural needs face to face.", img: "/images/about/modern-brick-house-under-construction.webp" },
   { n: "05", name: "Design & Final Discussion", highlight: "Floor plan, 3D elevation and structural drawing finalized together.", img: "/images/process/step-05-design.webp" },
   { n: "06", name: "Get Quotation & Agreement", highlight: "A transparent, phase-wise quote signed before a single brick moves.", img: "/images/about/warm-modern-indian-home.webp" },
-  { n: "07", name: "GB Project Code Allotment", highlight: "Your build is registered with Ghar Banwao and assigned a site engineer.", img: "/images/featured/construction.png" },
+  { n: "07", name: "GB Project Code Allotment", highlight: "Your build is registered with Ghar Banwao and assigned a site engineer.", img: "/images/featured/construction.webp" },
   { n: "08", name: "Pooja & Work Start", highlight: "Bhoomi pujan first, then foundation work begins right on schedule.", img: "/images/process/step-08-pooja.webp" },
   { n: "09", name: "Step-by-Step Project Update & Engineer Support", highlight: "Weekly WhatsApp photo updates with direct access to your engineer.", img: "/images/process/step-09-updates.webp" },
   { n: "10", name: "Finishing & Delivery", highlight: "150-point checklist, warranty handover, and keys in your hand.", img: "/images/process/step-10-handover.webp" },
@@ -294,7 +294,7 @@ export const WHY_THEM = [
 ];
 
 export const TEAM = [
-  { img: "/images/team/virendra-nishad.jpg", name: "Er. Virendra Kumar Nishad", role: "Chairman & Managing Director", years: "14 yrs", specialty: "Has personally handed over 190 of the 260 homes." },
+  { img: "/images/team/virendra-nishad.webp", name: "Er. Virendra Kumar Nishad", role: "Chairman & Managing Director", years: "14 yrs", specialty: "Has personally handed over 190 of the 260 homes." },
   { img: "IMG-76", name: "Er. Neha Tripathi", role: "Lead Structural Engineer", years: "11 yrs", specialty: "RCC design, soil-bearing analysis, retrofit." },
   { img: "IMG-77", name: "Pallavi Mehrotra", role: "Head of Quality", years: "9 yrs", specialty: "Owns the 150-point checklist. Rejects batches." },
   { img: "IMG-78", name: "Ramesh Kushwaha", role: "Site Supervisor", years: "17 yrs", specialty: "Brickwork and plaster. Plumb line in pocket." },

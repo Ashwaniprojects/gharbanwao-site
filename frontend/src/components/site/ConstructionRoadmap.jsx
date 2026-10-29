@@ -55,7 +55,7 @@ const NB_ART = (
 );
 
 const GB_ART = (
-  <img className="cr-art cr-art--logo" src="/images/brands/ghar-banwao.png" alt="Ghar Banwao" width={160} height={68} />
+  <img className="cr-art cr-art--logo" src="/images/brands/ghar-banwao.webp" alt="Ghar Banwao" width={160} height={68} />
 );
 
 /* --- step data ------------------------------------------------------ */
@@ -116,6 +116,11 @@ export default function ConstructionRoadmap() {
         </div>
       </div>
 
+      {/* The curved track is a fixed 1340px canvas — it scrolls sideways on
+          phones, which is exactly what this section shouldn't do. Below 700px
+          a vertical timeline takes its place: one step per row, in order, no
+          horizontal movement. */}
+      <div className="cr-desktop">
       <div className="cr-scroll" ref={scroller} tabIndex={0} role="region" aria-label="Curved ten-step construction roadmap" data-testid="roadmap-scroll">
         <div className="cr-track">
           <svg className="cr-road" viewBox="0 0 1340 1035" aria-hidden="true">
@@ -170,6 +175,32 @@ export default function ConstructionRoadmap() {
           })}
         </div>
       </div>
+      </div>
+
+      {/* Mobile: vertical, single-column timeline — reads top-to-bottom with
+          no horizontal scrolling. Shown only under 700px. */}
+      <ol className="cr-mobile" aria-label="Construction journey, step by step" data-testid="roadmap-mobile">
+        {STEPS.map((step, i) => {
+          const number = String(i + 1).padStart(2, "0");
+          return (
+            <li key={i} className={`cr-m-step${step.milestone ? " cr-m-step--milestone" : ""}`} data-testid={`roadmap-mobile-step-${i + 1}`}>
+              <div className="cr-m-rail" aria-hidden="true">
+                <span className="cr-m-pin">{number}</span>
+                {i < STEPS.length - 1 ? <span className="cr-m-line" /> : null}
+              </div>
+              <div className="cr-m-card">
+                <div className="cr-m-head">
+                  <span className="cr-icon" aria-hidden="true">{step.icon}</span>
+                  {step.milestone ? <span className="cr-badge">MILESTONE</span> : null}
+                </div>
+                {step.art || null}
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
 
       <footer className="cr-footer">YOUR VISION. OUR COMMITMENT.</footer>
     </div>

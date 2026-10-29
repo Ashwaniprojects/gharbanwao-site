@@ -13,7 +13,7 @@ export const Hero = () => {
   return (
     <section className="relative overflow-hidden bg-paper" data-testid="hero-section">
       <img
-        src="/images/hero/twilight-villa.png"
+        src="/images/hero/twilight-villa.webp"
         alt=""
         aria-hidden="true"
         className="absolute inset-0 h-full w-full object-cover object-[72%_center] pointer-events-none select-none"

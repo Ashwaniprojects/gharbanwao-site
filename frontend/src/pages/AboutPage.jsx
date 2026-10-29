@@ -226,7 +226,7 @@ export default function AboutPage() {
                 title="Building for the long term."
                 name="Er. Virendra Kumar Nishad"
                 role="Chairman and Managing Director"
-                portrait="/images/team/virendra-nishad.jpg"
+                portrait="/images/team/virendra-nishad.webp"
                 alt="Er. Virendra Kumar Nishad, Chairman and Managing Director, Ghar Banwao"
                 paragraphs={CMD_MESSAGE}
               />
@@ -235,7 +235,7 @@ export default function AboutPage() {
                 title="Customers at the centre."
                 name="Sujata"
                 role="Chief Executive Officer (CEO), Interior Designer"
-                portrait="/images/team/sujata.jpg"
+                portrait="/images/team/sujata.webp"
                 alt="Sujata, Chief Executive Officer and Interior Designer, Ghar Banwao"
                 paragraphs={CEO_MESSAGE}
               />

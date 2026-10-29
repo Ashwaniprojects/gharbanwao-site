@@ -349,11 +349,154 @@
 
 /* --- mobile --------------------------------------------------------- */
 
-@media (max-width: 650px) {
+/* Default (mobile-first for this section): the curved track is a fixed
+   1340px canvas and doesn't fit on phones. Hide it plus the controls
+   that scroll it; show the vertical timeline in its place. */
+.cr-desktop {
+  display: none;
+}
+
+/* The "DESIGN • BUILD • DELIVER" centre block sits inside the desktop
+   track, so it is already hidden when .cr-desktop is. Nothing extra here. */
+
+.cr-mobile {
+  list-style: none;
+  margin: 34px 0 8px;
+  padding: 0;
+}
+
+.cr-m-step {
+  display: flex;
+  gap: 14px;
+  padding-bottom: 22px;
+}
+
+.cr-m-step:last-child {
+  padding-bottom: 0;
+}
+
+/* The vertical spine: a pin plus the connector line that reaches down to
+   the next step. When it is the last step, no line is rendered. */
+.cr-m-rail {
+  position: relative;
+  width: 55px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cr-m-pin {
+  position: relative;
+  z-index: 1;
+  width: 55px;
+  height: 55px;
+  background: #95c726;
+  border: 5px solid white;
+  outline: 2px solid #95c726;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 17px;
+  font-weight: 800;
+  color: #1c2c00;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.13);
+}
+
+.cr-m-line {
+  position: absolute;
+  top: 55px;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  background: #95c726;
+}
+
+.cr-m-card {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 15px;
+  background: white;
+  border: 1px solid #dbe6cd;
+  border-top: 4px solid #95c726;
+  border-radius: 19px;
+  box-shadow: 0 8px 22px rgba(49, 74, 11, 0.04);
+}
+
+/* Milestone cards reuse the yellow wash + brand-logo panel look. */
+.cr-m-step--milestone .cr-m-card {
+  background: linear-gradient(155deg, #fff6d6 0%, #ffef9e 55%, #ffe27a 100%);
+  border: 1px solid #f2d45a;
+  border-top: 4px solid #739f17;
+  box-shadow: 0 10px 26px rgba(120, 96, 0, 0.14);
+}
+
+/* Card contents inside the mobile card: the icon/badge head, the art,
+   title and body paragraph. These match the desktop card's structure. */
+.cr-m-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 32px;
+}
+
+.cr-m-card h3 {
+  font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 9px 0 7px;
+  color: #172214;
+}
+
+.cr-m-card p {
+  font-size: 12px;
+  line-height: 1.55;
+  margin: 0;
+  color: #728064;
+}
+
+/* The art and logo panels reuse the desktop `.cr-art` / `.cr-art--logo`
+   classes that are already defined above. Their `height: 91px` fixed height
+   would be too tall for a phone, so relax it here. */
+.cr-mobile .cr-art {
+  height: 72px;
+  margin: 10px 0 4px;
+}
+
+.cr-mobile .cr-art--logo {
+  height: 72px;
+}
+
+@media (max-width: 699px) {
+  /* The ← → buttons scroll the curved track, which phones don't have. */
   .cr-controls {
-    font-size: 11px;
+    display: none;
   }
-  .cr-header {
-    padding: 0 16px;
+}
+
+@media (max-width: 650px) {
+  .cr-m-pin,
+  .cr-m-rail {
+    width: 46px;
+    height: 46px;
+  }
+  .cr-m-pin {
+    font-size: 15px;
+  }
+  .cr-m-line {
+    top: 46px;
+  }
+}
+
+@media (min-width: 700px) {
+  /* The phone view gives way to the curved track. */
+  .cr-desktop {
+    display: block;
+  }
+  .cr-mobile {
+    display: none;
   }
 }
