@@ -118,22 +118,29 @@ export default function GallerySection() {
                       </button>
                       {photos.length > 1 && (
                         <div className="mt-2.5 grid grid-cols-4 gap-2" data-testid={`gallery-thumbs-${p.slug}`}>
-                          {photos.slice(1, 5).map((src, ti) => (
-                            <button
-                              key={ti}
-                              onClick={() => openLightbox(p, ti + 1)}
-                              aria-label={`Open photo ${ti + 2} of ${p.title}`}
-                              className="relative aspect-[4/3] overflow-hidden rounded-lg border border-divider bg-[#E9E9E6]"
-                              data-testid={`gallery-thumb-${p.slug}-${ti + 1}`}
-                            >
-                              <img src={src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
-                            </button>
-                          ))}
-                          {photos.length > 5 && (
-                            <div className="grid aspect-[4/3] place-items-center rounded-lg border border-divider bg-[#E9E9E6] font-mono text-[12px] text-ink/60">
-                              +{photos.length - 5}
-                            </div>
-                          )}
+                          {photos.slice(1, 5).map((src, ti) => {
+                            const isLast = ti === 3;
+                            const moreHidden = isLast ? photos.length - 5 : 0;
+                            return (
+                              <button
+                                key={ti}
+                                onClick={() => openLightbox(p, ti + 1)}
+                                aria-label={moreHidden > 0 ? `Open photo ${ti + 2} of ${p.title} — ${moreHidden} more` : `Open photo ${ti + 2} of ${p.title}`}
+                                className="relative aspect-[4/3] overflow-hidden rounded-lg border border-divider bg-[#E9E9E6]"
+                                data-testid={`gallery-thumb-${p.slug}-${ti + 1}`}
+                              >
+                                <img src={src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                                {moreHidden > 0 && (
+                                  <>
+                                    <span aria-hidden className="absolute inset-0 bg-ink/60" />
+                                    <span className="absolute inset-0 grid place-items-center font-mono text-[12px] font-bold text-paper">
+                                      +{moreHidden} more
+                                    </span>
+                                  </>
+                                )}
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
