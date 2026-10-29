@@ -57,17 +57,23 @@ const useReachedRatio = (threshold) => {
   return reached;
 };
 
+// The motion.div wraps the card in a full-width flex row and animates the row.
+// Centering happens via flex on the row, not via a translate on the card, so
+// Framer's `transform: translateY()` (which it writes onto the motion element
+// on animation end) can't clobber the card's position. Wrapping the card in a
+// plain div also keeps the transform out of the interactive surface.
 const Banner = ({ offer, onDismiss }) => (
   <motion.div
     initial={{ y: 24, opacity: 0 }}
     animate={{ y: 0, opacity: 1 }}
     exit={{ y: 24, opacity: 0 }}
     transition={{ duration: 0.3 }}
-    className="card-gb no-print fixed bottom-24 left-1/2 z-40 w-[92vw] max-w-[560px] -translate-x-1/2 p-4 shadow-xl md:bottom-8 md:p-5"
+    className="no-print pointer-events-none fixed inset-x-0 bottom-24 z-40 flex justify-center px-[4vw] md:bottom-8"
     data-testid="offer-banner"
     role="dialog"
     aria-label={offer.title}
   >
+    <div className="card-gb pointer-events-auto relative w-full max-w-[560px] p-4 shadow-xl md:p-5">
     <button
       type="button"
       onClick={onDismiss}
@@ -115,6 +121,7 @@ const Banner = ({ offer, onDismiss }) => (
           Code {offer.code}
         </span>
       ) : null}
+    </div>
     </div>
   </motion.div>
 );
