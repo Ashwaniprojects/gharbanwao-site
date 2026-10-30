@@ -86,7 +86,7 @@ export default function GallerySection() {
             </p>
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2" data-testid="gallery-grid">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-testid="gallery-grid">
             {shown.map((p, i) => {
               const photos = Array.isArray(p.photos) ? p.photos : [];
               const cover = p.cover_image_url || photos[0] || null;
