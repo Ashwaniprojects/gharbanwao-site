@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import { ArrowRight, Building2, CheckCircle2, Hammer, ImagePlus, MapPin } from "lucide-react";
@@ -79,8 +79,28 @@ export default function ProjectsPage() {
     retry: false,
   });
   const [filter, setFilter] = useState("all");
+  const [page, setPage] = useState(1);
+  const gridRef = useRef(null);
 
-  const shown = filter === "all" ? projects : projects.filter((p) => (filter === "ongoing" ? p.status !== "handed_over" : p.status === "handed_over"));
+  const PAGE_SIZE = 12;
+
+  const filtered = filter === "all" ? projects : projects.filter((p) => (filter === "ongoing" ? p.status !== "handed_over" : p.status === "handed_over"));
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const shown = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  // Switching filters can leave the viewer on a page that no longer exists —
+  // reset to the first page and jump back to the top of the grid.
+  useEffect(() => {
+    setPage(1);
+  }, [filter]);
+
+  useEffect(() => {
+    if (gridRef.current) gridRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [safePage]);
+
+  const goPage = (n) => setPage(Math.max(1, Math.min(totalPages, n)));
 
   return (
     <div className="min-h-screen bg-paper text-ink" data-testid="projects-page">
@@ -112,17 +132,47 @@ export default function ProjectsPage() {
               <p className="py-20 text-center font-mono text-[14px] text-ink/50" data-testid="projects-loading">
                 Loading projects…
               </p>
-            ) : shown.length === 0 ? (
+            ) : filtered.length === 0 ? (
               <p className="py-20 text-center text-[15px] text-ink/55" data-testid="projects-empty">
                 No projects in this view yet.
                 {projects.length > 0 ? " Try another filter." : " New projects appear here as soon as they are published from the admin."}
               </p>
             ) : (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {shown.map((p, i) => (
-                  <ProjectCard key={p.slug} p={p} i={i} />
-                ))}
-              </div>
+              <>
+                <div ref={gridRef} className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-testid="projects-grid">
+                  {shown.map((p, i) => (
+                    <ProjectCard key={p.slug} p={p} i={i} />
+                  ))}
+                </div>
+
+                {totalPages > 1 && (
+                  <div className="mt-10 flex flex-wrap items-center justify-center gap-2" data-testid="projects-pagination">
+                    <button
+                      onClick={() => goPage(safePage - 1)}
+                      disabled={safePage === 1}
+                      className="h-10 rounded-full border border-divider px-4 text-[14px] font-bold transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      Prev
+                    </button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+                      <button
+                        key={n}
+                        onClick={() => goPage(n)}
+                        className={`h-10 w-10 rounded-full border text-[14px] font-bold transition-colors ${n === safePage ? "border-ink bg-ink text-paper" : "border-divider hover:border-ink/40"}`}
+                      >
+                        {n}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => goPage(safePage + 1)}
+                      disabled={safePage === totalPages}
+                      className="h-10 rounded-full border border-divider px-4 text-[14px] font-bold transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </>
             )}
             <Reveal className="mt-12 text-center">
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
