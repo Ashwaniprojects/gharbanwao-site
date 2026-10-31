@@ -8,9 +8,9 @@ import { fetchGallery } from "@/lib/cmsAdmin";
 
 /**
  * The photo gallery lives as a section on the Projects page — every project's
- * data is right where the user is already browsing. Up to ten featured
- * projects, each carrying a small set of on-site photos; tap any to open the
- * lightbox. Admins manage the set through the backend.
+ * data is right where the user is already browsing. Each entry carries a small
+ * set of on-site photos; tap any to open the lightbox. Admins manage the set
+ * through the backend.
  */
 export default function GallerySection() {
   const { data: entries = [], isLoading } = useQuery({
@@ -28,7 +28,7 @@ export default function GallerySection() {
       ? entries
       : entries.filter((p) => (filter === "handed_over" ? p.progress === "handed_over" : p.progress !== "handed_over"));
 
-  const shown = filtered.slice(0, 10);
+  const shown = filtered;
 
   const openLightbox = (item, index = 0) => setLightbox({ item, index });
   const step = (dir) => {
