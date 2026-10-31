@@ -131,7 +131,7 @@ export default function GallerySection() {
               const cover = p.cover_image_url || photos[0] || null;
               return (
                 <Reveal key={p.slug} delay={(i % 2) * 0.06} data-testid={`gallery-entry-${p.slug}`}>
-                  <article className="card-gb overflow-hidden bg-paper">
+                  <article className="card-gb flex h-full flex-col overflow-hidden bg-paper">
                     <div className="p-4 pb-0">
                       <button
                         onClick={() => openLightbox(p, 0)}
@@ -183,7 +183,7 @@ export default function GallerySection() {
                         </div>
                       )}
                     </div>
-                    <div className="flex flex-col p-5">
+                    <div className="mt-auto flex flex-col p-5">
                       <MonoLabel>{[p.locality, p.city].filter(Boolean).join(", ") || "GHAR BANWAO"}</MonoLabel>
                       <h3 className="mt-2 text-[18px] font-bold leading-snug tracking-tight">{p.title}</h3>
                       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-ink/60">
