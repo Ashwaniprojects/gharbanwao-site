@@ -403,6 +403,9 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
   // selection is unreliable at click time — we keep our own snapshot instead.
   const bodySelRef = useRef({ start: 0, end: 0 });
 
+  const set = (key) => (value) =>
+    setForm((prev) => ({ ...prev, [key]: value?.target ? value.target.value : value }));
+
   const captureBodySelection = () => {
     const ta = bodyAreaRef.current;
     if (!ta) return;
