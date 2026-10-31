@@ -1,14 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
+  Bold,
   CalendarDays,
   ExternalLink,
   ImagePlus,
+  Link as LinkIcon,
+  List,
+  ListOrdered,
+  Minus,
   Plus,
+  Quote,
   RefreshCw,
   Rocket,
   Search,
   Trash2,
+  Type,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -240,6 +247,107 @@ const BODY_MARKDOWN_HELP = [
   ["![Photo caption](https://image-url)", "An inline image"],
 ];
 
+/** Text styles the toolbar can apply to the selected line(s). level 0 is a
+ *  plain paragraph (no prefix). */
+const BODY_STYLES = [
+  { value: "0", label: "Paragraph", level: 0 },
+  { value: "1", label: "Heading 1", level: 1 },
+  { value: "2", label: "Heading 2", level: 2 },
+  { value: "3", label: "Heading 3", level: 3 },
+  { value: "4", label: "Heading 4", level: 4 },
+  { value: "5", label: "Heading 5", level: 5 },
+];
+
+/** Small helpers that edit the post body as markdown in place. Each takes
+ *  (text, selStart, selEnd) and returns a new { text, start, end } so the
+ *  textarea can restore the cursor where the user left it. A null return means
+ *  "leave the body alone" (used when the user cancels a prompt). */
+const lineStartOf = (text, index) => text.slice(0, index).lastIndexOf("\n") + 1;
+const lineEndOf = (text, index) => {
+  const nl = text.slice(index).indexOf("\n");
+  return nl === -1 ? text.length : index + nl;
+};
+const selectedLines = (text, start, end) => ({
+  s: lineStartOf(text, start),
+  e: lineEndOf(text, end),
+});
+
+const applyHeading = (text, start, end, level) => {
+  const { s, e } = selectedLines(text, start, end);
+  const prefix = level ? "#".repeat(level) + " " : "";
+  const block = text.slice(s, e).split("\n").map((ln) => prefix + ln.replace(/^#{1,6}\s+/, "")).join("\n");
+  const next = text.slice(0, s) + block + text.slice(e);
+  return { text: next, start: s, end: s + block.length };
+};
+
+const wrapSelection = (text, start, end, open, close) => {
+  const sel = text.slice(start, end);
+  const already = text.slice(start - open.length, start) === open && text.slice(end, end + close.length) === close;
+  if (already) {
+    const next = text.slice(0, start - open.length) + sel + text.slice(end + close.length);
+    return { text: next, start: start - open.length, end: end - open.length };
+  }
+  const wrapped = open + sel + close;
+  return { text: text.slice(0, start) + wrapped + text.slice(end), start: start + open.length, end: start + wrapped.length };
+};
+
+const toggleList = (text, start, end, ordered) => {
+  const { s, e } = selectedLines(text, start, end);
+  const re = ordered ? /^[0-9]+\.\s+/ : /^- /;
+  const lines = text.slice(s, e).split("\n");
+  const allOn = lines.every((ln) => ln.length === 0 || re.test(ln));
+  const block = lines
+    .map((ln, i) => {
+      if (ln.length === 0) return ln;
+      if (allOn) return ln.replace(re, "");
+      return ordered ? `${i + 1}. ${ln}` : `- ${ln}`;
+    })
+    .join("\n");
+  const next = text.slice(0, s) + block + text.slice(e);
+  return { text: next, start: s, end: s + block.length };
+};
+
+const toggleQuote = (text, start, end) => {
+  const { s, e } = selectedLines(text, start, end);
+  const lines = text.slice(s, e).split("\n");
+  const allOn = lines.every((ln) => ln.length === 0 || ln.startsWith("> "));
+  const block = lines.map((ln) => (ln.length === 0 ? ln : allOn ? ln.replace(/^> /, "") : `> ${ln}`)).join("\n");
+  const next = text.slice(0, s) + block + text.slice(e);
+  return { text: next, start: s, end: s + block.length };
+};
+
+const insertDivider = (text, _start, end) => {
+  const inserted = "\n\n---\n\n";
+  const next = text.slice(0, end) + inserted + text.slice(end);
+  return { text: next, start: end + inserted.length, end: end + inserted.length };
+};
+
+const insertLink = (text, start, end) => {
+  const url = window.prompt("Link URL", "https://");
+  if (!url) return null;
+  const label = text.slice(start, end) || url;
+  const md = `[${label}](${url})`;
+  const next = text.slice(0, start) + md + text.slice(end);
+  return { text: next, start: start + md.length, end: start + md.length };
+};
+
+/** One icon button in the body toolbar. Keeps the markup compact and the
+ *  hover/active states consistent across every formatting control. */
+const ToolButton = ({ title, children, disabled, ...rest }) => (
+  <Button
+    type="button"
+    variant="ghost"
+    size="icon"
+    title={title}
+    aria-label={title}
+    disabled={disabled}
+    className="h-8 w-8 rounded-md text-ink/70 hover:bg-wash-green hover:text-green-700 disabled:opacity-40"
+    {...rest}
+  >
+    {children}
+  </Button>
+);
+
 const PostEditor = ({ original, onSaved, onCancel }) => {
   const [form, setForm] = useState(() =>
     original
@@ -258,9 +366,38 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
   const [error, setError] = useState(null);
   const fileRef = useRef(null);
   const bodyFileRef = useRef(null);
+  const bodyAreaRef = useRef(null);
 
   const set = (key) => (value) =>
     setForm((prev) => ({ ...prev, [key]: value?.target ? value.target.value : value }));
+
+  // Run one of the markdown helpers against the current textarea selection,
+  // update form.body, then hand focus + the new caret range back to the
+  // textarea so the next keystroke lands where the user expects.
+  const applyBodyEdit = (fn) => {
+    const ta = bodyAreaRef.current;
+    const text = form.body || "";
+    const start = ta ? ta.selectionStart : text.length;
+    const end = ta ? ta.selectionEnd : text.length;
+    const result = fn(text, start, end);
+    if (!result) return; // user cancelled a prompt
+    setForm((prev) => ({ ...prev, body: result.text }));
+    requestAnimationFrame(() => {
+      if (!ta) return;
+      ta.focus();
+      try {
+        ta.setSelectionRange(result.start, result.end);
+      } catch {
+        /* textarea remounted; caret lost */
+      }
+    });
+  };
+
+  const onApplyStyle = (e) => {
+    const level = Number(e.target.value);
+    e.target.value = "0"; // reset the native select back to Paragraph
+    applyBodyEdit((t, s, en) => applyHeading(t, s, en, level));
+  };
 
   const onPickFile = async (e) => {
     const file = e.target.files && e.target.files[0];
@@ -360,42 +497,100 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
         hint="Markdown-lite: blank lines separate paragraphs. Every line starts a new block, so put headings, lists and images on their own line."
         htmlFor="post-body"
       >
-        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <input
-              ref={bodyFileRef}
-              type="file"
-              accept="image/*"
-              className="sr-only"
-              onChange={onPickBodyImage}
-              data-testid="post-body-image-file"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => bodyFileRef.current?.click()}
-              disabled={bodyUploading}
-              className="rounded-lg"
-              data-testid="post-body-insert-image"
-            >
-              <ImagePlus className="mr-1.5 h-4 w-4" />
-              {bodyUploading ? "Inserting…" : "Insert image"}
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setPreview((p) => !p)}
-              className="rounded-lg"
-              data-testid="post-body-preview-toggle"
-            >
-              {preview ? "Back to editing" : "Preview"}
-            </Button>
-          </div>
-          <span className="mono-label text-[12px] text-ink/40" data-testid="post-body-format-hint">
-            ## · ### · - · &gt; · **bold** · [link](url) · ![img](url)
-          </span>
+        <div
+          className="mb-2 flex flex-wrap items-center gap-1 rounded-lg border border-divider bg-paper p-1.5"
+          data-testid="post-body-toolbar"
+        >
+          <input
+            ref={bodyFileRef}
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            onChange={onPickBodyImage}
+            data-testid="post-body-image-file"
+          />
+          <select
+            aria-label="Paragraph style"
+            className="rounded-md border border-divider bg-transparent px-2 py-1 text-[13px] font-semibold text-ink focus-visible:ring-green disabled:opacity-40"
+            value="0"
+            disabled={preview}
+            onChange={onApplyStyle}
+            data-testid="post-body-style-select"
+          >
+            {BODY_STYLES.map((s) => (
+              <option key={s.value} value={s.value}>
+                {s.label}
+              </option>
+            ))}
+          </select>
+          <span className="mx-1 h-5 w-px bg-divider" />
+          <ToolButton
+            title="Bold"
+            onClick={() => applyBodyEdit((t, s, e) => wrapSelection(t, s, e, "**", "**"))}
+            disabled={preview}
+            data-testid="post-body-bold"
+          >
+            <Bold />
+          </ToolButton>
+          <ToolButton
+            title="Bulleted list"
+            onClick={() => applyBodyEdit((t, s, e) => toggleList(t, s, e, false))}
+            disabled={preview}
+            data-testid="post-body-bullet"
+          >
+            <List />
+          </ToolButton>
+          <ToolButton
+            title="Numbered list"
+            onClick={() => applyBodyEdit((t, s, e) => toggleList(t, s, e, true))}
+            disabled={preview}
+            data-testid="post-body-numbered"
+          >
+            <ListOrdered />
+          </ToolButton>
+          <ToolButton
+            title="Pull quote"
+            onClick={() => applyBodyEdit((t, s, e) => toggleQuote(t, s, e))}
+            disabled={preview}
+            data-testid="post-body-quote"
+          >
+            <Quote />
+          </ToolButton>
+          <ToolButton
+            title="Divider / spacer"
+            onClick={() => applyBodyEdit((t, _s, e) => insertDivider(t, _s, e))}
+            disabled={preview}
+            data-testid="post-body-divider"
+          >
+            <Minus />
+          </ToolButton>
+          <ToolButton
+            title="Insert link"
+            onClick={() => applyBodyEdit((t, s, e) => insertLink(t, s, e))}
+            disabled={preview}
+            data-testid="post-body-link"
+          >
+            <LinkIcon />
+          </ToolButton>
+          <ToolButton
+            title="Insert image"
+            onClick={() => bodyFileRef.current?.click()}
+            disabled={preview || bodyUploading}
+            data-testid="post-body-insert-image"
+          >
+            <ImagePlus />
+          </ToolButton>
+          <span className="mx-1 h-5 w-px bg-divider" />
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => setPreview((p) => !p)}
+            className="rounded-lg"
+            data-testid="post-body-preview-toggle"
+          >
+            {preview ? "Back to editing" : "Preview"}
+          </Button>
         </div>
         {preview ? (
           <div
@@ -420,6 +615,7 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
         ) : (
           <Textarea
             id="post-body"
+            ref={bodyAreaRef}
             required
             rows={14}
             data-testid="post-body-input"

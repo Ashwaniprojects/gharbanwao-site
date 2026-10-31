@@ -123,20 +123,24 @@ const BULLET = "mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-green-700";
  *  and **bold**. It returns React nodes, so no HTML string is ever parsed. */
 export function renderBody(body, images) {
   const nodes = [];
-  let list = null;
+  let list = null; // { type: "ul" | "ol", items: string[] }
   const flush = () => {
     if (!list) return;
-    const items = list;
+    const { type, items } = list;
     list = null;
+    const cls =
+      type === "ol" ? "mt-4 ml-5 list-decimal space-y-2.5" : "mt-4 space-y-2.5";
+    const liCls = type === "ol" ? "pl-1 leading-relaxed" : "flex gap-3 leading-relaxed";
+    const Tag = type === "ol" ? "ol" : "ul";
     nodes.push(
-      <ul key={`ul-${nodes.length}`} className="mt-4 space-y-2.5">
+      <Tag key={`${type}-${nodes.length}`} className={cls}>
         {items.map((text, i) => (
-          <li key={i} className="flex gap-3 leading-relaxed">
-            <span className={BULLET} />
+          <li key={i} className={liCls}>
+            {type === "ul" ? <span className={BULLET} /> : null}
             <span>{inline(text)}</span>
           </li>
         ))}
-      </ul>
+      </Tag>
     );
   };
   for (const raw of String(body || "").split("\n")) {
@@ -145,12 +149,33 @@ export function renderBody(body, images) {
       flush();
       continue;
     }
+    // Bullet list — "- item"
     if (line.startsWith("- ")) {
-      list = list || [];
-      list.push(line.slice(2));
+      if (!list || list.type !== "ul") {
+        if (list) flush();
+        list = { type: "ul", items: [] };
+      }
+      list.items.push(line.slice(2));
+      continue;
+    }
+    // Numbered list — "1. item" (accept 1., 2., 10. etc.)
+    const num = /^\d+\.\s+/.exec(line);
+    if (num) {
+      if (!list || list.type !== "ol") {
+        if (list) flush();
+        list = { type: "ol", items: [] };
+      }
+      list.items.push(line.slice(num[0].length));
       continue;
     }
     flush();
+    // Horizontal rule / spacer — a line of 3+ dashes.
+    if (/^-{3,}$/.test(line)) {
+      nodes.push(
+        <div key={`hr-${nodes.length}`} className="my-6 h-px w-full bg-divider" />
+      );
+      continue;
+    }
     if (line.startsWith("> ")) {
       nodes.push(
         <blockquote key={`q-${nodes.length}`} className="my-8 border-l-4 border-green-700 pl-5 py-1 text-[19px] font-medium leading-snug text-ink">
@@ -216,6 +241,22 @@ export function renderBody(body, images) {
         <h3 key={`h-${nodes.length}`} className="mt-7 mb-2 text-[19px] font-bold leading-snug">
           {inline(line.slice(4))}
         </h3>
+      );
+      continue;
+    }
+    if (line.startsWith("#### ")) {
+      nodes.push(
+        <h4 key={`h-${nodes.length}`} className="mt-6 mb-2 text-[17px] font-bold leading-snug">
+          {inline(line.slice(5))}
+        </h4>
+      );
+      continue;
+    }
+    if (line.startsWith("##### ")) {
+      nodes.push(
+        <h5 key={`h-${nodes.length}`} className="mt-5 mb-1.5 text-[15px] font-bold uppercase tracking-wide">
+          {inline(line.slice(6))}
+        </h5>
       );
       continue;
     }
