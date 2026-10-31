@@ -5,6 +5,7 @@ import {
   CalendarDays,
   ExternalLink,
   ImagePlus,
+  Italic,
   Link as LinkIcon,
   List,
   ListOrdered,
@@ -98,6 +99,9 @@ const BLANK_OFFER = {
 
 const dateOf = (v) => (v ? String(v).slice(0, 10) : "");
 
+/** Today's date as the YYYY-MM-DD a `<input type="date">` understands. */
+const todayValue = () => new Date().toISOString().slice(0, 10);
+
 /** Live window → the ISO starts_at / ends_at the backend expects. */
 const offerWindow = (form) => {
   const starts = form.starts_at ? `${dateOf(form.starts_at)}T00:00:00.000Z` : null;
@@ -127,6 +131,9 @@ const BLANK_PROJECT = {
   cover_image_url: "",
   review_text: "",
   review_video_url: "",
+  published_at: "",
+  completion_date: "",
+  featured: false,
 };
 
 const BLANK_AUTHOR = {
@@ -153,6 +160,8 @@ const BLANK_GALLERY = {
   status: "published",
   progress: "ongoing",
   published_at: "",
+  completion_date: "",
+  featured: false,
   photos: "",
   cover_image_url: "",
 };
@@ -277,18 +286,28 @@ const applyHeading = (text, start, end, level) => {
   const prefix = level ? "#".repeat(level) + " " : "";
   const block = text.slice(s, e).split("\n").map((ln) => prefix + ln.replace(/^#{1,6}\s+/, "")).join("\n");
   const next = text.slice(0, s) + block + text.slice(e);
-  return { text: next, start: s, end: s + block.length };
+  // Move the caret to the first line after the prefix so it stays on the text.
+  const firstLine = block.split("\n")[0];
+  return { text: next, start: s + firstLine.length, end: s + firstLine.length };
 };
 
 const wrapSelection = (text, start, end, open, close) => {
   const sel = text.slice(start, end);
-  const already = text.slice(start - open.length, start) === open && text.slice(end, end + close.length) === close;
+  const already =
+    text.slice(start - open.length, start) === open &&
+    text.slice(end, end + close.length) === close;
   if (already) {
+    // Unwrap: drop the markers, keep the inner text selected so a second
+    // keystroke can re-wrap instead of leaving the cursor stranded.
     const next = text.slice(0, start - open.length) + sel + text.slice(end + close.length);
-    return { text: next, start: start - open.length, end: end - open.length };
+    return { text: next, start: start - open.length, end: start + sel.length };
   }
   const wrapped = open + sel + close;
-  return { text: text.slice(0, start) + wrapped + text.slice(end), start: start + open.length, end: start + wrapped.length };
+  const next = text.slice(0, start) + wrapped + text.slice(end);
+  // Restore selection to the inner text so typing never overtypes the markers.
+  if (sel) return { text: next, start: start + open.length, end: start + sel.length };
+  // Empty selection: sit the caret between the two markers.
+  return { text: next, start: start + open.length, end: start + open.length };
 };
 
 const toggleList = (text, start, end, ordered) => {
@@ -304,7 +323,11 @@ const toggleList = (text, start, end, ordered) => {
     })
     .join("\n");
   const next = text.slice(0, s) + block + text.slice(e);
-  return { text: next, start: s, end: s + block.length };
+  // Caret lands at the end of the first (non-empty) line so the user can keep
+  // typing the item instead of backspacing over the marker.
+  const firstLine = block.split("\n").find((ln) => ln.length > 0);
+  const pos = s + (firstLine ? firstLine.length : 0);
+  return { text: next, start: pos, end: pos };
 };
 
 const toggleQuote = (text, start, end) => {
@@ -313,13 +336,19 @@ const toggleQuote = (text, start, end) => {
   const allOn = lines.every((ln) => ln.length === 0 || ln.startsWith("> "));
   const block = lines.map((ln) => (ln.length === 0 ? ln : allOn ? ln.replace(/^> /, "") : `> ${ln}`)).join("\n");
   const next = text.slice(0, s) + block + text.slice(e);
-  return { text: next, start: s, end: s + block.length };
+  const first = block.split("\n")[0];
+  return { text: next, start: s + first.length, end: s + first.length };
 };
 
 const insertDivider = (text, _start, end) => {
-  const inserted = "\n\n---\n\n";
-  const next = text.slice(0, end) + inserted + text.slice(end);
-  return { text: next, start: end + inserted.length, end: end + inserted.length };
+  // Insert the divider on its own line after the caret's current line, keeping
+  // the caret on the divider so the next enter/keystroke continues the flow.
+  const e = lineEndOf(text, end);
+  const lead = e > 0 && text.slice(e - 1) !== "\n" ? "\n" : "";
+  const inserted = `${lead}\n---\n`;
+  const pos = e + lead.length; // start of the "---" line
+  const next = text.slice(0, e) + inserted + text.slice(e);
+  return { text: next, start: pos + 2, end: pos + 2 };
 };
 
 const insertLink = (text, start, end) => {
@@ -367,21 +396,35 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
   const fileRef = useRef(null);
   const bodyFileRef = useRef(null);
   const bodyAreaRef = useRef(null);
+  const bodyLocked = useRef(false);
+  // The textarea's selection is read into a ref the instant the user selects or
+  // moves the caret. A toolbar button click is a DOM event that can collapse or
+  // move the *live* selection before we read it, so a controlled textarea's
+  // selection is unreliable at click time — we keep our own snapshot instead.
+  const bodySelRef = useRef({ start: 0, end: 0 });
 
-  const set = (key) => (value) =>
-    setForm((prev) => ({ ...prev, [key]: value?.target ? value.target.value : value }));
+  const captureBodySelection = () => {
+    const ta = bodyAreaRef.current;
+    if (!ta) return;
+    bodySelRef.current = { start: ta.selectionStart ?? 0, end: ta.selectionEnd ?? 0 };
+  };
 
-  // Run one of the markdown helpers against the current textarea selection,
+  // Run one of the markdown helpers against the last-captured selection,
   // update form.body, then hand focus + the new caret range back to the
   // textarea so the next keystroke lands where the user expects.
   const applyBodyEdit = (fn) => {
     const ta = bodyAreaRef.current;
     const text = form.body || "";
-    const start = ta ? ta.selectionStart : text.length;
-    const end = ta ? ta.selectionEnd : text.length;
+    // Trust the snapshot, but clamp it to the current text in case the body was
+    // edited (or the snapshot is stale) after it was captured.
+    let { start, end } = bodySelRef.current;
+    if (start > text.length || end > text.length || end < start) {
+      start = end = text.length;
+    }
     const result = fn(text, start, end);
     if (!result) return; // user cancelled a prompt
     setForm((prev) => ({ ...prev, body: result.text }));
+    bodySelRef.current = { start: result.start, end: result.end };
     requestAnimationFrame(() => {
       if (!ta) return;
       ta.focus();
@@ -397,6 +440,43 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
     const level = Number(e.target.value);
     e.target.value = "0"; // reset the native select back to Paragraph
     applyBodyEdit((t, s, en) => applyHeading(t, s, en, level));
+  };
+
+  // While the body box is focused, lock the page so typing/wheel stays inside
+  // the box (it scrolls on its own). Unlock on blur or on unmount.
+  const lockBodyScroll = () => {
+    if (bodyLocked.current) return;
+    bodyLocked.current = true;
+    document.documentElement.classList.add("overflow-hidden");
+  };
+  const unlockBodyScroll = () => {
+    if (!bodyLocked.current) return;
+    bodyLocked.current = false;
+    document.documentElement.classList.remove("overflow-hidden");
+  };
+  useEffect(() => () => unlockBodyScroll(), []);
+
+  // Keyboard shortcuts that mirror the toolbar buttons. Only intercept when
+  // the body textarea has focus, so the rest of the admin page is untouched.
+  const onBodyKeyDown = (e) => {
+    if (preview) return;
+    const ta = bodyAreaRef.current;
+    const mod = e.metaKey || e.ctrlKey;
+    const key = e.key.toLowerCase();
+    let action = null;
+    if (mod && key === "b") action = "bold";
+    else if (mod && key === "i") action = "italic";
+    else if (mod && key === "k") action = "link";
+    else if (e.key === "Tab" && (e.target === ta || ta === document.activeElement)) {
+      action = e.shiftKey ? "bullet" : "numbered";
+    }
+    if (!action) return;
+    e.preventDefault();
+    if (action === "bold") applyBodyEdit((t, s, en) => wrapSelection(t, s, en, "**", "**"));
+    if (action === "italic") applyBodyEdit((t, s, en) => wrapSelection(t, s, en, "*", "*"));
+    if (action === "link") applyBodyEdit((t, s, en) => insertLink(t, s, en));
+    if (action === "bullet") applyBodyEdit((t, s, en) => toggleList(t, s, en, false));
+    if (action === "numbered") applyBodyEdit((t, s, en) => toggleList(t, s, en, true));
   };
 
   const onPickFile = async (e) => {
@@ -525,7 +605,7 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
           </select>
           <span className="mx-1 h-5 w-px bg-divider" />
           <ToolButton
-            title="Bold"
+            title="Bold — Ctrl/⌘ + B. Select text first, then click (or press the shortcut)."
             onClick={() => applyBodyEdit((t, s, e) => wrapSelection(t, s, e, "**", "**"))}
             disabled={preview}
             data-testid="post-body-bold"
@@ -533,7 +613,15 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
             <Bold />
           </ToolButton>
           <ToolButton
-            title="Bulleted list"
+            title="Italic — Ctrl/⌘ + I"
+            onClick={() => applyBodyEdit((t, s, e) => wrapSelection(t, s, e, "*", "*"))}
+            disabled={preview}
+            data-testid="post-body-italic"
+          >
+            <Italic />
+          </ToolButton>
+          <ToolButton
+            title="Bulleted list — puts a “- ” in front of each selected line (Tab also toggles it off)"
             onClick={() => applyBodyEdit((t, s, e) => toggleList(t, s, e, false))}
             disabled={preview}
             data-testid="post-body-bullet"
@@ -541,7 +629,7 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
             <List />
           </ToolButton>
           <ToolButton
-            title="Numbered list"
+            title="Numbered list — puts “1. 2. …” in front of each selected line (Shift+Tab toggles it off)"
             onClick={() => applyBodyEdit((t, s, e) => toggleList(t, s, e, true))}
             disabled={preview}
             data-testid="post-body-numbered"
@@ -549,7 +637,7 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
             <ListOrdered />
           </ToolButton>
           <ToolButton
-            title="Pull quote"
+            title="Pull quote — highlights the selected line(s) like a block quote"
             onClick={() => applyBodyEdit((t, s, e) => toggleQuote(t, s, e))}
             disabled={preview}
             data-testid="post-body-quote"
@@ -557,7 +645,7 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
             <Quote />
           </ToolButton>
           <ToolButton
-            title="Divider / spacer"
+            title="Divider / spacer — inserts a thin horizontal rule on its own line"
             onClick={() => applyBodyEdit((t, _s, e) => insertDivider(t, _s, e))}
             disabled={preview}
             data-testid="post-body-divider"
@@ -565,7 +653,7 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
             <Minus />
           </ToolButton>
           <ToolButton
-            title="Insert link"
+            title="Link — select text and add a URL (Ctrl/⌘ + K)"
             onClick={() => applyBodyEdit((t, s, e) => insertLink(t, s, e))}
             disabled={preview}
             data-testid="post-body-link"
@@ -573,7 +661,7 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
             <LinkIcon />
           </ToolButton>
           <ToolButton
-            title="Insert image"
+            title="Image — upload a photo and drop it in at the cursor"
             onClick={() => bodyFileRef.current?.click()}
             disabled={preview || bodyUploading}
             data-testid="post-body-insert-image"
@@ -592,6 +680,10 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
             {preview ? "Back to editing" : "Preview"}
           </Button>
         </div>
+        <p className="mono-label mb-2 text-[12px] leading-relaxed text-ink/40" data-testid="post-body-hints">
+          Tip: select the text or line first, then use the buttons above. Shortcuts — Ctrl/⌘+B bold ·
+          Ctrl/⌘+I italic · Ctrl/⌘+K link · Tab / Shift+Tab list.
+        </p>
         {preview ? (
           <div
             className="card-gb max-w-[46rem] bg-paper px-6 py-6 text-[16px] text-ink/80"
@@ -621,6 +713,12 @@ const PostEditor = ({ original, onSaved, onCancel }) => {
             data-testid="post-body-input"
             value={form.body}
             onChange={set("body")}
+            onSelect={captureBodySelection}
+            onKeyUp={captureBodySelection}
+            onMouseUp={captureBodySelection}
+            onFocus={lockBodyScroll}
+            onBlur={unlockBodyScroll}
+            onKeyDown={onBodyKeyDown}
             className={areaClass}
           />
         )}
@@ -776,7 +874,14 @@ const ProjectRow = ({ project, onEdit, onDelete, busy, canDelete }) => (
     data-testid={`admin-project-${project.slug}`}
   >
     <div className="min-w-0">
-      <p className="truncate font-bold">{project.title}</p>
+      <p className="truncate font-bold">
+        {project.title}
+        {project.featured ? (
+          <span className="ml-2 rounded bg-green px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-ink">
+            Featured
+          </span>
+        ) : null}
+      </p>
       <p className="mono-label mt-1 text-ink/40">
         {[project.locality, project.city].filter(Boolean).join(", ") || "—"} ·{" "}
         {project.status === "handed_over" ? "Handed over" : "Ongoing"}
@@ -803,7 +908,7 @@ const ProjectRow = ({ project, onEdit, onDelete, busy, canDelete }) => (
   </li>
 );
 
-const ProjectEditor = ({ original, onSaved, onCancel }) => {
+const ProjectEditor = ({ original, onSaved, onCancel, featuredDisabled }) => {
   const [form, setForm] = useState(() =>
     original
       ? {
@@ -811,9 +916,12 @@ const ProjectEditor = ({ original, onSaved, onCancel }) => {
           ...original,
           area_sqft: original.area_sqft ?? "",
           handover_date: dateValue(original.handover_date),
+          published_at: dateValue(original.published_at),
+          completion_date: dateValue(original.completion_date),
+          featured: Boolean(original.featured),
           photos: photosToText(original.photos),
         }
-      : BLANK_PROJECT,
+      : { ...BLANK_PROJECT, published_at: todayValue() },
   );
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -856,6 +964,8 @@ const ProjectEditor = ({ original, onSaved, onCancel }) => {
       slug: slugFor(form, original),
       area_sqft: form.area_sqft === "" ? null : Number(form.area_sqft),
       handover_date: form.handover_date ? `${form.handover_date}T00:00:00.000Z` : null,
+      published_at: form.published_at ? `${form.published_at}T00:00:00.000Z` : null,
+      completion_date: form.completion_date || null,
       photos: form.photos
         .split("\n")
         .map((line) => line.trim())
@@ -977,7 +1087,48 @@ const ProjectEditor = ({ original, onSaved, onCancel }) => {
             data-testid="project-handover-input"
           />
         </Field>
+        <Field label="Publish date" htmlFor="project-publish" hint="When this project counts as published (defaults to today).">
+          <Input
+            id="project-publish"
+            type="date"
+            value={form.published_at}
+            onChange={set("published_at")}
+            className={inputClass}
+            data-testid="project-publish-input"
+          />
+        </Field>
+        <Field label="Completion date" htmlFor="project-completion" hint="When the home was handed over — the public list's “Latest” sort orders by this.">
+          <Input
+            id="project-completion"
+            type="date"
+            value={form.completion_date}
+            onChange={set("completion_date")}
+            className={inputClass}
+            data-testid="project-completion-input"
+          />
+        </Field>
       </div>
+
+      <Field
+        label="Featured"
+        hint={
+          featuredDisabled
+            ? "All 9 featured slots are filled. Unfeature another project first."
+            : "Show this home in the public “Featured” view."
+        }
+      >
+        <label className={`flex items-center gap-3 rounded-lg border px-4 py-3 ${form.featured ? "border-green-600 bg-green-50" : "border-divider"}`}>
+          <input
+            type="checkbox"
+            checked={form.featured}
+            disabled={featuredDisabled && !form.featured}
+            onChange={(e) => setForm((prev) => ({ ...prev, featured: e.target.checked }))}
+            className="h-5 w-5 accent-green-700"
+            data-testid="project-featured-toggle"
+          />
+          <span className="text-[14px] font-semibold">Mark this project as featured</span>
+        </label>
+      </Field>
 
       <Field label="Summary" htmlFor="project-summary">
         <Textarea
@@ -1476,7 +1627,14 @@ const GalleryRow = ({ item, onEdit, onDelete, busy, canDelete }) => (
     data-testid={`admin-gallery-${item.slug}`}
   >
     <div className="min-w-0">
-      <p className="truncate font-bold">{item.title}</p>
+      <p className="truncate font-bold">
+        {item.title}
+        {item.featured ? (
+          <span className="ml-2 rounded bg-green px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-ink">
+            Featured
+          </span>
+        ) : null}
+      </p>
       <p className="mono-label mt-1 text-ink/40">
         {[item.locality, item.city].filter(Boolean).join(", ") || "—"} ·{" "}
         {item.status === "published" ? "Published" : "Draft"}
@@ -1504,7 +1662,7 @@ const GalleryRow = ({ item, onEdit, onDelete, busy, canDelete }) => (
   </li>
 );
 
-const GalleryEditor = ({ original, onSaved, onCancel }) => {
+const GalleryEditor = ({ original, onSaved, onCancel, featuredDisabled }) => {
   const [form, setForm] = useState(() =>
     original
       ? {
@@ -1513,9 +1671,11 @@ const GalleryEditor = ({ original, onSaved, onCancel }) => {
           area_sqft: original.area_sqft ?? "",
           progress: original.progress ?? "ongoing",
           published_at: dateValue(original.published_at),
+          completion_date: dateValue(original.completion_date),
+          featured: Boolean(original.featured),
           photos: photosToText(original.photos),
         }
-      : BLANK_GALLERY,
+      : { ...BLANK_GALLERY, published_at: todayValue() },
   );
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -1560,6 +1720,8 @@ const GalleryEditor = ({ original, onSaved, onCancel }) => {
       slug: slugFor(form, original),
       area_sqft: numOr(form.area_sqft),
       published_at: form.published_at ? `${form.published_at}T00:00:00.000Z` : null,
+      completion_date: form.completion_date || null,
+      featured: Boolean(form.featured),
       photos: form.photos.split("\n").map((line) => line.trim()).filter(Boolean),
     };
     try {
@@ -1611,13 +1773,23 @@ const GalleryEditor = ({ original, onSaved, onCancel }) => {
         <Field label="Package" htmlFor="gallery-package">
           <Input id="gallery-package" value={form.package} onChange={set("package")} className={inputClass} placeholder="Gold" />
         </Field>
-        <Field label="Publish date" htmlFor="gallery-date" hint="When the entry becomes live (blank = now).">
+        <Field label="Publish date" htmlFor="gallery-date" hint="When the entry becomes live (defaults to today).">
           <Input
             id="gallery-date"
             type="date"
             value={form.published_at}
             onChange={set("published_at")}
             className={inputClass}
+          />
+        </Field>
+        <Field label="Completion date" htmlFor="gallery-completion" hint="When the home was handed over — the public gallery's “Latest” sort orders by this.">
+          <Input
+            id="gallery-completion"
+            type="date"
+            value={form.completion_date}
+            onChange={set("completion_date")}
+            className={inputClass}
+            data-testid="gallery-completion-input"
           />
         </Field>
         <Field label="Status">
@@ -1649,6 +1821,27 @@ const GalleryEditor = ({ original, onSaved, onCancel }) => {
             ))}
           </SelectContent>
         </Select>
+      </Field>
+
+      <Field
+        label="Featured"
+        hint={
+          featuredDisabled
+            ? "All 9 featured slots are filled. Unfeature another gallery entry first."
+            : "Lead this home in the public photo gallery."
+        }
+      >
+        <label className={`flex items-center gap-3 rounded-lg border px-4 py-3 ${form.featured ? "border-green-600 bg-green-50" : "border-divider"}`}>
+          <input
+            type="checkbox"
+            checked={form.featured}
+            disabled={featuredDisabled && !form.featured}
+            onChange={(e) => setForm((prev) => ({ ...prev, featured: e.target.checked }))}
+            className="h-5 w-5 accent-green-700"
+            data-testid="gallery-featured-toggle"
+          />
+          <span className="text-[14px] font-semibold">Mark this entry as featured</span>
+        </label>
       </Field>
 
       <Field
@@ -2381,6 +2574,13 @@ export default function AdminPage() {
     registrations: registrations.length,
   };
 
+  // How many featured slots are already taken (per section), so the editor can
+  // disable the "mark featured" checkbox once all 9 are filled. An item that
+  // is already featured can still be edited (it keeps its slot).
+  const FEATURED_CAP = 9;
+  const featuredProjects = projects.filter((p) => p.featured).length;
+  const featuredGallery = gallery.filter((g) => g.featured).length;
+
   if (editing) {
     const kindLabel =
       editing.kind === "projects"
@@ -2426,6 +2626,13 @@ export default function AdminPage() {
             <Editor
               key={editing.item ? editing.item.slug : "new"}
               original={editing.item}
+              featuredDisabled={
+                editing.kind === "projects"
+                  ? featuredProjects >= FEATURED_CAP
+                  : editing.kind === "gallery"
+                    ? featuredGallery >= FEATURED_CAP
+                    : false
+              }
               onSaved={(message) => {
                 setEditing(null);
                 say(message);

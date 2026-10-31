@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { ImagePlus, MapPin, Building2 } from "lucide-react";
+import { ImagePlus, MapPin, Building2, Star } from "lucide-react";
 import { Container, MonoLabel, Reveal, SectionHeader, Placeholder } from "@/components/site/shared";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { fetchGallery } from "@/lib/cmsAdmin";
@@ -20,6 +20,7 @@ export default function GallerySection() {
   });
   const [lightbox, setLightbox] = useState(null); // { item, index }
   const [filter, setFilter] = useState("all");
+  const [sortLatest, setSortLatest] = useState(false);
   const [page, setPage] = useState(1);
   const gridRef = useRef(null);
 
@@ -27,20 +28,30 @@ export default function GallerySection() {
 
   // progress: "ongoing" (default, incl. legacy rows) or "handed_over". Mirror
   // the projects-list filter convention: a finished home is the exception.
-  const filtered =
+  const byProgress =
     filter === "all"
       ? entries
       : entries.filter((p) => (filter === "handed_over" ? p.progress === "handed_over" : p.progress !== "handed_over"));
+
+  // Featured entries lead the gallery; "Latest" instead orders by completion
+  // date, newest first (undated entries sink to the end).
+  const filtered = sortLatest
+    ? [...byProgress].sort((a, b) => {
+        const da = a.completion_date ? Date.parse(a.completion_date) : 0;
+        const db = b.completion_date ? Date.parse(b.completion_date) : 0;
+        return db - da;
+      })
+    : [...byProgress].sort((a, b) => Number(!!b.featured) - Number(!!a.featured));
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
   const shown = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
-  // Switching filters can leave the viewer on a page that no longer exists —
-  // reset to the first page and jump back to the top of the grid.
+  // Switching filters or the sort can leave the viewer on a page that no
+  // longer exists — reset to the first page and jump back to the top of the grid.
   useEffect(() => {
     setPage(1);
-  }, [filter]);
+  }, [filter, sortLatest]);
 
   useEffect(() => {
     if (gridRef.current) gridRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -72,7 +83,7 @@ export default function GallerySection() {
       </Container>
 
       <Container className="mt-12">
-        <div className="mb-8 flex flex-wrap justify-center gap-2" data-testid="gallery-filter">
+        <div className="mb-8 flex flex-wrap items-center justify-center gap-2" data-testid="gallery-filter">
           {[
             ["all", "All homes"],
             ["ongoing", "Ongoing"],
@@ -87,6 +98,15 @@ export default function GallerySection() {
               {l}
             </button>
           ))}
+          <button
+            onClick={() => setSortLatest((s) => !s)}
+            aria-pressed={sortLatest}
+            className={`inline-flex h-10 items-center gap-1.5 rounded-full px-4 text-[14px] font-bold border transition-colors ${sortLatest ? "bg-green text-ink border-green" : "border-divider text-ink/60 hover:border-ink/40"}`}
+            data-testid="gallery-sort-latest"
+          >
+            <Star className="h-3.5 w-3.5" fill={sortLatest ? "currentColor" : "none"} />
+            Latest
+          </button>
         </div>
         {isLoading ? (
           <p className="py-16 text-center font-mono text-[14px] text-ink/50" data-testid="gallery-loading">

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
-import { ArrowRight, Building2, CheckCircle2, Hammer, ImagePlus, MapPin } from "lucide-react";
+import { ArrowRight, Building2, CheckCircle2, Hammer, ImagePlus, MapPin, Star } from "lucide-react";
 import { AnnouncementStrip } from "@/components/site/AnnouncementStrip";
 import { Navbar } from "@/components/site/Navbar";
 import { FinalCTA, Footer, MobileBar } from "@/components/site/FaqCtaFooter";
@@ -29,9 +29,16 @@ const ProjectCard = ({ p, i }) => {
         <div className="flex flex-1 flex-col p-5">
           <div className="flex items-center justify-between gap-2">
             <MonoLabel>{p.gb_id || p.locality || "PROJECT"}</MonoLabel>
-            <span className={`font-mono text-[10px] uppercase tracking-[0.08em] px-2 py-0.5 rounded ${ongoing ? "bg-yellow" : "bg-green"}`}>
-              {ongoing ? "Ongoing" : "Handed over"}
-            </span>
+            <div className="flex items-center gap-1.5">
+              {p.featured ? (
+                <span className="inline-flex items-center gap-1 rounded bg-green px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-ink" data-testid={`project-featured-${p.slug}`}>
+                  <Star className="h-2.5 w-2.5" fill="currentColor" /> Featured
+                </span>
+              ) : null}
+              <span className={`font-mono text-[10px] uppercase tracking-[0.08em] px-2 py-0.5 rounded ${ongoing ? "bg-yellow" : "bg-green"}`}>
+                {ongoing ? "Ongoing" : "Handed over"}
+              </span>
+            </div>
           </div>
           <h3 className="mt-2 text-[18px] font-bold leading-snug tracking-tight group-hover:text-green-700 transition-colors">
             {p.title}
@@ -79,22 +86,38 @@ export default function ProjectsPage() {
     retry: false,
   });
   const [filter, setFilter] = useState("all");
+  const [sortLatest, setSortLatest] = useState(false);
   const [page, setPage] = useState(1);
   const gridRef = useRef(null);
 
   const PAGE_SIZE = 12;
 
-  const filtered = filter === "all" ? projects : projects.filter((p) => (filter === "ongoing" ? p.status !== "handed_over" : p.status === "handed_over"));
+  // The active facet — "featured" is its own slice alongside the status views.
+  const byFilter = projects.filter((p) => {
+    if (filter === "featured") return p.featured;
+    if (filter === "ongoing") return p.status !== "handed_over";
+    if (filter === "handed_over") return p.status === "handed_over";
+    return true;
+  });
+  // "Sort: latest" reorders by completion_date, newest first; homes without a
+  // completion date sink to the bottom of the view.
+  const filtered = sortLatest
+    ? [...byFilter].sort((a, b) => {
+        const da = a.completion_date ? Date.parse(a.completion_date) : 0;
+        const db = b.completion_date ? Date.parse(b.completion_date) : 0;
+        return db - da;
+      })
+    : byFilter;
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
   const shown = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
-  // Switching filters can leave the viewer on a page that no longer exists —
-  // reset to the first page and jump back to the top of the grid.
+  // Switching filters or the sort can leave the viewer on a page that no longer
+  // exists — reset to the first page and jump back to the top of the grid.
   useEffect(() => {
     setPage(1);
-  }, [filter]);
+  }, [filter, sortLatest]);
 
   useEffect(() => {
     if (gridRef.current) gridRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -116,8 +139,8 @@ export default function ProjectsPage() {
 
         <section className="section-gb">
           <Container>
-            <Reveal className="mb-[30px] flex flex-wrap justify-center gap-2">
-              {[["all", "All projects"], ["ongoing", "Ongoing"], ["handed_over", "Completed"]].map(([v, l]) => (
+            <Reveal className="mb-[30px] flex flex-wrap items-center justify-center gap-2">
+              {[["all", "All projects"], ["featured", "Featured"], ["ongoing", "Ongoing"], ["handed_over", "Completed"]].map(([v, l]) => (
                 <button
                   key={v}
                   onClick={() => setFilter(v)}
@@ -127,6 +150,15 @@ export default function ProjectsPage() {
                   {l}
                 </button>
               ))}
+              <button
+                onClick={() => setSortLatest((s) => !s)}
+                aria-pressed={sortLatest}
+                className={`inline-flex h-10 items-center gap-1.5 rounded-full px-4 text-[14px] font-bold border transition-colors ${sortLatest ? "bg-green text-ink border-green" : "border-divider text-ink/60 hover:border-ink/40"}`}
+                data-testid="projects-sort-latest"
+              >
+                <Star className="h-3.5 w-3.5" fill={sortLatest ? "currentColor" : "none"} />
+                Latest
+              </button>
             </Reveal>
             {isLoading ? (
               <p className="py-20 text-center font-mono text-[14px] text-ink/50" data-testid="projects-loading">
