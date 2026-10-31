@@ -55,14 +55,20 @@ const NOT_FOUND_HEAD = {
 const escapeHtml = (s) =>
   String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-/** Turn `**bold**` runs into <strong> nodes, leaving the rest as plain text.
- *  A trailing period right after the closing markers survives, so "a number."
- *  still reads as "a number." */
+/** Turn `**bold**` and `*italic*` runs into <strong>/<em> nodes, leaving the
+ *  rest as plain text. A trailing period right after the closing markers
+ *  survives, so "a number." still reads as "a number." */
 function rich(text) {
-  return String(text).split(/(\*\*[^*]+\*\*)/g).filter(Boolean).map((part, i) => {
-    const m = /^\*\*(.+)\*\*$/.exec(part);
-    return m ? <strong key={i}>{m[1]}</strong> : part;
-  });
+  return String(text)
+    .split(/(\*\*[^*]+\*\*|\*[^*\n]+\*)/g)
+    .filter(Boolean)
+    .map((part, i) => {
+      const bold = /^\*\*(.+)\*\*$/.exec(part);
+      if (bold) return <strong key={i}>{bold[1]}</strong>;
+      const italic = /^\*([^*]+)\*$/.exec(part);
+      if (italic) return <em key={i}>{italic[1]}</em>;
+      return part;
+    });
 }
 
 /** The body is the lightweight markup documented at the top of blogs.js:
