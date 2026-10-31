@@ -69,18 +69,18 @@ export const TRUST = [
 ];
 
 export const WHY = [
-  { icon: "ClipboardCheck", title: "150+ onsite quality checks", text: "You Don't Just See the Result, You See the Quality Checklist Behind it.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/about/onsite-blueprint-consultation-iLFqw3v8eHGYyP7nx2XOdjLd10QAZc.webp" },
-  { icon: "FileText", title: "100% materials transparency", text: "Brand, grade, and quantity on every delivery note.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/about/modern-brick-house-under-construction-whRcqyDNOe05SMruM7BsxuPLuuljFa.webp" },
-  { icon: "FlaskConical", title: "Materials quality control", text: "Sample testing before site delivery. Rejected batches get returned.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/featured/construction-fvxB0lcSal27OVPruCk0S6tYN6bVLB.webp" },
-  { icon: "Camera", title: "Real-time project tracking", text: "Your WhatsApp gets site photos every Monday and Thursday.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/about/blueprints-across-india-OBQcafvLRQUfd0YH3HF3GnRbrIvHt7.webp" },
-  { icon: "ShieldCheck", title: "100% money safety", text: "Payments linked to stage completion, not calendar dates.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/featured/architecture-pjypWEqifXbvqd2K9pVt9ntpZwKMaP.webp" },
-  { icon: "Landmark", title: "Structural warranty", text: "25-Year Written Structural Warranty, Long-Term Protection You Can Rely On.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/about/warm-modern-house-Jm33onogXoc6Bux8issx41PEjcAshO.webp" },
-  { icon: "CalendarRange", title: "Stage-linked payment schedule", text: "The same 9-stage schedule on every package, mapped to work finished, not ours.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/about/warm-modern-indian-home-NekcdEjxEJsncTyNEQAccvqcT05Zhm.webp" },
-  { icon: "Headset", title: "Dedicated customer support", text: "One project manager per build. One WhatsApp number. One accountable name.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/featured/renovation-CM74XCbsL7FnIk11JzTd1VYKfyWKk6.webp" },
-  { icon: "Timer", title: "On-time delivery", text: "Average delay across 264+ homes: 11 days. We publish it.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/about/proud-family-dream-home-4xZux8jBna7hcEvt4uHG1f25C6Azcx.webp" },
-  { icon: "History", title: "9+ years of experience", text: "Started 2017. Still Lucknow-headquartered.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/featured/interior-63NYpQbUoFS2EXAdSOwzu9fjA2PcZd.webp" },
-  { icon: "HardHat", title: "Dedicated engineers", text: "One structural, one site, one quality — assigned per project.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/about/onsite-blueprint-consultation-iLFqw3v8eHGYyP7nx2XOdjLd10QAZc.webp" },
-  { icon: "Wrench", title: "Post-handover support", text: "12 months of free fixes on anything we built.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/about/warm-modern-house-Jm33onogXoc6Bux8issx41PEjcAshO.webp" },
+  { icon: "ClipboardCheck", title: "150+ On-Site Quality Checks", text: "Quality checked at every key construction stage.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/about/onsite-blueprint-consultation-iLFqw3v8eHGYyP7nx2XOdjLd10QAZc.webp" },
+  { icon: "FileText", title: "100% Material Transparency", text: "Know the brand, grade and quantity used.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/about/modern-brick-house-under-construction-whRcqyDNOe05SMruM7BsxuPLuuljFa.webp" },
+  { icon: "FlaskConical", title: "Material Quality Control", text: "Only specification-approved, quality materials go into your home.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/featured/construction-fvxB0lcSal27OVPruCk0S6tYN6bVLB.webp" },
+  { icon: "Camera", title: "Real-Time Project Tracking", text: "Get site progress updates on WhatsApp, anywhere.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/about/blueprints-across-india-OBQcafvLRQUfd0YH3HF3GnRbrIvHt7.webp" },
+  { icon: "ShieldCheck", title: "Payment Protection", text: "Pay according to actual construction progress.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/featured/architecture-pjypWEqifXbvqd2K9pVt9ntpZwKMaP.webp" },
+  { icon: "Landmark", title: "25-Year Structural Warranty", text: "Written structural protection for long-term peace of mind.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/about/warm-modern-house-Jm33onogXoc6Bux8issx41PEjcAshO.webp" },
+  { icon: "CalendarRange", title: "Stage-Linked Payments", text: "Payments linked to clearly defined work stages.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/about/warm-modern-indian-home-NekcdEjxEJsncTyNEQAccvqcT05Zhm.webp" },
+  { icon: "Headset", title: "Dedicated Customer Support", text: "One dedicated contact throughout your project, queries resolved within 24 hours.", img: "https://ogilrhhcbbuhntyk.public.blob.vercel-storage.com/gharbanwao/images/featured/renovation-CM74XCbsL7FnIk11JzTd1VYKfyWKk6.webp" },
+  { icon: "CalendarClock", title: "On-Time Delivery", text: "Planned execution to keep your project on schedule." },
+  { icon: "Award", title: "9+ Years of Experience", text: "Proven construction experience you can rely on." },
+  { icon: "HardHat", title: "Dedicated Engineers", text: "Engineer supervision at important construction stages." },
+  { icon: "LifeBuoy", title: "Post-Handover Support", text: "12 months of support even after handover." },
 ];
 
 export const SERVICES = [
