@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { ImagePlus, MapPin, Building2 } from "lucide-react";
@@ -20,6 +20,10 @@ export default function GallerySection() {
   });
   const [lightbox, setLightbox] = useState(null); // { item, index }
   const [filter, setFilter] = useState("all");
+  const [page, setPage] = useState(1);
+  const gridRef = useRef(null);
+
+  const PAGE_SIZE = 12;
 
   // progress: "ongoing" (default, incl. legacy rows) or "handed_over". Mirror
   // the projects-list filter convention: a finished home is the exception.
@@ -28,7 +32,21 @@ export default function GallerySection() {
       ? entries
       : entries.filter((p) => (filter === "handed_over" ? p.progress === "handed_over" : p.progress !== "handed_over"));
 
-  const shown = filtered;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const shown = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  // Switching filters can leave the viewer on a page that no longer exists —
+  // reset to the first page and jump back to the top of the grid.
+  useEffect(() => {
+    setPage(1);
+  }, [filter]);
+
+  useEffect(() => {
+    if (gridRef.current) gridRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [safePage]);
+
+  const goPage = (n) => setPage(Math.max(1, Math.min(totalPages, n)));
 
   const openLightbox = (item, index = 0) => setLightbox({ item, index });
   const step = (dir) => {
@@ -86,7 +104,8 @@ export default function GallerySection() {
             </p>
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-testid="gallery-grid">
+          <>
+            <div ref={gridRef} className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-testid="gallery-grid">
             {shown.map((p, i) => {
               const photos = Array.isArray(p.photos) ? p.photos : [];
               const cover = p.cover_image_url || photos[0] || null;
@@ -164,7 +183,36 @@ export default function GallerySection() {
                 </Reveal>
               );
             })}
-          </div>
+            </div>
+
+            {totalPages > 1 && (
+              <div className="mt-10 flex flex-wrap items-center justify-center gap-2" data-testid="gallery-pagination">
+                <button
+                  onClick={() => goPage(safePage - 1)}
+                  disabled={safePage === 1}
+                  className="h-10 rounded-full border border-divider px-4 text-[14px] font-bold transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  Prev
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+                  <button
+                    key={n}
+                    onClick={() => goPage(n)}
+                    className={`h-10 w-10 rounded-full border text-[14px] font-bold transition-colors ${n === safePage ? "border-ink bg-ink text-paper" : "border-divider hover:border-ink/40"}`}
+                  >
+                    {n}
+                  </button>
+                ))}
+                <button
+                  onClick={() => goPage(safePage + 1)}
+                  disabled={safePage === totalPages}
+                  className="h-10 rounded-full border border-divider px-4 text-[14px] font-bold transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         )}
       </Container>
 
