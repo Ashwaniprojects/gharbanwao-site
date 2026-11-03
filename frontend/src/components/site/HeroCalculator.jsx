@@ -17,7 +17,7 @@ const CountUp = ({ value, testId, className }) => {
 };
 
 export const UnitToggle = ({ value, onChange, idPrefix = "hero" }) => (
-  <div className="inline-flex rounded-lg border border-divider p-0.5 bg-paper" role="radiogroup" aria-label="Area unit">
+  <div className="flex h-12 shrink-0 items-center rounded-lg border border-divider p-1 bg-paper" role="radiogroup" aria-label="Area unit">
     {[["sqft", "Sq. Feet"], ["sqm", "Sq. Meter"]].map(([v, l]) => (
       <button
         key={v}
@@ -25,7 +25,7 @@ export const UnitToggle = ({ value, onChange, idPrefix = "hero" }) => (
         role="radio"
         aria-checked={value === v}
         onClick={() => onChange(v)}
-        className={`h-9 px-3 rounded-md text-[13px] font-semibold transition-colors ${value === v ? "bg-ink text-paper" : "text-ink/60 hover:text-ink"}`}
+        className={`h-full px-3 rounded-md text-[13px] font-semibold transition-colors ${value === v ? "bg-ink text-paper" : "text-ink/60 hover:text-ink"}`}
         data-testid={`${idPrefix}-unit-${v}`}
       >
         {l}
@@ -38,7 +38,7 @@ export const PackageToggle = ({ value, onChange, idPrefix = "calc" }) => {
   const { config } = useCalc();
   const keys = Object.keys((config && config.packages) || { silver: {}, gold: {} });
   return (
-    <div className="inline-flex flex-wrap gap-1 rounded-lg border border-divider p-1 bg-paper" role="radiogroup" aria-label="Package">
+    <div className="flex h-12 items-center gap-1 rounded-lg border border-divider p-1 bg-paper" role="radiogroup" aria-label="Package">
       {keys.map((k) => {
         const pkg = config?.packages?.[k] || {};
         const active = value === k;
@@ -49,11 +49,11 @@ export const PackageToggle = ({ value, onChange, idPrefix = "calc" }) => {
             role="radio"
             aria-checked={active}
             onClick={() => onChange(k)}
-            className={`h-12 px-3 rounded-md text-[13px] font-semibold transition-colors ${active ? "bg-ink text-paper" : "text-ink/60 hover:text-ink"}`}
+            className={`h-full flex-1 min-w-0 px-2.5 rounded-md text-[12px] font-semibold transition-colors ${active ? "bg-ink text-paper" : "text-ink/60 hover:text-ink"}`}
             data-testid={`${idPrefix}-package-${k}`}
           >
-            {pkg.name || k}
-            <span className={`ml-1 font-mono text-[11px] ${active ? "text-paper/70" : "text-ink/40"}`}>₹{pkg.rate ?? "—"}</span>
+            <span className="block truncate leading-tight">{pkg.name || k}</span>
+            <span className={`block truncate font-mono text-[10px] leading-tight ${active ? "text-paper/70" : "text-ink/40"}`}>₹{pkg.rate ?? "—"}</span>
           </button>
         );
       })}

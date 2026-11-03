@@ -3,19 +3,16 @@ import { Navbar } from "@/components/site/Navbar";
 import { Footer, MobileBar, FinalCTA } from "@/components/site/FaqCtaFooter";
 import { Container, Reveal, SectionHeader } from "@/components/site/shared";
 import { Comparison } from "@/components/site/PricingTeam";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import {
-  PRICING, PRICING_ROWS, PAYMENT_SCHEDULE, PAYMENT_RULES, PAYMENT_EXAMPLE,
+  PRICING, PRICING_ROWS,
   PHONES,
 } from "@/data/content";
 import { scrollToId } from "@/lib/scroll";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 
-const inr = (n) => "₹" + n.toLocaleString("en-IN");
-
 export default function PackagesPage() {
-  const { area, rate, total } = PAYMENT_EXAMPLE;
 
   return (
     <div className="min-h-screen bg-paper text-ink">
@@ -39,7 +36,7 @@ export default function PackagesPage() {
               <SectionHeader
                 label="CONSTRUCTION PACKAGES"
                 title="Pick a package. Every number is public."
-                supporting="Same 25-year structural warranty on all three. The difference is material grade, finishing level and how long we support you after handover. The payment schedule below is identical for every package."
+                supporting="Same 25-year structural warranty on all three. The difference is material grade, finishing level and how long we support you after handover. The payment schedule below is the same on every package."
                 align="center"
               />
             </Reveal>
@@ -76,54 +73,22 @@ export default function PackagesPage() {
           </Container>
         </section>
 
-        {/* Universal payment schedule */}
+        {/* Payment schedule lives in the calculator — single source of truth */}
         <section className="section-gb bg-wash-green" data-testid="packages-payment">
           <Container>
-            <SectionHeader
-              label="PAYMENT SCHEDULE · ALL 3 PACKAGES"
-              title="One payment schedule, identical on Silver, Gold and Platinum."
-              supporting="Money is released against work finished on site, never against a calendar date. You inspect the stage, sign it off, then pay."
-            />
-            <Reveal className="mt-12 card-gb overflow-hidden">
-              <table className="w-full text-[15px]">
-                <thead className="bg-wash-yellow">
-                  <tr className="text-left">
-                    <th className="p-4 md:p-5 font-semibold w-[44%]">Stage</th>
-                    <th className="p-4 md:p-5 font-extrabold text-[17px]">Percentage</th>
-                    <th className="p-4 md:p-5 font-extrabold text-[17px] hidden md:table-cell">On a {inr(total)} build</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-divider">
-                  {PAYMENT_SCHEDULE.map((row) => {
-                    const amount = Math.round((total * row.pct) / 100);
-                    return (
-                      <tr key={row.stage} className="align-top">
-                        <td className="p-4 md:p-5">
-                          <span className="font-semibold">{row.stage}</span>
-                          {row.note && <span className="block text-[13px] text-ink/60 mt-1">{row.note}</span>}
-                        </td>
-                        <td className="p-4 md:p-5 font-bold whitespace-nowrap">{row.pct}%</td>
-                        <td className="p-4 md:p-5 hidden md:table-cell text-ink/75 whitespace-nowrap">{inr(amount)}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </Reveal>
-            <p className="mt-4 text-[13px] text-ink/55">
-              Rupee column is an illustrative {area} sqft build at ₹{rate.toLocaleString("en-IN")}/sqft (Gold) so you can check the maths against your own quote. Percentages are the contract terms and do not change between packages.
-            </p>
-
-            <Reveal delay={0.1} className="mt-8 card-gb p-6 md:p-8 bg-paper">
-              <p className="mono-label text-ink/50 mb-4">THE RULES BEHIND THE SCHEDULE</p>
-              <ul className="space-y-2.5">
-                {PAYMENT_RULES.map((r) => (
-                  <li key={r} className="flex gap-3 text-[15px] text-ink/80">
-                    <ShieldCheck className="h-5 w-5 shrink-0 text-green mt-0.5" strokeWidth={2.5} />
-                    {r}
-                  </li>
-                ))}
-              </ul>
+            <Reveal className="card-gb p-6 md:p-8 bg-paper flex flex-col md:flex-row md:items-center gap-5 justify-between">
+              <div>
+                <p className="mono-label text-ink/50 mb-2">PAYMENT SCHEDULE · ALL 3 PACKAGES</p>
+                <p className="text-[17px] font-bold leading-snug max-w-xl">
+                  One schedule, identical on Silver, Gold and Platinum — released only against work you've signed off on site.
+                </p>
+                <p className="mt-2 text-[14px] text-ink/60 max-w-xl">
+                  Open the calculator to see the full 9-stage schedule with live rupee amounts for your plot.
+                </p>
+              </div>
+              <Link to="/calculator" className="pill-green h-12 px-6 text-[15px] shrink-0">
+                See the payment schedule <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2.5} />
+              </Link>
             </Reveal>
           </Container>
         </section>

@@ -251,27 +251,12 @@ export const PRICING = [
   { name: "Platinum", price: "₹1,999", best: "Larger plots, custom finishes", rows: ["25 years", "9, same for all", "2× weekly + on-demand", "Premium", "Custom-specified", "24 months"], cta: "Book Design Session", featured: false },
 ];
 export const PRICING_ROWS = ["Structure warranty", "Payment stages", "Site visits by engineer", "Material grade", "Finishing level", "Post-handover support"];
-// One schedule for all three packages. The percentages are the published
-// contract terms; the rupee column is an illustrative 1500 sqft Gold build
-// so a homeowner can sanity-check the numbers against their own quote.
-export const PAYMENT_SCHEDULE = [
-  { stage: "Project onboarding, planning initiation, documentation & mobilization", pct: 20, note: "If less is paid at signing, the full 20% must be completed within 15 days from the date work starts." },
-  { stage: "Excavation, footing, foundation, plinth beam, DPC", pct: 10, note: "" },
-  { stage: "Brickwork up to 5 ft wall, door & window frames", pct: 10, note: "" },
-  { stage: "Shuttering, steel, slab casting, structural RCC work", pct: 20, note: "" },
-  { stage: "Plumbing, electrical conducting & plaster", pct: 10, note: "" },
-  { stage: "Floor base preparation and tile/flooring work", pct: 10, note: "" },
-  { stage: "Putty, primer and paint preparation/work", pct: 10, note: "" },
-  { stage: "Order and installation of doors, windows, grills, main gate", pct: 8, note: "" },
-  { stage: "Sanitary fittings, finishing touch-ups, handover stage", pct: 2, note: "" },
-];
 export const PAYMENT_RULES = [
   "Every instalment is released only after you inspect and sign off the completed stage.",
   "All payments must be completed 15 days before possession.",
   "No payment is tied to a calendar date. It is tied to work actually finished on site.",
   "Any mid-construction change is issued as a written change order with its cost before work begins.",
 ];
-export const PAYMENT_EXAMPLE = { area: 1500, rate: 1699, total: 2548500 };
 
 // Homepage and /packages comparison. `gb` is our side, `other` is the
 // typical local contractor's. Rendered as a two-column list rather than
