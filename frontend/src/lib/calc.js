@@ -46,14 +46,14 @@ export function computeEstimate(config, { city, area, unit, qualities, pkg, qual
   }));
   const days = phases.reduce((s, p) => s + p.days, 0);
 
-  // Ghar Banwao's stage-linked payment schedule, computed off the total. The
-  // final stage is "Remaining" so the instalments always add to the total.
-  const scheduled = (config.payment_schedule || []).filter((s) => s.pct !== "Remaining").reduce((s, r) => s + r.pct, 0);
-  const remainingPct = Math.max(0, 100 - scheduled);
-  const schedule = (config.payment_schedule || []).map((s, i) => {
-    const pct = s.pct === "Remaining" ? remainingPct : s.pct;
-    return { ...s, index: i, pct, amount: Math.round((total * pct) / 100), note: s.note || null };
-  });
+  // Ghar Banwao's stage-linked payment schedule, computed off the total.
+  const schedule = (config.payment_schedule || []).map((s, i) => ({
+    ...s,
+    index: i,
+    pct: s.pct,
+    amount: Math.round((total * s.pct) / 100),
+    note: s.note || null,
+  }));
 
   return {
     sqft,

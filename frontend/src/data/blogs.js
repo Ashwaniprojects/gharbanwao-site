@@ -744,15 +744,15 @@ export const BLOGS = [
       Img(2),
       H("The nine stages"),
       List(
-        "Advance at the time of agreement sign — 20%",
-        "Before plinth beam and damp-proof course — 10%",
-        "Before 5 ft brick wall work — 10%",
-        "Before shuttering for the slab — 20%",
-        "Before plumbing and electrical work — 10%",
-        "Before flooring — 10%",
-        "Before painting work — 10%",
-        "Before doors and windows — 8%",
-        "Before sanitary and miscellaneous work — the remaining balance"
+        "Project onboarding, planning, documentation and mobilization — 20%",
+        "Excavation, footing, foundation, plinth beam, DPC — 10%",
+        "Brickwork up to 5 ft wall, door and window frames — 10%",
+        "Shuttering, steel, slab casting, structural RCC work — 20%",
+        "Plumbing, electrical conducting and plaster — 10%",
+        "Floor base preparation and tile/flooring work — 10%",
+        "Putty, primer and paint preparation/work — 10%",
+        "Order and installation of doors, windows, grills, main gate — 8%",
+        "Sanitary fittings, finishing touch-ups and handover — 2%"
       ),
       P(
         "Two rules sit on top of those nine stages. If less than the full 20% is paid at signing, the balance of the 20% must be completed within 15 days of the day work actually starts. And all payments must be complete 15 days before possession."

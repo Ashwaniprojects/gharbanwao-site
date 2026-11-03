@@ -57,8 +57,7 @@ export const CalcTimeline = ({ estimate }) => {
 };
 
 // Ghar Banwao's stage-linked payment schedule, read off the live total. Each
-// instalment is only released after the matching stage is signed off — the
-// last stage is "Remaining" so the instalments always add to the total.
+// instalment is only released after the matching stage is signed off.
 export const CalcPaymentSchedule = ({ estimate }) => {
   if (!estimate || !Array.isArray(estimate.schedule)) return null;
   return (

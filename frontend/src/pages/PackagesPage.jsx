@@ -95,19 +95,15 @@ export default function PackagesPage() {
                 </thead>
                 <tbody className="divide-y divide-divider">
                   {PAYMENT_SCHEDULE.map((row) => {
-                    const pct = typeof row.pct === "number" ? row.pct : null;
-                    const amount = pct !== null ? Math.round((total * pct) / 100) : null;
-                    const remaining = amount === null ? total - PAYMENT_SCHEDULE.reduce((sum, r) => sum + (typeof r.pct === "number" ? Math.round((total * r.pct) / 100) : 0), 0) : null;
+                    const amount = Math.round((total * row.pct) / 100);
                     return (
                       <tr key={row.stage} className="align-top">
                         <td className="p-4 md:p-5">
                           <span className="font-semibold">{row.stage}</span>
                           {row.note && <span className="block text-[13px] text-ink/60 mt-1">{row.note}</span>}
                         </td>
-                        <td className="p-4 md:p-5 font-bold whitespace-nowrap">{pct !== null ? `${pct}%` : "Remaining"}</td>
-                        <td className="p-4 md:p-5 hidden md:table-cell text-ink/75 whitespace-nowrap">
-                          {amount !== null ? inr(amount) : inr(remaining)}
-                        </td>
+                        <td className="p-4 md:p-5 font-bold whitespace-nowrap">{row.pct}%</td>
+                        <td className="p-4 md:p-5 hidden md:table-cell text-ink/75 whitespace-nowrap">{inr(amount)}</td>
                       </tr>
                     );
                   })}
